@@ -1,172 +1,909 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DevyDose — Alpha Universe Board</title>
-<meta name="description" content="DevyDose / Alpha Universe: live devy dynasty football board, prospect cards, and buzz feed.">
-<style>
-  :root{
-    --bg:#0f141b;
-    --panel:#161d27;
-    --accent:#1F4E79;
-    --accent-bright:#3a7bb8;
-    --text:#e8edf3;
-    --text-dim:#9fb0c3;
-    --border:#26313f;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    line-height:1.5;
-    padding:0 0 40px 0;
-  }
-  header{
-    padding:28px 20px 18px 20px;
-    text-align:center;
-    border-bottom:1px solid var(--border);
-    background:linear-gradient(180deg, rgba(31,78,121,0.25) 0%, rgba(15,20,27,0) 100%);
-  }
-  header h1{
-    margin:0 0 6px 0;
-    font-size:1.6rem;
-    letter-spacing:0.5px;
-  }
-  header .brand-accent{color:var(--accent-bright);}
-  header p{
-    margin:0;
-    color:var(--text-dim);
-    font-size:0.95rem;
-  }
-  main{
-    max-width:640px;
-    margin:0 auto;
-    padding:20px 16px;
-  }
-  .card-link{
-    display:block;
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:18px 18px;
-    margin-bottom:14px;
-    text-decoration:none;
-    color:var(--text);
-    transition:border-color 0.15s ease, transform 0.1s ease;
-  }
-  .card-link:active{transform:scale(0.99);}
-  .card-link:hover{border-color:var(--accent-bright);}
-  .card-link.primary{
-    background:linear-gradient(135deg, var(--accent) 0%, #163a5c 100%);
-    border:1px solid var(--accent-bright);
-    padding:22px 18px;
-  }
-  .card-link .label{
-    font-size:1.1rem;
-    font-weight:600;
-    margin-bottom:4px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-  .card-link.primary .label{font-size:1.25rem;}
-  .badge{
-    display:inline-block;
-    font-size:0.68rem;
-    text-transform:uppercase;
-    letter-spacing:0.5px;
-    background:rgba(255,255,255,0.15);
-    padding:2px 8px;
-    border-radius:20px;
-    font-weight:600;
-  }
-  .card-link .desc{
-    font-size:0.88rem;
-    color:var(--text-dim);
-  }
-  .card-link.primary .desc{color:#cfe0ee;}
-  .section-label{
-    font-size:0.75rem;
-    text-transform:uppercase;
-    letter-spacing:0.8px;
-    color:var(--text-dim);
-    margin:22px 0 10px 4px;
-  }
-  .howto{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:16px 18px;
-    margin-top:24px;
-    font-size:0.86rem;
-    color:var(--text-dim);
-  }
-  .howto h2{
-    font-size:0.95rem;
-    color:var(--text);
-    margin:0 0 10px 0;
-  }
-  .howto ul{
-    margin:0;
-    padding-left:18px;
-  }
-  .howto li{margin-bottom:8px;}
-  .howto li:last-child{margin-bottom:0;}
-  footer{
-    text-align:center;
-    color:var(--text-dim);
-    font-size:0.75rem;
-    margin-top:30px;
-    padding:0 20px;
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#020b20" />
+  <meta name="description" content="DevyDose Alpha Universe — dynasty scouting, rankings, trade evaluation and player intelligence." />
+  <title>DevyDose Alpha Universe</title>
+  <!-- Optional web fonts. Remove these two lines if you want a fully offline build. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/theme.css">
+  <style>
+    :root {
+      --bg: #020817;
+      --bg2: #03102a;
+      --panel: rgba(6, 19, 45, .72);
+      --panel2: rgba(8, 24, 56, .52);
+      --line: rgba(139, 167, 225, .26);
+      --line-strong: rgba(157, 189, 255, .44);
+      --white: #f5f8ff;
+      --muted: #98a7c3;
+      --lime: #c8ff1a;
+      --cyan: #56e5ff;
+      --orange: #ff5a20;
+      --red: #f21522;
+      --navy: #04122e;
+      --max: 1530px;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --display: "Barlow Condensed", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 50% 42%, rgba(9, 44, 96, .55), transparent 34%),
+        radial-gradient(circle at 68% 32%, rgba(22, 79, 141, .24), transparent 28%),
+        linear-gradient(180deg, #02091a 0%, #020817 54%, #03102a 100%);
+      font-family: var(--mono);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .site-shell {
+      min-height: 100vh;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    .site-shell::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .52;
+      z-index: -5;
+      background-image:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,.85) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 72% 8%, rgba(255,255,255,.7) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 84% 45%, rgba(99,206,255,.8) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 36% 62%, rgba(255,255,255,.65) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 58% 76%, rgba(255,255,255,.6) 0 1px, transparent 1.5px);
+      background-size: 180px 180px, 250px 250px, 330px 330px, 420px 420px, 530px 530px;
+    }
+    .site-shell::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      opacity: .12;
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(255,255,255,.08) 0,
+        rgba(255,255,255,.08) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      mix-blend-mode: soft-light;
+    }
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      pointer-events: none;
+      opacity: .22;
+      background-image:
+        linear-gradient(rgba(68,118,190,.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(68,118,190,.12) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: radial-gradient(circle at 55% 40%, #000 0%, transparent 70%);
+    }
+    .topbar {
+      height: 118px;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 30px 0;
+      display: grid;
+      grid-template-columns: 400px 1fr auto;
+      align-items: start;
+      gap: 26px;
+      position: relative;
+      z-index: 20;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      min-width: 0;
+    }
+    /* Primary DevyDose wordmark — transparent neon logo, landscape 1536x1024 art.
+       Height-constrained to fit the 118px topbar; width scales naturally (wider than tall).
+       No background box — it sits directly on the dark bg and glows via its own art. */
+    .brand-logo {
+      height: 96px;
+      width: auto;
+      max-width: 260px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 18px rgba(200,255,26,.20)) drop-shadow(0 0 30px rgba(86,229,255,.14));
+      flex: 0 0 auto;
+    }
+    .brand-copy {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 15px;
+      min-width: 0;
+    }
+    .brand-title {
+      font-family: var(--mono);
+      font-size: 18px;
+      letter-spacing: .38em;
+      line-height: 1.55;
+      text-transform: uppercase;
+      color: rgba(239,244,255,.9);
+      white-space: nowrap;
+    }
+    .crosshair {
+      width: 42px;
+      height: 42px;
+      position: relative;
+      opacity: .48;
+      flex: 0 0 auto;
+    }
+    .crosshair::before,
+    .crosshair::after {
+      content: "";
+      position: absolute;
+      background: #8da0c7;
+    }
+    .crosshair::before { left: 50%; top: 0; width: 1px; height: 100%; }
+    .crosshair::after { top: 50%; left: 0; height: 1px; width: 100%; }
+    .crosshair span {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 1px solid #8da0c7;
+      border-radius: 50%;
+      left: 50%; top: 50%; transform: translate(-50%, -50%);
+    }
+    .main-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(24px, 3vw, 50px);
+      padding-top: 42px;
+      font-size: 13px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .main-nav a {
+      color: rgba(245,248,255,.86);
+      position: relative;
+      transition: color .2s ease;
+    }
+    .main-nav a::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 100%; bottom: -10px;
+      height: 1px;
+      background: var(--lime);
+      transition: right .22s ease;
+    }
+    .main-nav a:hover { color: var(--lime); }
+    .main-nav a:hover::after { right: 0; }
+    .system-pill {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: flex-end;
+      padding-top: 39px;
+      white-space: nowrap;
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .version {
+      display: inline-flex;
+      gap: 13px;
+      align-items: center;
+      border: 1px solid rgba(159,180,231,.42);
+      border-radius: 999px;
+      padding: 7px 14px;
+      color: #d3dcf0;
+    }
+    .version i {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--lime);
+      box-shadow: 0 0 12px rgba(200,255,26,.7);
+    }
+    .online { color: var(--lime); }
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 30px 0;
+      position: relative;
+      display: grid;
+      grid-template-columns: 430px minmax(600px, 1fr) 270px;
+      align-items: center;
+      min-height: 560px;
+      z-index: 3;
+    }
+    .hero-copy {
+      align-self: center;
+      position: relative;
+      z-index: 8;
+      padding-left: 10px;
+      margin-top: -18px;
+    }
+    .eyebrow {
+      color: #b7c2d8;
+      font-size: 13px;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .eyebrow .bracket { color: var(--orange); font-weight: 700; }
+    .hero h1 {
+      margin: 0;
+      font-family: var(--display);
+      font-weight: 800;
+      letter-spacing: .005em;
+      text-transform: uppercase;
+      font-size: clamp(70px, 6.25vw, 106px);
+      line-height: .81;
+      text-shadow: 0 0 34px rgba(214,226,255,.08);
+    }
+    .hero h1 .accent {
+      color: var(--lime);
+      display: block;
+    }
+    .hero-sub {
+      width: 265px;
+      margin: 24px 0 0;
+      color: #c0cadc;
+      line-height: 1.56;
+      font-size: 13px;
+    }
+    .launch-btn {
+      margin-top: 25px;
+      height: 48px;
+      width: 218px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px 0 27px;
+      border: 1px solid rgba(200,255,26,.82);
+      color: var(--lime);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 600;
+      clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+      box-shadow: inset 0 0 22px rgba(200,255,26,.04), 0 0 24px rgba(200,255,26,.03);
+      transition: .2s ease;
+    }
+    .launch-btn:hover { background: rgba(200,255,26,.08); transform: translateY(-1px); }
+    .launch-btn .arrow { font-size: 22px; }
+    .sync-line {
+      margin-top: 25px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #afbad1;
+    }
+    .sync-line strong { color: var(--lime); font-weight: 500; }
+    .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: white; }
+    .wave {
+      width: 88px;
+      height: 18px;
+      position: relative;
+    }
+    .wave svg { width: 100%; height: 100%; overflow: visible; }
+    .orbit-stage {
+      position: relative;
+      min-height: 580px;
+      display: grid;
+      place-items: center;
+      z-index: 2;
+      margin-left: -38px;
+    }
+    .orbit-glow {
+      position: absolute;
+      width: 560px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14,56,117,.22), rgba(2,8,23,0) 67%);
+      filter: blur(2px);
+    }
+    .orbit {
+      position: absolute;
+      width: 590px;
+      height: 330px;
+      border: 1px solid rgba(69,135,231,.28);
+      border-radius: 50%;
+      transform: rotate(-7deg);
+      box-shadow: 0 0 34px rgba(27,76,157,.11);
+    }
+    .orbit.o2 { width: 520px; height: 270px; transform: rotate(6deg); border-color: rgba(76,147,239,.30); }
+    .orbit.o3 { width: 430px; height: 228px; transform: rotate(-15deg); border-color: rgba(255,90,32,.28); }
+    .orbit.o4 { width: 350px; height: 176px; transform: rotate(11deg); border-color: rgba(255,90,32,.43); box-shadow: 0 0 28px rgba(255,90,32,.13); }
+    .orbit.o1::before,
+    .orbit.o2::before,
+    .orbit.o3::before,
+    .orbit.o4::before {
+      content: "";
+      position: absolute;
+      width: 9px; height: 9px;
+      border: 2px solid var(--cyan);
+      background: var(--bg);
+      border-radius: 50%;
+      box-shadow: 0 0 14px rgba(86,229,255,.45);
+    }
+    .orbit.o1::before { left: 8%; top: 20%; }
+    .orbit.o2::before { right: 8%; top: 25%; border-color: var(--orange); }
+    .orbit.o3::before { left: 10%; bottom: 20%; border-color: var(--orange); }
+    .orbit.o4::before { right: 3%; bottom: 23%; }
+    .orbit.o4::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border-top: 2px solid rgba(255,90,32,.82);
+      border-bottom: 2px solid transparent;
+      filter: drop-shadow(0 0 8px rgba(255,90,32,.45));
+      animation: spin 16s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hero-player {
+      position: absolute;
+      z-index: 5;
+      width: 365px;
+      max-height: 520px;
+      object-fit: contain;
+      object-position: center;
+      transform: translateY(14px) rotate(-2deg);
+      filter: saturate(1.08) contrast(1.07) drop-shadow(0 18px 36px rgba(0,0,0,.56));
+      mask-image: radial-gradient(ellipse 67% 79% at 52% 49%, #000 55%, rgba(0,0,0,.93) 66%, rgba(0,0,0,.58) 78%, transparent 94%);
+      -webkit-mask-image: radial-gradient(ellipse 67% 79% at 52% 49%, #000 55%, rgba(0,0,0,.93) 66%, rgba(0,0,0,.58) 78%, transparent 94%);
+      mix-blend-mode: screen;
+    }
+    .player-core {
+      position: absolute;
+      z-index: 6;
+      width: 290px;
+      height: 290px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,90,32,.42);
+      box-shadow:
+        0 0 0 16px rgba(255,90,32,.025),
+        0 0 50px rgba(255,90,32,.18),
+        inset 0 0 45px rgba(255,90,32,.08);
+      pointer-events: none;
+    }
+    .signal-ring {
+      position: absolute;
+      width: 42px; height: 42px;
+      border: 1px solid rgba(255,90,32,.7);
+      border-radius: 50%;
+      z-index: 7;
+    }
+    .signal-ring::before,
+    .signal-ring::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 1px solid rgba(255,90,32,.4);
+      border-radius: 50%;
+    }
+    .signal-ring::after { inset: 17px; background: var(--orange); border: 0; }
+    .signal-ring.s1 { left: 7%; top: 29%; }
+    .signal-ring.s2 { right: 4%; top: 58%; }
+    .signal-ring.s3 { left: 10%; bottom: 16%; transform: scale(.9); }
+    .overview {
+      align-self: stretch;
+      padding: 45px 8px 0 12px;
+      position: relative;
+      z-index: 8;
+    }
+    .rail-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #c7d0e3;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    .rail-heading span { color: var(--orange); }
+    .stat {
+      border-bottom: 1px solid rgba(139,167,225,.17);
+      padding: 0 0 18px;
+      margin-bottom: 15px;
+    }
+    .stat strong {
+      display: block;
+      font-family: var(--mono);
+      font-size: 48px;
+      line-height: 1;
+      letter-spacing: .04em;
+      font-weight: 600;
+    }
+    .stat.big strong { color: var(--lime); font-size: 64px; }
+    .stat.cyan strong { color: var(--cyan); font-size: 41px; }
+    .stat.orange strong { color: var(--orange); font-size: 41px; }
+    .stat label {
+      display: block;
+      margin-top: 9px;
+      font-size: 12px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #c3cbda;
+    }
+    .status-panel { margin-top: 20px; }
+    .status-title {
+      color: #c6cfdf;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .status-title b { color: var(--orange); }
+    .radar-status {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 24px;
+    }
+    .mini-radar {
+      width: 54px; height: 54px; border-radius: 50%;
+      border: 1px solid rgba(86,229,255,.55);
+      position: relative;
+      background:
+        linear-gradient(90deg, transparent 49%, rgba(86,229,255,.35) 50%, transparent 51%),
+        linear-gradient(0deg, transparent 49%, rgba(86,229,255,.35) 50%, transparent 51%);
+    }
+    .mini-radar::before,
+    .mini-radar::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(200,255,26,.38);
+      border-radius: 50%;
+      inset: 9px;
+    }
+    .mini-radar::after { inset: 21px; background: var(--orange); border: 0; box-shadow: 0 0 12px rgba(255,90,32,.8); }
+    .status-copy strong {
+      display: block;
+      color: var(--lime);
+      font-size: 13px;
+      letter-spacing: .12em;
+      font-weight: 500;
+    }
+    .status-copy small {
+      display: block;
+      margin-top: 8px;
+      color: #a9b5cb;
+      font-size: 10px;
+      letter-spacing: .1em;
+    }
+    .modules {
+      max-width: var(--max);
+      margin: -3px auto 0;
+      padding: 0 30px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      position: relative;
+      z-index: 12;
+    }
+    .module {
+      min-height: 195px;
+      padding: 22px 24px;
+      background:
+        linear-gradient(145deg, rgba(9,29,64,.73), rgba(5,15,36,.68)),
+        radial-gradient(circle at 75% 20%, rgba(86,229,255,.07), transparent 42%);
+      border: 1px solid var(--line);
+      position: relative;
+      clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+      overflow: hidden;
+    }
+    .module::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(120deg, transparent 0 58%, rgba(255,255,255,.03) 58% 59%, transparent 59% 100%);
+    }
+    .module:hover {
+      transform: translateY(-6px);
+      border-color: rgba(200,255,26,.52);
+      background: linear-gradient(145deg, rgba(11,35,77,.82), rgba(5,15,36,.77));
+    }
+    .module-icon {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      color: var(--lime);
+      margin-bottom: 15px;
+    }
+    /* 5-card grid (Mobile Board removed 2026-08-09 — phones now auto-served the
+       mobile board directly from Alpha_Portal.html; see that file's redirect).
+       nth-child renumbered so each remaining card keeps its original accent color:
+       Full Board(1)=cyan, Trade Desk(2)=orange, Player Files(3)=lime default,
+       Buzz Wire(4)=cyan, Methodology(5)=orange. */
+    .module:nth-child(1) .module-icon,
+    .module:nth-child(4) .module-icon { color: var(--cyan); }
+    .module:nth-child(2) .module-icon,
+    .module:nth-child(5) .module-icon { color: var(--orange); }
+    .module svg { width: 44px; height: 44px; stroke: currentColor; fill: none; stroke-width: 1.4; }
+    .module h3 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 22px;
+      line-height: .95;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .module p {
+      margin: 12px 0 0;
+      font-size: 11px;
+      line-height: 1.55;
+      color: #aeb8ca;
+    }
+    .module-arrow {
+      position: absolute;
+      right: 25px;
+      bottom: 16px;
+      color: currentColor;
+      font-size: 26px;
+      line-height: 1;
+    }
+    .honesty {
+      max-width: var(--max);
+      margin: 34px auto 0;
+      padding: 16px 30px;
+      border-top: 1px solid rgba(122,159,217,.22);
+      border-bottom: 1px solid rgba(122,159,217,.22);
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+      letter-spacing: .02em;
+    }
+    .honesty p { margin: 0; }
+    .footer {
+      max-width: var(--max);
+      min-height: 83px;
+      margin: 40px auto 0;
+      padding: 17px 30px 24px;
+      border-top: 1px solid rgba(122,159,217,.32);
+      display: grid;
+      grid-template-columns: 300px 1fr 200px;
+      align-items: center;
+      gap: 30px;
+      color: #91a0ba;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .footer-center {
+      padding: 0 38px;
+      border-left: 1px solid rgba(122,159,217,.25);
+      border-right: 1px solid rgba(122,159,217,.25);
+      text-align: center;
+    }
+    .telemetry-title { color: #a8b3ca; margin-bottom: 9px; }
+    .telemetry {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      color: #d4dbeb;
+    }
+    .telemetry span:nth-child(1),
+    .telemetry span:nth-child(2),
+    .telemetry span:nth-child(3) { color: var(--cyan); }
+    .telemetry span:last-child { color: var(--lime); }
+    .footer-mark { text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 16px; }
+    .d-mark { font-family: Georgia, serif; font-style: italic; font-size: 42px; color: #edf2ff; }
+    .mobile-menu-button { display: none; }
+    @media (max-width: 1320px) {
+      .topbar { grid-template-columns: 310px 1fr auto; }
+      .brand-logo { height: 76px; max-width: 210px; }
+      .brand-title { font-size: 14px; }
+      .hero { grid-template-columns: 365px minmax(520px, 1fr) 220px; }
+      .orbit { width: 520px; height: 300px; }
+      .orbit.o2 { width: 455px; height: 248px; }
+      .orbit.o3 { width: 390px; height: 206px; }
+      .orbit.o4 { width: 315px; height: 164px; }
+      .hero-player { width: 330px; }
+      .modules { gap: 12px; }
+      .module { padding: 20px 18px; }
+    }
+    @media (max-width: 1080px) {
+      .topbar {
+        height: auto;
+        grid-template-columns: 1fr auto;
+        padding-bottom: 20px;
+      }
+      .brand { grid-column: 1; }
+      .system-pill { grid-column: 2; padding-top: 34px; }
+      .main-nav {
+        grid-column: 1 / -1;
+        order: 3;
+        padding: 8px 0 0;
+        justify-content: flex-start;
+        overflow-x: auto;
+      }
+      .hero {
+        grid-template-columns: 1fr 1.25fr;
+        min-height: 790px;
+      }
+      .overview {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        padding: 12px 10px 0;
+      }
+      .rail-heading { grid-column: 1 / -1; margin: 0; }
+      .stat { margin: 0; }
+      .status-panel { margin: 0; }
+      .modules { grid-template-columns: repeat(3, 1fr); }
+      .footer { grid-template-columns: 1fr; text-align: center; }
+      .footer-center { border: 0; border-top: 1px solid rgba(122,159,217,.2); border-bottom: 1px solid rgba(122,159,217,.2); padding: 18px 0; }
+      .footer-mark { justify-content: center; }
+    }
+    @media (max-width: 760px) {
+      .topbar { padding: 12px 18px 10px; grid-template-columns: 1fr auto; }
+      .brand-logo { height: 58px; max-width: 170px; }
+      .brand-copy { margin-top: 7px; gap: 10px; }
+      .brand-title { font-size: 11px; letter-spacing: .22em; }
+      .crosshair { display: none; }
+      .system-pill { padding-top: 25px; gap: 8px; }
+      .online { display: none; }
+      .main-nav { gap: 22px; font-size: 10px; padding-bottom: 8px; }
+      .hero {
+        display: flex;
+        flex-direction: column;
+        padding: 24px 18px 0;
+        min-height: auto;
+      }
+      .hero-copy { width: 100%; order: 1; padding: 0; margin: 0; }
+      .hero h1 { font-size: clamp(72px, 22vw, 106px); }
+      .hero-sub { width: min(360px, 90%); }
+      .orbit-stage { width: 100%; min-height: 480px; margin: -20px 0 0; order: 2; overflow: visible; }
+      .orbit { width: 520px; height: 280px; }
+      .orbit.o2 { width: 460px; height: 240px; }
+      .orbit.o3 { width: 390px; height: 205px; }
+      .orbit.o4 { width: 320px; height: 165px; }
+      .hero-player { width: 330px; max-height: 460px; }
+      .player-core { width: 270px; height: 270px; }
+      .overview {
+        width: 100%; order: 3;
+        grid-template-columns: repeat(3, 1fr);
+        padding: 0;
+        gap: 10px;
+      }
+      .rail-heading, .status-panel { grid-column: 1 / -1; }
+      .status-panel { display: flex; align-items: center; justify-content: space-between; }
+      .stat.big strong { font-size: 44px; }
+      .stat.cyan strong, .stat.orange strong { font-size: 34px; }
+      .stat label { font-size: 9px; }
+      .modules { grid-template-columns: 1fr 1fr; padding: 28px 18px 0; gap: 12px; }
+      .module { min-height: 180px; }
+      .footer { margin-top: 24px; padding-left: 18px; padding-right: 18px; }
+      .telemetry { gap: 16px; }
+    }
+    @media (max-width: 480px) {
+      .brand-title { display: none; }
+      .main-nav { display: none; }
+      .hero h1 { font-size: 70px; }
+      .orbit-stage { min-height: 410px; }
+      .orbit { transform: scale(.78) rotate(-7deg); }
+      .orbit.o2 { transform: scale(.78) rotate(6deg); }
+      .orbit.o3 { transform: scale(.78) rotate(-15deg); }
+      .orbit.o4 { transform: scale(.78) rotate(11deg); }
+      .hero-player { width: 275px; }
+      .player-core { width: 230px; height: 230px; }
+      .overview { grid-template-columns: repeat(3, 1fr); }
+      .modules { grid-template-columns: 1fr; }
+      .module { min-height: 150px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <h1>Devy<span class="brand-accent">Dose</span></h1>
-  <p>Alpha Universe — the live devy dynasty board</p>
-</header>
-<main>
-  <div class="section-label">Start here</div>
-  <a class="card-link primary" href="Alpha_Board_v5.0_mobile.html">
-    <div class="label">Mobile Board <span class="badge">Best on phone</span></div>
-    <div class="desc">The lightweight, phone-friendly board — fast load, tap-friendly. This is the one to pin.</div>
-  </a>
-
-  <div class="section-label">Explore more</div>
-  <a class="card-link" href="Alpha_Portal.html">
-    <div class="label">Full Board (Portal)</div>
-    <div class="desc">The complete interactive board — searchable, filterable, tap any player for a full card.</div>
-  </a>
-  <a class="card-link" href="Alpha_ProspectCards.html">
-    <div class="label">Prospect Cards</div>
-    <div class="desc">444 individual player cards — deep dives on every name on the board.</div>
-  </a>
-  <a class="card-link" href="Alpha_BuzzFeed.html">
-    <div class="label">Buzz Feed</div>
-    <div class="desc">The latest buzz notes and movers driving board changes.</div>
-  </a>
-
-  <div class="section-label">Under the hood</div>
-  <a class="card-link" href="methodology.html">
-    <div class="label">How the Board Is Built</div>
-    <div class="desc">The methodology: comp-based, production-first, backtested against real NFL outcomes — and honest about what it can't do.</div>
-  </a>
-
-  <div class="howto">
-    <h2>How to read this board</h2>
-    <ul>
-      <li><strong>Alpha Rating is a relative currency, not a points projection.</strong> It ranks players against each other — it does not forecast fantasy points.</li>
-      <li><strong>The TE level and freshman discount are stated league-format priors</strong> — policy choices, not numbers fitted or backtested against outcomes.</li>
-      <li><strong>Freshmen (marked FR) have no college production yet.</strong> Their placement on the board is a projection and is not backtested.</li>
-    </ul>
+  <div class="site-shell">
+    <div class="grid-overlay" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="DevyDose Alpha Universe home">
+        <img class="brand-logo" src="assets/devydose-logo-neon.png" alt="DevyDose">
+        <div class="brand-copy">
+          <div class="brand-title">Alpha<br>Universe</div>
+          <div class="crosshair" aria-hidden="true"><span></span></div>
+        </div>
+      </a>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="Alpha_ProspectCards.html">Players</a>
+        <a href="Alpha_Portal.html">Boards</a>
+        <a href="trade.html">Tools</a>
+        <a href="Alpha_BuzzFeed.html">Buzz</a>
+        <a href="methodology.html">About</a>
+      </nav>
+      <div class="system-pill" aria-label="System status">
+        <span class="version">v5.0 <i></i></span>
+        <span class="online">System Online</span>
+      </div>
+    </header>
+    <main>
+      <section class="hero" id="home">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="bracket">[ ]</span> Welcome to the Alpha Universe</div>
+          <h1>
+            Enter<br>
+            The<br>
+            <span class="accent">Alpha</span>
+            <span class="accent">Orbit</span>
+          </h1>
+          <p class="hero-sub">The most advanced amateur scouting operating system. Real data. Real tools. Real advantage.</p>
+          <a class="launch-btn" href="Alpha_Portal.html"><span>Launch Orbit</span><span class="arrow">→</span></a>
+          <div class="sync-line">
+            <strong>Data Synced</strong><span class="sync-dot"></span><span>Live Feed</span>
+            <span class="wave" aria-hidden="true">
+              <svg viewBox="0 0 100 20">
+                <polyline points="0,14 18,14 23,5 28,17 37,14 46,14 52,3 58,17 66,13 78,14 83,8 89,14 100,14" fill="none" stroke="currentColor" stroke-width="1.2" />
+              </svg>
+            </span>
+          </div>
+        </div>
+        <div class="orbit-stage" id="orbit-stage" aria-label="Orbit visualization">
+          <div class="orbit-glow"></div>
+          <div class="orbit o1"></div>
+          <div class="orbit o2"></div>
+          <div class="orbit o3"></div>
+          <div class="orbit o4"></div>
+          <div class="player-core"></div>
+          <div class="signal-ring s1"></div>
+          <div class="signal-ring s2"></div>
+          <div class="signal-ring s3"></div>
+          <!-- Static, unlabeled hero image — no player name, number, position, school or
+               Alpha-Rating overlay. Not bound to any row on the live board (Erik's call
+               on likeness/NIL caution). Replace assets/hero.png to change the visual;
+               do not reintroduce a name-binding lookup or caption here. -->
+          <img class="hero-player" src="assets/hero.png" alt="Airborne wide receiver making a one-handed catch" />
+        </div>
+        <aside class="overview" aria-label="Orbit overview">
+          <div class="rail-heading"><span>[ ]</span> Orbit Overview <span>[ ]</span></div>
+          <div class="stat big">
+            <strong>444</strong>
+            <label>Players</label>
+          </div>
+          <div class="stat cyan">
+            <strong>359</strong>
+            <label>Veterans</label>
+          </div>
+          <div class="stat orange">
+            <strong>85</strong>
+            <label>Freshmen</label>
+          </div>
+          <div class="status-panel">
+            <div class="status-title"><b>[ ]</b> System Status <b>[ ]</b></div>
+            <div class="radar-status">
+              <div class="mini-radar" aria-hidden="true"></div>
+              <div class="status-copy">
+                <strong>Online</strong>
+                <small>All Systems Nominal</small>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+      <section class="modules" id="modules" aria-label="Alpha Universe modules">
+        <a class="module" href="Alpha_Portal.html" data-route="full-board">
+          <div class="module-icon">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="7" width="8" height="34"/><rect x="15" y="7" width="8" height="34"/><rect x="25" y="7" width="8" height="34"/><rect x="35" y="7" width="8" height="34"/></svg>
+          </div>
+          <h3>Full<br>Board</h3>
+          <p>The complete big<br>board experience.</p>
+          <span class="module-arrow">→</span>
+        </a>
+        <a class="module" href="trade.html" data-route="trade-evaluator">
+          <div class="module-icon">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 15h27"/><path d="M29 8l7 7-7 7"/><path d="M40 33H13"/><path d="M19 26l-7 7 7 7"/></svg>
+          </div>
+          <h3>Trade<br>Desk</h3>
+          <p>Analyze value.<br>Make the move.</p>
+          <span class="module-arrow">→</span>
+        </a>
+        <a class="module" href="Alpha_ProspectCards.html" data-route="player-files">
+          <div class="module-icon">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 13h14l4 5h20v22H5z"/><path d="M5 13V8h13l4 5"/></svg>
+          </div>
+          <h3>Player<br>Files</h3>
+          <p>Deep dives on every<br>player in the orbit.</p>
+          <span class="module-arrow">→</span>
+        </a>
+        <a class="module" href="Alpha_BuzzFeed.html" data-route="buzz-wire">
+          <div class="module-icon">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3L11 27h11l-2 18 17-27H26z"/></svg>
+          </div>
+          <h3>Buzz<br>Wire</h3>
+          <p>Real-time intel.<br>Fresh updates.</p>
+          <span class="module-arrow">→</span>
+        </a>
+        <a class="module" href="methodology.html" data-route="methodology">
+          <div class="module-icon">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M17 5h14"/><path d="M20 5v10L7 41h34L28 15V5"/><path d="M14 32h20"/><circle cx="25" cy="25" r="2"/><circle cx="19" cy="29" r="1.5"/><circle cx="29" cy="34" r="1.5"/></svg>
+          </div>
+          <h3>Methodology</h3>
+          <p>Our process.<br>Our advantage.<br>Your edge.</p>
+          <span class="module-arrow">→</span>
+        </a>
+      </section>
+      <section class="honesty" aria-label="Methodology honesty note">
+        <p>Alpha Rating is a relative currency, not a fantasy-points projection. Freshman placements are projections, not backtested.</p>
+      </section>
+    </main>
+    <footer class="footer" id="footer">
+      <div>
+        <strong style="color:#c4cde0;font-weight:500">DevyDose Alpha Universe</strong><br>
+        © <span id="year"></span> all rights reserved
+      </div>
+      <div class="footer-center">
+        <div class="telemetry-title">Orbit Telemetry</div>
+        <div class="telemetry">
+          <span>LAT</span> 35.2271° N
+          <span>LON</span> 80.8431° W
+          <span>ELEV</span> 527.0 FT
+          <span>SPD</span> 17.2 KTS
+          <span>HDG 126° SE</span>
+          <span>SYNC 08.10.26</span>
+        </div>
+      </div>
+      <div class="footer-mark">
+        <div>Built for scouts.<br>Designed to win.</div>
+        <div class="d-mark">D</div>
+      </div>
+    </footer>
   </div>
-</main>
-<footer>
-  DevyDose · Alpha Universe · Updated regularly. Not affiliated with any NFL, NCAA, or fantasy platform.
-</footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    // Subtle cursor parallax on desktop. Safe to remove if you want a static hero.
+    const stage = document.getElementById('orbit-stage');
+    if (stage && window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      stage.addEventListener('pointermove', (event) => {
+        const r = stage.getBoundingClientRect();
+        const x = ((event.clientX - r.left) / r.width - .5) * 2;
+        const y = ((event.clientY - r.top) / r.height - .5) * 2;
+        stage.style.setProperty('--px', x);
+        stage.style.setProperty('--py', y);
+        const player = stage.querySelector('.hero-player');
+        const core = stage.querySelector('.player-core');
+        if (player) player.style.transform = `translate(${x * 8}px, ${14 + y * 7}px) rotate(${-2 + x * 1.2}deg)`;
+        if (core) core.style.transform = `translate(${x * -5}px, ${y * -4}px)`;
+      });
+      stage.addEventListener('pointerleave', () => {
+        const player = stage.querySelector('.hero-player');
+        const core = stage.querySelector('.player-core');
+        if (player) player.style.transform = 'translateY(14px) rotate(-2deg)';
+        if (core) core.style.transform = '';
+      });
+    }
+    // ROUTING: all five module cards, the nav, and the Launch Orbit button carry real
+    // relative hrefs directly in the HTML (website/public/ siblings) — no placeholder
+    // "#" routes and no runtime href rewriting needed. Mobile Board was removed as a
+    // desktop module (2026-08-09): phones are now auto-served the mobile board by a
+    // redirect at the top of Alpha_Portal.html's <head>, so the destination file still
+    // exists and is reachable, it is just no longer a menu tile.
+  </script>
 </body>
 </html>

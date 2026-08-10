@@ -1,0 +1,38 @@
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+
+[[redirects]]
+  from = "/board"
+  to = "/Alpha_Board_v5.0_mobile.html"
+  status = 200
+
+[[redirects]]
+  from = "/portal"
+  to = "/Alpha_Portal.html"
+  status = 200
+
+[[redirects]]
+  from = "/cards"
+  to = "/Alpha_ProspectCards.html"
+  status = 200
+
+[[redirects]]
+  from = "/buzz"
+  to = "/Alpha_BuzzFeed.html"
+  status = 200
+
+[[redirects]]
+  from = "/methodology"
+  to = "/methodology.html"
+  status = 200
+
+[[redirects]]
+  from = "/how"
+  to = "/methodology.html"
+  status = 200

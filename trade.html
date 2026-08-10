@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DevyDose — Devy Trade Evaluator</title>
+<meta name="description" content="DevyDose / Alpha Universe devy trade evaluator: enter both sides of a proposed dynasty devy trade and see the model's value comparison and a plain-English verdict on who wins.">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  :root{
+    --bg:#020817;
+    --panel:#04122e;
+    --panel-2:#071a3d;
+    --accent:#04122e;
+    --accent-bright:#56e5ff;
+    --text:#f5f8ff;
+    --text-dim:#98a7c3;
+    --border:rgba(139,167,225,.26);
+    --good:#c8ff1a;
+    --warn:#ff5a20;
+    --a-side:#56e5ff;
+    --b-side:#ff5a20;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--au-mono, "IBM Plex Mono"),-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    padding:0 0 50px 0;
+  }
+  header{
+    padding:28px 20px 18px 20px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg, rgba(86,229,255,0.12) 0%, rgba(2,8,23,0) 100%);
+  }
+  header h1{ margin:0 0 6px 0; font-size:1.5rem; letter-spacing:0.4px; font-family:var(--au-display,inherit); font-weight:700; }
+  header .brand-accent{color:var(--accent-bright);}
+  header p{ margin:0; color:var(--text-dim); font-size:0.95rem; }
+  .backlink{ display:inline-block; margin:14px auto 0 auto; font-size:0.8rem; color:var(--accent-bright); text-decoration:none; }
+  .backlink:hover{text-decoration:underline;}
+  main{ max-width:760px; margin:0 auto; padding:22px 16px; }
+
+  .sides{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:620px){ .sides{ grid-template-columns:1fr; } }
+
+  .side{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px 14px 16px 14px;
+  }
+  .side.a{ border-top:3px solid var(--a-side); }
+  .side.b{ border-top:3px solid var(--b-side); }
+  .side h2{
+    margin:0 0 10px 0; font-size:0.95rem; text-transform:uppercase;
+    letter-spacing:0.6px; color:var(--text-dim); display:flex;
+    justify-content:space-between; align-items:baseline;
+  }
+  .side.a h2 .who{color:var(--a-side);}
+  .side.b h2 .who{color:var(--b-side);}
+  .side .total{ font-size:0.8rem; color:var(--text-dim); font-weight:600; }
+
+  .search-wrap{ position:relative; }
+  .search-wrap input{
+    width:100%; padding:9px 11px; border-radius:8px;
+    border:1px solid var(--border); background:var(--panel-2);
+    color:var(--text); font-size:0.9rem;
+  }
+  .search-wrap input:focus{ outline:none; border-color:var(--accent-bright); }
+  .dropdown{
+    position:absolute; z-index:20; left:0; right:0; top:calc(100% + 4px);
+    background:var(--panel-2); border:1px solid var(--border);
+    border-radius:8px; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.4);
+    max-height:280px; overflow-y:auto;
+  }
+  .dropdown .opt{
+    padding:8px 11px; cursor:pointer; display:flex; justify-content:space-between;
+    align-items:center; gap:8px; border-bottom:1px solid var(--border); font-size:0.85rem;
+  }
+  .dropdown .opt:last-child{border-bottom:none;}
+  .dropdown .opt:hover,.dropdown .opt.active{ background:var(--accent); }
+  .dropdown .opt .meta{ color:var(--text-dim); font-size:0.75rem; }
+  .dropdown .opt.offboard{ color:var(--warn); }
+  .dropdown .empty{ padding:10px 11px; color:var(--text-dim); font-size:0.8rem; }
+
+  .chips{ margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+  .chip{
+    background:var(--panel-2); border:1px solid var(--border);
+    border-radius:9px; padding:9px 10px; position:relative;
+  }
+  .chip .row1{ display:flex; justify-content:space-between; align-items:baseline; gap:6px; }
+  .chip .nm{ font-weight:600; font-size:0.92rem; }
+  .chip .val{ font-weight:700; font-size:0.92rem; color:var(--text); white-space:nowrap; }
+  .chip .row2{ font-size:0.72rem; color:var(--text-dim); margin-top:2px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .chip .bar{ height:5px; border-radius:4px; margin-top:7px; background:var(--border); overflow:hidden; }
+  .chip .bar > span{ display:block; height:100%; }
+  .side.a .chip .bar > span{ background:var(--a-side); }
+  .side.b .chip .bar > span{ background:var(--b-side); }
+  .chip.off{ border-style:dashed; border-color:var(--warn); }
+  .chip .rm{
+    position:absolute; top:6px; right:8px; cursor:pointer; color:var(--text-dim);
+    font-size:1rem; line-height:1; border:none; background:none; padding:2px;
+  }
+  .chip .rm:hover{ color:#e06b6b; }
+  .badge{
+    display:inline-block; font-size:0.62rem; text-transform:uppercase; letter-spacing:0.4px;
+    padding:1px 6px; border-radius:20px; font-weight:700; background:rgba(255,255,255,0.12);
+  }
+  .badge.fr{ background:rgba(201,162,75,0.22); color:var(--warn); }
+  .badge.qb{ background:rgba(58,123,184,0.25); color:var(--accent-bright); }
+  .badge.pro{ background:rgba(74,157,107,0.22); color:var(--good); }
+
+  .actions{ text-align:center; margin:20px 0 4px 0; }
+  .btn{
+    background:linear-gradient(135deg, var(--accent) 0%, #03102a 100%);
+    border:1px solid var(--accent-bright); color:#fff; font-weight:600;
+    font-size:0.95rem; padding:11px 26px; border-radius:10px; cursor:pointer;
+  }
+  .btn:hover{ filter:brightness(1.08); }
+  .btn.ghost{ background:none; border:1px solid var(--border); color:var(--text-dim); font-weight:500; margin-left:8px; }
+
+  #result{ margin-top:22px; }
+  .verdict{
+    background:var(--panel); border:1px solid var(--border); border-radius:12px;
+    padding:18px 18px; text-align:center; margin-bottom:14px;
+  }
+  .verdict .headline{ font-size:1.15rem; font-weight:700; margin-bottom:4px; }
+  .verdict .sub{ color:var(--text-dim); font-size:0.9rem; }
+  .verdict.win-a{ border-top:3px solid var(--a-side); }
+  .verdict.win-b{ border-top:3px solid var(--b-side); }
+  .verdict.even{ border-top:3px solid var(--text-dim); }
+
+  .compare{ display:flex; align-items:center; gap:10px; margin:14px 0 4px 0; }
+  .compare .lbl{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; width:54px; color:var(--text-dim); }
+  .compare .track{ flex:1; height:22px; border-radius:6px; background:var(--panel-2); overflow:hidden; display:flex; }
+  .compare .fillA{ background:var(--a-side); height:100%; }
+  .compare .fillB{ background:var(--b-side); height:100%; }
+  .compare .amt{ width:62px; text-align:right; font-weight:700; font-size:0.85rem; }
+
+  .note{
+    background:var(--panel); border:1px solid var(--border); border-left:3px solid var(--accent-bright);
+    border-radius:8px; padding:11px 13px; margin-top:10px; font-size:0.85rem; color:var(--text);
+  }
+  .note.warn{ border-left-color:var(--warn); }
+  .note b{ color:var(--text); }
+  .note .t{ font-weight:700; display:block; margin-bottom:3px; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-dim); }
+
+  .howto{
+    background:var(--panel); border:1px solid var(--border); border-radius:12px;
+    padding:14px 16px; margin-top:26px; font-size:0.83rem; color:var(--text-dim);
+  }
+  .howto h2{ font-size:0.9rem; color:var(--text); margin:0 0 8px 0; }
+  .howto ul{ margin:0; padding-left:18px; }
+  .howto li{ margin-bottom:7px; }
+  .howto li:last-child{ margin-bottom:0; }
+
+  footer{ text-align:center; color:var(--text-dim); font-size:0.75rem; margin-top:30px; padding:0 20px; }
+  .loading{ text-align:center; color:var(--text-dim); padding:20px; font-size:0.9rem; }
+</style>
+</head>
+<body>
+<div class="au-header">
+  <a class="au-brand" href="index.html" aria-label="DevyDose Alpha Universe home">
+    <img class="au-logo" src="assets/devydose-logo-neon.png" alt="DevyDose">
+    <span class="au-wordmark">Alpha Universe</span>
+  </a>
+  <nav class="au-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="Alpha_ProspectCards.html">Players</a>
+        <a href="Alpha_Portal.html">Boards</a>
+        <a href="trade.html" class="on">Tools</a>
+        <a href="Alpha_BuzzFeed.html">Buzz</a>
+        <a href="methodology.html">About</a>
+  </nav>
+  <span class="au-pill"><i></i><span class="au-online">v5.0 &bull; SYSTEM ONLINE</span></span>
+</div>
+<header>
+  <h1>Devy<span class="brand-accent">Dose</span> — Trade Evaluator</h1>
+  <p>Enter both sides of a proposed devy dynasty trade. The model tells you who wins, and by how much.</p>
+  <a class="backlink" href="index.html">&larr; Back to the board</a>
+</header>
+
+<main>
+  <div class="sides">
+    <div class="side a" data-side="A">
+      <h2><span class="who">Side A gives up</span> <span class="total" id="totalA"></span></h2>
+      <div class="search-wrap">
+        <input type="text" id="searchA" placeholder="Search a player…" autocomplete="off">
+        <div class="dropdown" id="dropA" style="display:none;"></div>
+      </div>
+      <div class="chips" id="chipsA"></div>
+    </div>
+    <div class="side b" data-side="B">
+      <h2><span class="who">Side B gives up</span> <span class="total" id="totalB"></span></h2>
+      <div class="search-wrap">
+        <input type="text" id="searchB" placeholder="Search a player…" autocomplete="off">
+        <div class="dropdown" id="dropB" style="display:none;"></div>
+      </div>
+      <div class="chips" id="chipsB"></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="evalBtn">Evaluate trade</button>
+    <button class="btn ghost" id="clearBtn">Clear</button>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="howto">
+    <h2>How to read this</h2>
+    <ul>
+      <li><strong>The Alpha Rating is a relative currency, not a points projection.</strong> It ranks players against each other on their expected pro outcome — it does not forecast fantasy points.</li>
+      <li><strong>League framing:</strong> superflex dynasty, full PPR with 6-point passing touchdowns — so quarterbacks carry extra value. The tool flags the QB angle whenever a side holds one.</li>
+      <li><strong>A raw value sum flatters the side with more players.</strong> Two premium assets can be worth more than four middling ones on a roster you actually have to start. The tool calls this out when the sides are lopsided in count.</li>
+      <li><strong>Freshmen (FR) have no college production yet.</strong> Their value is a projection and is not backtested — treat those numbers as softer.</li>
+      <li><strong>Not on the college board?</strong> A player drafted to the NFL is correctly off the devy board; a current college player who's missing is a coverage gap, not a zero. Either way the tool flags him and leaves him out of the total.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  DevyDose · Alpha Universe · Values from the live devy board. A decision aid, not a guarantee. Not affiliated with any NFL, NCAA, or fantasy platform.
+</footer>
+<div class="au-footer">
+  <div class="au-fmark">DevyDose Alpha Universe &mdash; &copy; 2026 all rights reserved</div>
+  <div class="au-tele">SYNC <b>08.10.26</b> &nbsp; STATUS <b>LIVE</b></div>
+  <div class="au-honesty"><p>Alpha Rating is a relative currency, not a fantasy-points projection. Freshman placements are projections, not backtested.</p></div>
+</div>
+
+
+<script>
+/* ============================================================================
+   VALUE DISPLAY MODE  —  the one knob Erik controls.
+   'exact'  : show each player's Alpha Rating as a whole number + numeric side
+              totals and margin. (Values are already public on the live board,
+              so this exposes nothing new. RECOMMENDED / default.)
+   'tiers'  : hide the raw numbers — show tier + rank per player and express the
+              verdict as a relative bar + band only. Most conservative.
+   Change this ONE string to switch the whole page. No formulas, constants, or
+   model internals live anywhere on this page either way.
+============================================================================ */
+const VALUE_DISPLAY_MODE = 'exact';
+
+let BOARD = [];        // merged college + pro player objects
+let INDEX = {};        // lowercased "league|name|pos|org" -> player
+let PRO_READY = false;  // flips true when pro_values.json is populated
+const picks = { A: [], B: [] };
+
+/* Two value sources, one shared dynasty scale. The college board is always
+   present; the pro (NFL) source is a drop-in — when NFL-SPS publishes
+   pro_values.json with ready:true, cross-league eval turns on with no code
+   change here. Until then the tool runs college-only and flags pro names as
+   off-board rather than guessing a value. */
+Promise.all([
+  fetch('board_values.json').then(r => r.ok ? r.json() : null).catch(() => null),
+  fetch('pro_values.json').then(r => r.ok ? r.json() : null).catch(() => null)
+]).then(([col, pro]) => {
+  const c = (col && col.players) || [];
+  c.forEach(p => { p.league = 'college'; p.org = p.school; });
+  let pr = [];
+  if (pro && pro.ready && Array.isArray(pro.players) && pro.players.length){
+    PRO_READY = true;
+    pr = pro.players.map(p => ({
+      league:'pro', name:p.name, pos:p.pos, org:(p.team||p.org||''),
+      val:+p.val, rank:(p.rank||null), posrank:(p.posrank||null),
+      tier:(p.tier||'NFL asset'), fr:false
+    }));
+  }
+  BOARD = c.concat(pr);
+  BOARD.forEach(p => { INDEX[key(p)] = p; });
+  if (!BOARD.length){
+    document.getElementById('result').innerHTML =
+      '<div class="loading">Could not load the board values. Refresh to try again.</div>';
+  }
+}).catch(() => {
+  document.getElementById('result').innerHTML =
+    '<div class="loading">Could not load the board values. Refresh to try again.</div>';
+});
+
+function key(p){ return ((p.league||'college')+'|'+p.name+'|'+p.pos+'|'+(p.org||p.school||'')).toLowerCase(); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---- search / autocomplete ------------------------------------------------ */
+function wireSearch(side){
+  const input = document.getElementById('search'+side);
+  const drop  = document.getElementById('drop'+side);
+  input.addEventListener('input', () => renderDrop(side));
+  input.addEventListener('focus', () => renderDrop(side));
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter'){
+      const q = input.value.trim();
+      const matches = filterBoard(q);
+      if (matches.length){ addPick(side, matches[0]); }
+      else if (q.length >= 2){ addOffboard(side, q); }
+    } else if (e.key === 'Escape'){ drop.style.display='none'; }
+  });
+  document.addEventListener('click', e => {
+    if (!input.parentElement.contains(e.target)) drop.style.display='none';
+  });
+}
+function filterBoard(q){
+  q = q.trim().toLowerCase();
+  if (q.length < 2) return [];
+  const starts = [], contains = [];
+  for (const p of BOARD){
+    const n = p.name.toLowerCase();
+    if (n.startsWith(q)) starts.push(p);
+    else if (n.includes(q) || (p.org||'').toLowerCase().includes(q)) contains.push(p);
+  }
+  return starts.concat(contains).slice(0, 8);
+}
+function renderDrop(side){
+  const input = document.getElementById('search'+side);
+  const drop  = document.getElementById('drop'+side);
+  const q = input.value.trim();
+  if (q.length < 2){ drop.style.display='none'; return; }
+  const matches = filterBoard(q);
+  let html = '';
+  if (matches.length){
+    html = matches.map(p => {
+      const lg = p.league==='pro' ? ' · NFL' : '';
+      const rk = p.rank ? `#${p.rank} ${esc(p.pos)}${p.posrank||''}` : esc(p.pos);
+      return `<div class="opt" data-k="${esc(key(p))}">
+         <span>${esc(p.name)} <span class="meta">${esc(p.pos)}${p.fr?' · FR':''}${lg} · ${esc(p.org)}</span></span>
+         <span class="meta">${rk}</span>
+       </div>`;
+    }).join('');
+  } else {
+    html = `<div class="opt offboard" data-off="${esc(q)}">
+              Add “${esc(q)}” as an off-board player
+              <span class="meta">not on the college board</span>
+            </div>`;
+  }
+  drop.innerHTML = html;
+  drop.style.display = 'block';
+  drop.querySelectorAll('.opt').forEach(el => {
+    el.addEventListener('click', () => {
+      if (el.dataset.off){ addOffboard(side, el.dataset.off); }
+      else { addPick(side, INDEX[el.dataset.k]); }
+    });
+  });
+}
+
+/* ---- picks ---------------------------------------------------------------- */
+function addPick(side, p){
+  if (!p) return;
+  if (picks[side].some(x => !x.off && key(x)===key(p))) { resetInput(side); return; }
+  picks[side].push(p);
+  resetInput(side); renderChips(side);
+}
+function addOffboard(side, name){
+  picks[side].push({ off:true, name:name, pos:'?', school:'off-board', val:0 });
+  resetInput(side); renderChips(side);
+}
+function resetInput(side){
+  const input = document.getElementById('search'+side);
+  input.value=''; document.getElementById('drop'+side).style.display='none'; input.focus();
+}
+function removePick(side, i){ picks[side].splice(i,1); renderChips(side); }
+
+function renderChips(side){
+  const wrap = document.getElementById('chips'+side);
+  const maxVal = Math.max(1, ...BOARD.map(p=>p.val));
+  wrap.innerHTML = picks[side].map((p,i) => {
+    if (p.off){
+      return `<div class="chip off">
+        <button class="rm" data-i="${i}" title="remove">&times;</button>
+        <div class="row1"><span class="nm">${esc(p.name)}</span><span class="val" style="color:var(--warn)">off-board</span></div>
+        <div class="row2">not on the college devy board — excluded from the total</div>
+      </div>`;
+    }
+    const valTxt = VALUE_DISPLAY_MODE==='exact' ? Math.round(p.val) : '';
+    const barPct = Math.max(2, Math.round(p.val / maxVal * 100));
+    const qb = p.pos==='QB' ? '<span class="badge qb">QB</span>' : '';
+    const fr = p.fr ? '<span class="badge fr">FR</span>' : '';
+    const pro = p.league==='pro' ? '<span class="badge pro">NFL</span>' : '';
+    const rankTxt = p.rank ? '<span>· #'+p.rank+' overall</span>' : '';
+    return `<div class="chip">
+      <button class="rm" data-i="${i}" title="remove">&times;</button>
+      <div class="row1">
+        <span class="nm">${esc(p.name)}</span>
+        <span class="val">${valTxt}</span>
+      </div>
+      <div class="row2">
+        <span>${esc(p.pos)}${p.posrank ? ' · '+esc(p.pos)+p.posrank : ''} · ${esc(p.org)}</span>
+        ${rankTxt}
+        <span>· ${esc(p.tier)}</span> ${qb} ${fr} ${pro}
+      </div>
+      <div class="bar"><span style="width:${barPct}%"></span></div>
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('.rm').forEach(b =>
+    b.addEventListener('click', () => removePick(side, +b.dataset.i)));
+  updateTotals();
+}
+function sideOnBoard(side){ return picks[side].filter(p=>!p.off); }
+function sideSum(side){ return sideOnBoard(side).reduce((s,p)=>s+p.val,0); }
+function updateTotals(){
+  ['A','B'].forEach(s => {
+    const el = document.getElementById('total'+s);
+    if (VALUE_DISPLAY_MODE==='exact' && sideOnBoard(s).length){
+      el.textContent = Math.round(sideSum(s)) + ' pts';
+    } else { el.textContent=''; }
+  });
+}
+
+/* ---- verdict -------------------------------------------------------------- */
+function evaluate(){
+  const res = document.getElementById('result');
+  const onA = sideOnBoard('A'), onB = sideOnBoard('B');
+  if (!onA.length && !onB.length){
+    res.innerHTML = '<div class="loading">Add at least one player to each side.</div>'; return;
+  }
+  const sumA = sideSum('A'), sumB = sideSum('B');
+  const winner = sumA > sumB ? 'A' : (sumB > sumA ? 'B' : 'even');
+  const hi = Math.max(sumA, sumB), lo = Math.min(sumA, sumB);
+  const gap = hi - lo;
+  const pct = lo > 0 ? (gap / lo) * 100 : (hi > 0 ? 100 : 0);
+
+  // presentation band (not a model constant — just how we phrase the margin)
+  let band;
+  if (pct < 8) band = 'a dead heat';
+  else if (pct < 20) band = 'a slight edge';
+  else if (pct < 40) band = 'a clear win';
+  else band = 'a lopsided win';
+
+  let headline, sub, cls;
+  if (winner === 'even' || band === 'a dead heat'){
+    cls='even';
+    headline = 'Too close to call';
+    sub = 'The two sides land within a coin-flip of each other. Roster fit and your timeline should decide it.';
+  } else {
+    const w = winner==='A'?'Side A':'Side B';
+    cls = winner==='A'?'win-a':'win-b';
+    headline = w + ' wins — ' + band;
+    if (VALUE_DISPLAY_MODE==='exact'){
+      sub = w + ' comes out ahead by about ' + Math.round(gap) + ' points (' + Math.round(pct) + '% more value).';
+    } else {
+      sub = w + ' holds the more valuable package.';
+    }
+  }
+
+  // comparison bar
+  const total = (sumA + sumB) || 1;
+  const aw = Math.round(sumA/total*100), bw = 100-aw;
+  const amtA = VALUE_DISPLAY_MODE==='exact' ? Math.round(sumA) : (aw+'%');
+  const amtB = VALUE_DISPLAY_MODE==='exact' ? Math.round(sumB) : (bw+'%');
+
+  let html = `<div class="verdict ${cls}">
+      <div class="headline">${esc(headline)}</div>
+      <div class="sub">${esc(sub)}</div>
+    </div>
+    <div class="compare">
+      <span class="lbl" style="color:var(--a-side)">Side A</span>
+      <div class="track"><div class="fillA" style="width:${aw}%"></div><div class="fillB" style="width:${bw}%"></div></div>
+    </div>
+    <div class="compare" style="margin-top:2px">
+      <span class="lbl"></span>
+      <div style="flex:1;display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-dim)">
+        <span>${amtA}</span><span style="color:var(--b-side)">Side B &nbsp;${amtB}</span>
+      </div>
+    </div>`;
+
+  html += caveats(onA, onB, winner, gap, pct);
+  res.innerHTML = html;
+  res.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function caveats(onA, onB, winner, gap, pct){
+  let out = '';
+
+  // --- cross-league (college devy asset vs NFL asset) ---
+  const all = onA.concat(onB);
+  const hasPro = all.some(p => p.league==='pro');
+  const hasCol = all.some(p => p.league==='college');
+  if (hasPro && hasCol){
+    out += noteHtml('Cross-league trade',
+      'This deal mixes college devy assets and NFL players. Both sit on one shared value scale, but lining a college prospect up against a pro player carries real uncertainty. Read this cross-league result as an approximate tier comparison, not an exact point-for-point match — if the two sides land close, treat it as a coarse tier read and let roster fit and your timeline break the tie.', true);
+  }
+
+  // --- superflex QB premium (qualitative; no exposed constant) ---
+  const qbA = onA.filter(p=>p.pos==='QB'), qbB = onB.filter(p=>p.pos==='QB');
+  if (qbA.length || qbB.length){
+    let msg;
+    if (qbA.length && qbB.length){
+      msg = 'Both sides include a quarterback, so the superflex premium partly cancels — but in a 6-point-passing-TD build the higher-ranked QB still carries the edge.';
+    } else {
+      const qs = qbA.length ? qbA : qbB;
+      const w  = qbA.length ? 'Side A' : 'Side B';
+      msg = `${w} holds ${qs.length>1?'the quarterbacks':'the quarterback'} (${qs.map(p=>esc(p.name)).join(', ')}). In a superflex / 2-QB league you start two passers most weeks, so QB value runs ahead of raw rank. If this reads close, lean toward the QB side.`;
+    }
+    out += noteHtml('Superflex QB angle', msg, false);
+  }
+
+  // --- quantity vs quality ---
+  const nA = onA.length, nB = onB.length;
+  if (nA && nB && nA !== nB){
+    const more = nA > nB ? 'Side A' : 'Side B';
+    const fewer = nA > nB ? 'Side B' : 'Side A';
+    const topMore = Math.max(...(nA>nB?onA:onB).map(p=>p.val));
+    const topFew  = Math.max(...(nA>nB?onB:onA).map(p=>p.val));
+    let msg = `${more} sends more players (${Math.max(nA,nB)} vs ${Math.min(nA,nB)}), which inflates its raw total. A trade you have to start rewards top-end talent over depth.`;
+    if (topFew >= topMore){
+      msg += ` ${fewer}'s best asset is the single most valuable piece in the deal — that usually matters more than the extra bodies.`;
+    }
+    msg += ' Consolidating quantity into one star tends to help a contender; accumulating pieces tends to help a rebuilder.';
+    out += noteHtml('Quantity vs. quality', msg, true);
+  }
+
+  // --- freshmen (unbacktested) ---
+  const frAll = onA.concat(onB).filter(p=>p.fr);
+  if (frAll.length){
+    out += noteHtml('Unbacktested freshmen',
+      `${frAll.map(p=>esc(p.name)).join(', ')} ${frAll.length>1?'are':'is'} an incoming freshman with no college production yet. Those values are projections, not backtested — treat them as softer than the rest of the deal.`, true);
+  }
+
+  // --- off-board flags ---
+  const offA = picks['A'].filter(p=>p.off), offB = picks['B'].filter(p=>p.off);
+  const off = offA.concat(offB);
+  if (off.length){
+    const proLine = PRO_READY
+      ? `If a name here was drafted to the NFL, search his pro team — NFL dynasty assets are valued on the same scale. If he's a current college player, he may be a coverage gap; the board should be checked.`
+      : `If a name here was drafted to the NFL, he's correctly off the college board — the NFL dynasty valuation isn't live yet, so value him separately for now. If he's a current college player, he may just be a coverage gap; the board should be checked. The tool won't guess a value either way.`;
+    out += noteHtml('Off the board',
+      `${off.map(p=>esc(p.name)).join(', ')} ${off.length>1?'are':'is'} not on the board and ${off.length>1?'were':'was'} left out of the total. ${proLine}`, true);
+  }
+
+  return out;
+}
+function noteHtml(title, msg, warn){
+  return `<div class="note ${warn?'warn':''}"><span class="t">${esc(title)}</span>${msg}</div>`;
+}
+
+/* ---- wire up -------------------------------------------------------------- */
+['A','B'].forEach(wireSearch);
+document.getElementById('evalBtn').addEventListener('click', evaluate);
+document.getElementById('clearBtn').addEventListener('click', () => {
+  picks.A=[]; picks.B=[]; renderChips('A'); renderChips('B');
+  document.getElementById('result').innerHTML='';
+});
+</script>
+</body>
+</html>

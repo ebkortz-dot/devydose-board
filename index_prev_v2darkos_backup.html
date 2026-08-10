@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#070a12" />
+<title>DevyDose — Alpha Universe</title>
+<style>
+  :root{
+    --bg:#070a12;
+    --panel:#0d1526;
+    --panel2:#111a2e;
+    --ink:#05070c;
+    --paper:#f5f3ea;
+    --soft:rgba(245,243,234,.62);
+    --soft2:rgba(245,243,234,.40);
+    --line:rgba(245,243,234,.12);
+    --acid:#d8ff37;
+    --orange:#ff5d22;
+    --blue:#4da8ff;
+    --max:1480px;
+    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--paper);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  .shell{width:min(calc(100% - 34px),var(--max));margin:0 auto;position:relative;z-index:2}
+  body:before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;
+    background-image:
+      radial-gradient(1px 1px at 8% 12%, rgba(245,243,234,.55), transparent),
+      radial-gradient(1px 1px at 22% 68%, rgba(245,243,234,.35), transparent),
+      radial-gradient(1.5px 1.5px at 38% 24%, rgba(245,243,234,.4), transparent),
+      radial-gradient(1px 1px at 54% 82%, rgba(245,243,234,.3), transparent),
+      radial-gradient(1px 1px at 68% 14%, rgba(245,243,234,.45), transparent),
+      radial-gradient(1.5px 1.5px at 82% 55%, rgba(245,243,234,.3), transparent),
+      radial-gradient(1px 1px at 92% 30%, rgba(245,243,234,.4), transparent),
+      radial-gradient(1px 1px at 14% 90%, rgba(245,243,234,.3), transparent);
+    background-repeat:repeat;background-size:900px 700px;
+  }
+  .frame{position:relative;overflow:hidden}
+  .frame:before{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(circle at 66% 46%, transparent 0 15rem, rgba(255,93,34,.06) 15.1rem 15.25rem, transparent 15.5rem),
+      radial-gradient(circle at 66% 46%, transparent 0 21rem, rgba(216,255,55,.045) 21.1rem 21.25rem, transparent 21.5rem),
+      radial-gradient(circle at 66% 46%, transparent 0 27rem, rgba(245,243,234,.03) 27.1rem 27.2rem, transparent 27.4rem);
+  }
+  /* ---- nav ---- */
+  .navbar{position:relative;z-index:5;height:78px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line)}
+  .nav-brand{display:flex;align-items:center;gap:12px}
+  .nav-mark{width:40px;height:40px;border-radius:50%;flex:none;background:radial-gradient(circle at 34% 30%, #ffab7f, var(--orange) 58%, #9c3410 100%);display:grid;place-items:center;box-shadow:0 0 18px rgba(255,93,34,.55);}
+  .nav-mark span{font-family:Georgia,serif;font-style:italic;font-weight:800;color:#1a0800;font-size:19px;transform:translateY(-1px)}
+  .nav-word{font-size:15px;font-weight:900;letter-spacing:-.03em;line-height:1.1}
+  .nav-word small{display:block;font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.18em;margin-top:3px;color:var(--soft);text-transform:uppercase}
+  .nav-center{display:flex;gap:30px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+  .nav-center a{color:var(--soft);padding:8px 1px;border-bottom:1px solid transparent;transition:.18s ease}
+  .nav-center a:hover,.nav-center a.active{color:var(--paper);border-color:var(--acid)}
+  .nav-right{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:10px;letter-spacing:.1em}
+  .nav-pill{border:1px solid var(--line);border-radius:999px;padding:7px 13px;display:flex;align-items:center;gap:8px;color:var(--soft)}
+  .nav-pill b{color:var(--paper)}
+  .nav-pill i{width:6px;height:6px;border-radius:50%;background:var(--acid);box-shadow:0 0 0 4px rgba(216,255,55,.18)}
+  .nav-status{color:var(--acid);text-transform:uppercase;display:flex;align-items:center;gap:6px;font-weight:700}
+  .nav-status:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acid);box-shadow:0 0 8px var(--acid)}
+  /* ---- hero ---- */
+  .hero-wrap{position:relative;z-index:2;padding:58px 0 66px}
+  .hero-grid{display:grid;grid-template-columns:1fr 1.15fr 300px;gap:46px;align-items:center}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);display:flex;align-items:center;gap:10px}
+  .eyebrow:before{content:"";width:30px;height:1px;background:var(--acid)}
+  h1.headline{font-size:clamp(38px,4.4vw,68px);line-height:.93;letter-spacing:-.04em;font-weight:900;margin:18px 0 16px;color:var(--paper)}
+  h1.headline em{font-style:normal;color:var(--acid)}
+  .hero-sub{font-size:14px;line-height:1.62;color:var(--soft);max-width:400px;margin:0 0 28px}
+  .btn-orbit{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--acid);color:var(--acid);padding:14px 20px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;transition:.18s ease}
+  .btn-orbit:hover{background:var(--acid);color:var(--ink);box-shadow:0 0 26px rgba(216,255,55,.35)}
+  .live-feed{margin-top:32px;display:flex;align-items:center;gap:11px;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+  .wave{display:flex;align-items:flex-end;gap:2px;height:14px}
+  .wave i{width:2px;background:var(--acid);display:block;animation:wv 1.15s ease-in-out infinite;border-radius:1px}
+  .wave i:nth-child(1){animation-delay:0s}.wave i:nth-child(2){animation-delay:.12s}.wave i:nth-child(3){animation-delay:.24s}.wave i:nth-child(4){animation-delay:.36s}.wave i:nth-child(5){animation-delay:.48s}.wave i:nth-child(6){animation-delay:.6s}
+  @keyframes wv{0%,100%{height:3px}50%{height:14px}}
+  /* ---- hero orbit / photo ---- */
+  .hero-orbit{position:relative;aspect-ratio:1;width:min(100%,440px);margin:26px auto 46px;display:grid;place-items:center}
+  .ring{position:absolute;border-radius:50%;border:1px solid rgba(245,243,234,.14);pointer-events:none}
+  .ring.r1{inset:0}
+  .ring.r2{inset:9%;border-color:rgba(255,93,34,.28)}
+  .ring.r3{inset:18%;border-color:rgba(216,255,55,.20)}
+  .glow{position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle, rgba(255,93,34,.4), transparent 68%);filter:blur(4px);pointer-events:none}
+  .rotor{position:absolute;inset:0;animation:spin 46s linear infinite;pointer-events:none}
+  .rotor .dot{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--acid);box-shadow:0 0 9px var(--acid)}
+  .rotor .dot.d1{top:1%;left:50%;margin-left:-4px}
+  .rotor .dot.d2{top:28%;right:2%}
+  .rotor .dot.d3{bottom:6%;right:20%}
+  .rotor .dot.d4{bottom:18%;left:0}
+  .rotor2{position:absolute;inset:9%;animation:spin 30s linear infinite reverse;pointer-events:none}
+  .rotor2 .dot{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--orange);box-shadow:0 0 7px var(--orange)}
+  .rotor2 .dot.d5{top:4%;right:14%}
+  .rotor2 .dot.d6{bottom:10%;left:6%}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .photo-wrap{position:relative;z-index:3;width:70%;aspect-ratio:1;border-radius:50%;overflow:hidden;border:2px solid rgba(255,93,34,.55);box-shadow:0 0 46px rgba(255,93,34,.42),0 0 0 10px rgba(7,10,18,.7)}
+  .photo-wrap img{width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block}
+  /* ---- overview ---- */
+  .overview{display:flex;flex-direction:column;gap:0}
+  .overview-head{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);border-bottom:1px solid var(--line);padding-bottom:12px;display:flex;justify-content:space-between}
+  .stat-row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line)}
+  .stat-row .n{font-size:27px;font-weight:900;letter-spacing:-.03em;line-height:1}
+  .stat-row .n.acid{color:var(--acid)}
+  .stat-row .n.blue{color:var(--blue)}
+  .stat-row .n.orange{color:var(--orange)}
+  .stat-row .l{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+  .status-box{margin-top:16px;border:1px solid var(--line);padding:16px;display:flex;gap:14px;align-items:center}
+  .radar{width:50px;height:50px;border-radius:50%;position:relative;border:1px solid rgba(216,255,55,.32);overflow:hidden;flex:none;background:rgba(216,255,55,.03)}
+  .radar:before{content:"";position:absolute;inset:9px;border-radius:50%;border:1px solid rgba(216,255,55,.22)}
+  .radar .sweep{position:absolute;inset:0;background:conic-gradient(from 0deg, rgba(216,255,55,.55), transparent 38%);border-radius:50%;animation:radarspin 3.2s linear infinite}
+  @keyframes radarspin{to{transform:rotate(360deg)}}
+  .status-text b{display:block;color:var(--acid);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+  .status-text span{display:block;font-size:9.5px;color:var(--soft);font-family:var(--mono);letter-spacing:.05em;margin-top:4px;line-height:1.5}
+  /* ---- modules ---- */
+  .modules-wrap{position:relative;z-index:2;padding:68px 0;border-top:1px solid var(--line)}
+  .modules-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:38px;flex-wrap:wrap}
+  .kicker{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--acid)}
+  .modules-head h2{font-size:clamp(32px,4vw,52px);letter-spacing:-.04em;line-height:.95;margin:12px 0 0;font-weight:900;color:var(--paper)}
+  .modules-head p{margin:0;font-size:13px;line-height:1.6;color:var(--soft);max-width:380px}
+  .modules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .mcard{background:var(--panel);border:1px solid var(--line);padding:26px 24px;display:flex;flex-direction:column;gap:16px;min-height:186px;transition:.2s ease;position:relative}
+  .mcard:hover{border-color:var(--acid);background:var(--panel2);transform:translateY(-4px);box-shadow:0 16px 34px rgba(0,0,0,.4)}
+  .mcard .micon{width:36px;height:36px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;font-size:16px;color:var(--acid)}
+  .mcard h3{font-size:19px;margin:0;letter-spacing:-.01em;color:var(--paper);font-weight:800}
+  .mcard p{font-size:12px;line-height:1.55;color:var(--soft);margin:0;flex:1}
+  .mcard .arrow{align-self:flex-end;font-family:var(--mono);font-size:17px;color:var(--soft2);transition:.18s ease}
+  .mcard:hover .arrow{color:var(--acid);transform:translate(3px,-3px)}
+  /* ---- honesty strip ---- */
+  .honesty{position:relative;z-index:2;background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:30px 0}
+  .honesty-row{display:flex;gap:34px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+  .honesty-copy{display:flex;gap:34px;flex-wrap:wrap}
+  .honesty p{font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--soft);line-height:1.6;margin:0;max-width:360px}
+  .honesty strong{color:var(--acid)}
+  .honesty a{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);border-bottom:1px solid rgba(255,93,34,.4);white-space:nowrap}
+  /* ---- footer ---- */
+  footer{position:relative;z-index:2;background:var(--panel);padding:44px 0 32px}
+  .foot-grid{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:34px;align-items:start}
+  .foot-left b{font-family:var(--sans);font-weight:900;font-size:16px;letter-spacing:-.02em;color:var(--paper);display:block}
+  .foot-left p{font-family:var(--mono);font-size:9px;color:var(--soft);line-height:1.8;margin-top:10px}
+  .foot-center .t-head{color:var(--acid);letter-spacing:.14em;text-transform:uppercase;font-size:9px;font-family:var(--mono);margin-bottom:12px}
+  .telemetry-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 20px;font-family:var(--mono);font-size:10px;color:var(--soft)}
+  .telemetry-grid span b{color:var(--paper);font-weight:600}
+  .foot-right{text-align:right}
+  .foot-right b{font-family:var(--sans);font-weight:900;font-size:13px;letter-spacing:.01em;color:var(--paper);display:block;line-height:1.4}
+  .d-mono{margin-top:14px;width:44px;height:44px;border:1px solid var(--orange);border-radius:50%;display:inline-grid;place-items:center;font-family:Georgia,serif;font-weight:800;font-style:italic;color:var(--orange);font-size:19px;margin-left:auto}
+  /* ---- responsive ---- */
+  @media(max-width:1100px){
+    .hero-grid{grid-template-columns:1fr;gap:10px}
+    .overview{margin-top:20px;padding-top:26px;border-top:1px solid var(--line)}
+    .hero-orbit{margin:30px auto}
+  }
+  @media(max-width:900px){
+    .nav-center{display:none}
+    .modules-grid{grid-template-columns:repeat(2,1fr)}
+    .foot-grid{grid-template-columns:1fr;gap:26px}
+    .foot-right{text-align:left}
+    .d-mono{margin-left:0}
+    .honesty-row{flex-direction:column;align-items:flex-start;gap:16px}
+  }
+  @media(max-width:640px){
+    .shell{width:min(calc(100% - 22px),var(--max))}
+    .navbar{height:auto;padding:14px 0;flex-wrap:wrap;gap:12px}
+    .nav-right{margin-left:auto}
+    h1.headline{font-size:34px}
+    .modules-grid{grid-template-columns:1fr}
+    .hero-orbit{width:92vw}
+    .telemetry-grid{grid-template-columns:1fr}
+    .stat-row .n{font-size:23px}
+    .honesty-copy{gap:18px}
+    .nav-pill span.pill-label{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.rotor,.rotor2,.wave i,.radar .sweep{animation:none}.mcard,.btn-orbit{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <section class="frame" id="top">
+    <div class="shell">
+      <nav class="navbar" aria-label="Primary">
+        <a class="nav-brand" href="index.html" aria-label="DevyDose home">
+          <span class="nav-mark" aria-hidden="true"><span>d</span></span>
+          <span class="nav-word">DevyDose<small>ALPHA UNIVERSE</small></span>
+        </a>
+        <div class="nav-center">
+          <a class="active" href="index.html">Home</a>
+          <a href="Alpha_ProspectCards.html">Players</a>
+          <a href="Alpha_Portal.html">Boards</a>
+          <a href="trade.html">Tools</a>
+          <a href="Alpha_BuzzFeed.html">Buzz</a>
+          <a href="methodology.html">About</a>
+        </div>
+        <div class="nav-right">
+          <div class="nav-pill"><i></i><span class="pill-label">v5.0 ●</span></div>
+          <div class="nav-status">System online</div>
+        </div>
+      </nav>
+      <div class="hero-wrap">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">Welcome to the Alpha Universe</div>
+            <h1 class="headline">Enter the Alpha <em>Orbit</em></h1>
+            <p class="hero-sub">The most advanced amateur devy scouting operating system. Real data. Real tools. Real advantage.</p>
+            <a class="btn-orbit" href="Alpha_Portal.html">Launch Orbit →</a>
+            <div class="live-feed">
+              <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <span>Data synced · Live feed</span>
+            </div>
+          </div>
+          <div class="hero-orbit">
+            <div class="ring r1"></div>
+            <div class="ring r2"></div>
+            <div class="ring r3"></div>
+            <div class="glow"></div>
+            <div class="rotor" aria-hidden="true">
+              <span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span><span class="dot d4"></span>
+            </div>
+            <div class="rotor2" aria-hidden="true">
+              <span class="dot d5"></span><span class="dot d6"></span>
+            </div>
+            <div class="photo-wrap">
+              <img src="assets/hero.png" alt="Alpha Universe scouting composite" />
+            </div>
+          </div>
+          <aside class="overview" aria-label="Orbit overview">
+            <div class="overview-head"><span>Orbit overview</span><span>v5.0</span></div>
+            <div class="stat-row"><span class="l">Players</span><span class="n acid">444</span></div>
+            <div class="stat-row"><span class="l">Veterans</span><span class="n blue">359</span></div>
+            <div class="stat-row"><span class="l">Freshmen</span><span class="n orange">85</span></div>
+            <div class="status-box">
+              <div class="radar"><span class="sweep"></span></div>
+              <div class="status-text">
+                <b>System status · Online</b>
+                <span>All systems nominal<br>Board synced 08.09.26</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="modules-wrap" id="modules">
+    <div class="shell">
+      <div class="modules-head">
+        <div><div class="kicker">Choose your route</div><h2>Six ways in.</h2></div>
+        <p>Every core tool is its own destination. Pick the job you're trying to do and jump straight into it.</p>
+      </div>
+      <div class="modules-grid">
+        <a class="mcard" href="Alpha_Board_v5.0_mobile.html">
+          <span class="micon">▤</span>
+          <h3>Mobile Board</h3>
+          <p>The fastest path to the live hierarchy, built for a phone. Search, scan and compare on one ruler.</p>
+          <span class="arrow">→</span>
+        </a>
+        <a class="mcard" href="Alpha_Portal.html">
+          <span class="micon">◎</span>
+          <h3>Full Board</h3>
+          <p>The complete Alpha Universe portal — every player, every filter, the full research surface.</p>
+          <span class="arrow">→</span>
+        </a>
+        <a class="mcard" href="trade.html">
+          <span class="micon">⇄</span>
+          <h3>Trade Desk</h3>
+          <p>Load both sides of a deal, compare relative Alpha value and get a plain-English verdict.</p>
+          <span class="arrow">→</span>
+        </a>
+        <a class="mcard" href="Alpha_ProspectCards.html">
+          <span class="micon">▧</span>
+          <h3>Player Files</h3>
+          <p>Deep player cards — comps, production, archetype and style, one file per prospect.</p>
+          <span class="arrow">→</span>
+        </a>
+        <a class="mcard" href="Alpha_BuzzFeed.html">
+          <span class="micon">◈</span>
+          <h3>Buzz Wire</h3>
+          <p>Follow the movement — recruiting, portal and performance signals driving board changes.</p>
+          <span class="arrow">→</span>
+        </a>
+        <a class="mcard" href="methodology.html">
+          <span class="micon">✓</span>
+          <h3>Methodology</h3>
+          <p>Read the assumptions, evidence and limits behind the model — how the board gets built.</p>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="honesty">
+    <div class="shell honesty-row">
+      <div class="honesty-copy">
+        <p><strong>Alpha Rating is a relative currency</strong> — it ranks players against each other for expected pro outcome. It is not a fantasy-points projection.</p>
+        <p><strong>Freshman placements are projections</strong> — incoming freshmen carry no college production, so their spot on the board is not backtested.</p>
+      </div>
+      <a href="methodology.html">Read the full methodology →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="shell foot-grid">
+      <div class="foot-left">
+        <b>DevyDose Alpha Universe</b>
+        <p>Research tool · Not a guarantee<br>Not affiliated with the NFL, NCAA or any fantasy platform</p>
+      </div>
+      <div class="foot-center">
+        <div class="t-head">Orbit telemetry</div>
+        <div class="telemetry-grid">
+          <span>LAT <b>30.2849° N</b></span>
+          <span>LON <b>97.7341° W</b></span>
+          <span>ELEV <b>512 FT</b></span>
+          <span>SPD <b>0.0 KTS</b></span>
+          <span>HDG <b>360°</b></span>
+          <span>SYNC <b>08.09.26</b></span>
+        </div>
+      </div>
+      <div class="foot-right">
+        <b>Built for scouts.<br>Designed to win.</b>
+        <span class="d-mono">D</span>
+      </div>
+    </div>
+  </footer>
+</main>
+</body>
+</html>

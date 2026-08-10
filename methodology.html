@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DevyDose — How the Alpha Universe Board Is Built</title>
+<meta name="description" content="The methodology behind the DevyDose / Alpha Universe devy board: comp-based, production-first, backtested against real NFL outcomes — and honest about what it can't do.">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  :root{
+    --bg:#020817;
+    --panel:#04122e;
+    --accent:#04122e;
+    --accent-bright:#56e5ff;
+    --text:#f5f8ff;
+    --text-dim:#98a7c3;
+    --border:rgba(139,167,225,.26);
+    --good:#c8ff1a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--au-mono, "IBM Plex Mono"),-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;
+    padding:0 0 50px 0;
+  }
+  header{
+    padding:28px 20px 20px 20px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg, rgba(86,229,255,0.12) 0%, rgba(2,8,23,0) 100%);
+  }
+  header h1{
+    margin:0 0 6px 0;
+    font-size:1.55rem;
+    letter-spacing:0.4px;
+    font-family:var(--au-display,inherit);
+    font-weight:700;
+  }
+  header .brand-accent{color:var(--accent-bright);}
+  header p{
+    margin:0;
+    color:var(--text-dim);
+    font-size:0.95rem;
+  }
+  .backlink{
+    display:inline-block;
+    margin:14px auto 0 auto;
+    font-size:0.8rem;
+    color:var(--accent-bright);
+    text-decoration:none;
+  }
+  .backlink:hover{text-decoration:underline;}
+  main{
+    max-width:680px;
+    margin:0 auto;
+    padding:24px 18px;
+  }
+  .lede{
+    font-size:1.05rem;
+    color:var(--text);
+    margin:0 0 8px 0;
+  }
+  .lede-sub{
+    color:var(--text-dim);
+    font-size:0.92rem;
+    margin:0 0 6px 0;
+  }
+  section{
+    margin-top:34px;
+  }
+  h2{
+    font-size:1.15rem;
+    color:var(--accent-bright);
+    margin:0 0 10px 0;
+    letter-spacing:0.2px;
+  }
+  h3{
+    font-size:0.98rem;
+    color:var(--text);
+    margin:22px 0 6px 0;
+  }
+  p{margin:0 0 12px 0;}
+  strong{color:#fff;}
+  .look{color:#fff;font-weight:600;}
+  ul{margin:0 0 12px 0;padding-left:20px;}
+  li{margin-bottom:8px;}
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px 18px;
+    margin:16px 0;
+  }
+  .panel.accent{
+    border-left:3px solid var(--accent-bright);
+  }
+  .panel h3{margin-top:0;}
+  table.tiers{
+    width:100%;
+    border-collapse:collapse;
+    margin:8px 0 6px 0;
+    font-size:0.9rem;
+  }
+  table.tiers th, table.tiers td{
+    text-align:left;
+    padding:8px 10px;
+    border-bottom:1px solid var(--border);
+  }
+  table.tiers th{
+    color:var(--text-dim);
+    font-weight:600;
+    text-transform:uppercase;
+    font-size:0.7rem;
+    letter-spacing:0.5px;
+  }
+  table.tiers td.num{
+    text-align:right;
+    font-variant-numeric:tabular-nums;
+    color:var(--accent-bright);
+    font-weight:600;
+  }
+  .caption{
+    font-size:0.8rem;
+    color:var(--text-dim);
+    margin-top:6px;
+  }
+  .recall{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:12px 0;
+  }
+  .recall .chip{
+    flex:1 1 120px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px 10px;
+    text-align:center;
+  }
+  .recall .chip .pos{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);}
+  .recall .chip .val{font-size:1.3rem;font-weight:700;color:var(--accent-bright);margin-top:2px;}
+  footer{
+    text-align:center;
+    color:var(--text-dim);
+    font-size:0.75rem;
+    margin-top:44px;
+    padding:0 20px;
+  }
+  a.inline{color:var(--accent-bright);text-decoration:none;}
+  a.inline:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<div class="au-header">
+  <a class="au-brand" href="index.html" aria-label="DevyDose Alpha Universe home">
+    <img class="au-logo" src="assets/devydose-logo-neon.png" alt="DevyDose">
+    <span class="au-wordmark">Alpha Universe</span>
+  </a>
+  <nav class="au-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="Alpha_ProspectCards.html">Players</a>
+        <a href="Alpha_Portal.html">Boards</a>
+        <a href="trade.html">Tools</a>
+        <a href="Alpha_BuzzFeed.html">Buzz</a>
+        <a href="methodology.html" class="on">About</a>
+  </nav>
+  <span class="au-pill"><i></i><span class="au-online">v5.0 &bull; SYSTEM ONLINE</span></span>
+</div>
+<header>
+  <h1>Devy<span class="brand-accent">Dose</span></h1>
+  <p>How the Alpha Universe board is built</p>
+  <a class="backlink" href="index.html">&larr; Back to the board</a>
+</header>
+
+<main>
+
+  <p class="lede">The board ranks every draft-relevant college quarterback, running back, receiver and tight end on one list — and it does it with data, not vibes.</p>
+  <p class="lede-sub">Here's the honest version of how it works, what makes it trustworthy, and — just as important — what it still can't do. No black box. Read the whole thing before you argue with a rank.</p>
+
+  <section>
+    <h2>The one idea: judge a player by players who looked like him</h2>
+    <p>There's no magic formula here that says "this many yards is worth this much." For every prospect, the model asks one question: <strong>which historical college players most resembled this guy at the same stage of his career — and what did those players actually become in the NFL?</strong></p>
+    <p>It finds his closest historical comparables, then averages what those real careers turned into. That average is his starting score. Real outcomes, every time — never a made-up projection.</p>
+    <p>"Resembled him" is measured on three things: <strong>how highly recruited he was</strong>, <strong>how much he produced in college relative to his peers</strong> (adjusted for age and level of competition), and <strong>how far out of high school he is</strong> — because younger production is worth more than a late breakout. That's it for the comp match. Not body type, not route tree, not combine testing, not film grades. Just the three things the data can actually stand behind.</p>
+    <p><span class="look">Look</span> — the truth about comps is that most of them bust. More than half the time, the large majority of a player's comparables went on to produce next to nothing in the NFL. That's not a flaw in the method; that's what projecting teenagers actually looks like. So the board shows you the <strong>full spread of those outcomes</strong> — the hits and the misses together — and never a single tidy number dressed up as a forecast, and never a fake "confidence interval" that hides how wide the range really is.</p>
+  </section>
+
+  <section>
+    <h2>Production is king</h2>
+    <p>The core belief this whole model is built on: <strong>age-adjusted production and efficiency win, and recruiting pedigree should matter less the more a player has actually played.</strong></p>
+    <p>Comps alone can quietly break that rule. A lightly-recruited grinder can get dragged up by comparables who were also lightly recruited but happened to hit. A five-star who hasn't done much yet can get flattered by the pedigree of his comps. So the model steps in: <strong>when a player's comp-driven score runs ahead of what his own on-field production justifies, it gets pulled back toward what he's actually done.</strong></p>
+    <p>Producers keep their scores. Guys riding their recruiting ranking or a flattering comp set get trimmed. This single mechanism is the most important thing separating this board from a rankings list that just launders recruiting stars into fantasy value.</p>
+  </section>
+
+  <section>
+    <h2>One list, across positions</h2>
+    <p>Running backs score more fantasy points per game than receivers, and receivers more than most tight ends. Rank everyone on raw projected points and you'd bury an entire position every year. So instead, each player is scored as a <strong>share of the best players ever at his own position.</strong> The all-time greats at each spot set the ceiling; everyone else is a fraction of it.</p>
+    <p>Two things fall out of that, both on purpose. Positions become comparable on one list. And <strong>class strength survives</strong> — a weak tight-end class reads weak, because its best player only gets partway to the historical bar. A strong class reads strong.</p>
+    <div class="panel accent">
+      <h3>What the Alpha Rating is — and isn't</h3>
+      <p style="margin-bottom:0;">The Alpha Rating is a <strong>relative currency</strong>, not a points projection. It tells you how players stack up against each other. It does <em>not</em> forecast how many fantasy points anyone will score. Use it to compare, not to predict a stat line.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Freshmen get a different, honest treatment</h2>
+    <p>Incoming freshmen have never taken a college snap, so there's no production to comp against. Their placement is built from recruiting pedigree with a light early-buzz overlay, and it's held in check by guardrails so hype can't float a kid who hasn't played to the top of the board over veterans who have produced.</p>
+    <p><span class="look">Look</span>, I'll say this plainly because it matters: <strong>no freshman placement is backtested.</strong> There are no NFL outcomes for players who haven't played a down. For those names, the eye test is the only real check that exists — and the board tells you so, every time, right on the surface.</p>
+  </section>
+
+  <section>
+    <h2>Draft capital is predicted — never fed in</h2>
+    <p>Plenty of "models" quietly ingest where the industry expects a player to get drafted, then act surprised when they agree with the mocks. This one doesn't. <strong>The model predicts draft capital as an output</strong> — from what the player's comparables actually did on draft day — and never consumes it as an input. NFL mock drafts never enter the model at all; at most they're sentiment.</p>
+    <p>Same principle for rankings: <strong>the board never ingests anybody's consensus rankings — including the ones it's trying to beat.</strong> Those are the scoreboard, not an ingredient. If they were an input, "where we disagree with the field" — the entire point of doing this — would be meaningless.</p>
+  </section>
+
+  <section>
+    <h2>How I know it works</h2>
+    <p>This is the part that separates a real model from a spreadsheet of opinions. Every scoring change is tested against a <strong>holdout of real historical players and what they actually became in the NFL.</strong> A change has to clear a pre-set bar on the <em>harder</em> of two independent splits of that history — not the easy one, the hard one — or it does not ship. No exceptions for a change I happen to like.</p>
+    <p>And that last part isn't a slogan. <span class="look">Look</span> — the most trustworthy thing I can tell you about this model is a list of things I <em>wanted</em> to work and cut anyway when the holdout said no: high-school production, athletic testing, and a set of standalone efficiency adjustments all got tested and thrown out because they didn't hold up out of sample. A model that never kills its own darlings isn't being tested; it's being decorated.</p>
+
+    <h3>Trust the tier before the rank</h3>
+    <p>Every player lands in a tier, and each tier carries a <strong>backtested hit rate</strong> — the share of historical players in that band who went on to become real NFL contributors (5+ PPG). Against a base rate around 4.5%, the separation is steep and it holds up on both splits:</p>
+    <table class="tiers">
+      <thead><tr><th>Tier</th><th style="text-align:right;">Hit rate</th></tr></thead>
+      <tbody>
+        <tr><td>Legendary Performer</td><td class="num">69%</td></tr>
+        <tr><td>Elite Producer</td><td class="num">43%</td></tr>
+        <tr><td>Weekly Starter</td><td class="num">33%</td></tr>
+        <tr><td>Flex Play</td><td class="num">13%</td></tr>
+        <tr><td>Benchwarmer</td><td class="num">4%</td></tr>
+        <tr><td>Waiver Wire Add</td><td class="num">1%</td></tr>
+        <tr><td>Dart Throw</td><td class="num">0.2%</td></tr>
+      </tbody>
+    </table>
+    <p class="caption">Hit rate = share of that band's historical players who reached 5+ NFL PPG. Base rate ≈ 4.5%.</p>
+    <p>When a player's tier and his numeric rank seem to disagree, <strong>trust the tier.</strong> The rank can get nudged by a weak positional anchor; the tier is the more stable read on the bet you're actually making.</p>
+
+    <h3>Some positions are more predictable than others</h3>
+    <p>The model is honest about where it's sharp and where it's guessing. Here's how much of each position's real NFL producers the top of the board actually catches:</p>
+    <div class="recall">
+      <div class="chip"><div class="pos">WR</div><div class="val">72%</div></div>
+      <div class="chip"><div class="pos">RB</div><div class="val">69%</div></div>
+      <div class="chip"><div class="pos">QB</div><div class="val">44%</div></div>
+      <div class="chip"><div class="pos">TE</div><div class="val">41%</div></div>
+    </div>
+    <p class="caption">Share of all real producers at each position that the top decile of the board catches.</p>
+    <p>That gap is the whole reason a 92-rated tight end and a 92-rated receiver are not the same bet. And it's why, at quarterback, you should lead with the model's predicted draft capital rather than the rating itself.</p>
+  </section>
+
+  <section>
+    <h2>What I'm honest about</h2>
+    <p>A model you can trust is one that tells you where it's weak. This one ships with its limitations printed on the box:</p>
+    <ul>
+      <li><strong>Quarterback is the weakest half of the board.</strong> It clears the overall test but not cleanly at the QB position on its own. Lean on predicted draft capital there, not the rating.</li>
+      <li><strong>There's no opponent adjustment.</strong> Production is weighted by level of competition in broad tiers, but the model does not adjust for the specific defenses a player faced.</li>
+      <li><strong>Freshman placement isn't backtested.</strong> Repeating it because it's the biggest asterisk on the board — for players who haven't played, the eye test is the only check.</li>
+      <li><strong>Most elite comps still bust.</strong> Even for the best names, the majority of comparables produced little. That's why you get a distribution, never a single fake-precise number.</li>
+      <li><strong>The league-format knobs are stated choices, not backtested truths.</strong> The tight-end premium and the freshman discount are deliberate settings tuned to how a superflex, TE-premium dynasty league actually values these players — they're honest policy calls, and they're labeled that way rather than passed off as something the data proved.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What the model refuses to do</h2>
+    <ul>
+      <li>It never ingests consensus rankings — those are the benchmark, not an input.</li>
+      <li>It never ingests NFL mock drafts or draft capital — it predicts draft capital instead.</li>
+      <li>It never rescues a small-sample or injured player by quietly widening his range.</li>
+      <li>It never publishes a confidence interval — only a tier with a real, backtested hit rate.</li>
+      <li>Nothing is ever auto-posted. Every take that goes out is written and approved by a human.</li>
+    </ul>
+  </section>
+
+  <div class="panel" style="margin-top:34px;text-align:center;">
+    <p style="margin:0;">Now go read the board itself. <a class="inline" href="index.html">Start here &rarr;</a></p>
+  </div>
+
+</main>
+
+<footer>
+  DevyDose · Alpha Universe · Data over vibes. Not affiliated with any NFL, NCAA, or fantasy platform.
+</footer>
+<div class="au-footer">
+  <div class="au-fmark">DevyDose Alpha Universe &mdash; &copy; 2026 all rights reserved</div>
+  <div class="au-tele">SYNC <b>08.10.26</b> &nbsp; STATUS <b>LIVE</b></div>
+  <div class="au-honesty"><p>Alpha Rating is a relative currency, not a fantasy-points projection. Freshman placements are projections, not backtested.</p></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+/*
+ * theme.css — DevyDose / Alpha Universe canonical brand theme
+ * ---------------------------------------------------------------
+ * Single shared stylesheet, extracted from the home page ("Alpha Orbit v3",
+ * website/concept/alpha_orbit_v3_darkos_template.html) — Erik's approved
+ * reference skin. Linked from every public page (website/public/*.html) so
+ * palette, fonts, logo sizing and the shared header/footer chrome stay
+ * identical site-wide.
+ *
+ * Restyles CHROME ONLY. Never edit a page's data/table/tool markup to match
+ * this file — bring the file's own bespoke CSS in line with these tokens
+ * instead (page-local var()s remapped to the tokens below, or a small
+ * targeted override block appended after the page's own <style>).
+ *
+ * Do not hand-edit generated surfaces (Alpha_Portal.html, Alpha_BuzzFeed.html,
+ * Alpha_ProspectCards.html, Alpha_Board_v5.0_mobile.html) without also
+ * updating their generators under runs/surfaces_v50/generators/ — otherwise
+ * the next regen silently reverts the branding.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --au-bg:#020817;
+  --au-bg2:#03102a;
+  --au-panel:rgba(6,19,45,.72);
+  --au-panel2:rgba(8,24,56,.52);
+  --au-line:rgba(139,167,225,.26);
+  --au-line-strong:rgba(157,189,255,.44);
+  --au-white:#f5f8ff;
+  --au-muted:#98a7c3;
+  --au-lime:#c8ff1a;
+  --au-cyan:#56e5ff;
+  --au-orange:#ff5a20;
+  --au-red:#f21522;
+  --au-navy:#04122e;
+  --au-mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --au-display:"Barlow Condensed", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+}
+
+/* ---- shared site header bar: logo + wordmark + nav + status pill ---- */
+.au-header{
+  background:
+    radial-gradient(circle at 18% 0%, rgba(86,229,255,.10), transparent 60%),
+    linear-gradient(180deg,#02091a 0%, var(--au-bg) 100%);
+  border-bottom:1px solid var(--au-line);
+  padding:10px 22px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+  font-family:var(--au-mono);
+  position:sticky;
+  top:0;
+  z-index:200;
+}
+.au-header a.au-brand{display:flex;align-items:center;gap:12px;text-decoration:none;flex:0 0 auto;}
+.au-header .au-logo{height:44px;width:auto;object-fit:contain;filter:drop-shadow(0 0 10px rgba(200,255,26,.18));display:block;}
+.au-header .au-wordmark{font-family:var(--au-mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:rgba(239,244,255,.9);white-space:nowrap;}
+.au-header nav.au-nav{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-left:auto;}
+.au-header nav.au-nav a{color:rgba(245,248,255,.82);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;transition:color .2s ease, border-color .2s ease;}
+.au-header nav.au-nav a:hover, .au-header nav.au-nav a.on{color:var(--au-lime);border-color:var(--au-lime);}
+.au-header .au-pill{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(159,180,231,.42);border-radius:999px;padding:5px 12px;color:#d3dcf0;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;flex:0 0 auto;}
+.au-header .au-pill i{width:6px;height:6px;border-radius:50%;background:var(--au-lime);box-shadow:0 0 10px rgba(200,255,26,.7);display:inline-block;}
+.au-header .au-pill .au-online{color:var(--au-lime);}
+
+@media (max-width:640px){
+  .au-header{padding:8px 14px;gap:10px;}
+  .au-header .au-logo{height:34px;}
+  .au-header .au-wordmark{display:none;}
+  .au-header nav.au-nav{gap:10px;font-size:10px;order:3;flex-basis:100%;margin-left:0;justify-content:center;}
+  .au-header .au-pill{font-size:9px;padding:4px 9px;}
+}
+
+/* ---- shared site footer bar: telemetry strip + honesty line ---- */
+.au-footer{
+  border-top:1px solid rgba(122,159,217,.32);
+  margin-top:28px;
+  padding:16px 22px 22px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px 30px;
+  align-items:center;
+  justify-content:space-between;
+  color:#91a0ba;
+  font-size:10px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-family:var(--au-mono);
+  background:var(--au-bg);
+}
+.au-footer .au-fmark{color:#c4cde0;font-weight:600;}
+.au-footer .au-tele{color:#d4dbeb;letter-spacing:.14em;}
+.au-footer .au-tele b{color:var(--au-lime);font-weight:600;}
+.au-footer .au-honesty{flex-basis:100%;order:3;color:#8b96ad;font-size:10.5px;letter-spacing:.02em;text-transform:none;border-top:1px solid rgba(122,159,217,.18);padding-top:12px;margin-top:4px;}
+.au-footer .au-honesty p{margin:0;max-width:920px;line-height:1.5;}

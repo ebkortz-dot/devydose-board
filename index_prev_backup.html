@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DevyDose — Alpha Universe Board</title>
+<meta name="description" content="DevyDose / Alpha Universe: live devy dynasty football board, prospect cards, and buzz feed.">
+<style>
+  :root{
+    --bg:#0f141b;
+    --panel:#161d27;
+    --accent:#1F4E79;
+    --accent-bright:#3a7bb8;
+    --text:#e8edf3;
+    --text-dim:#9fb0c3;
+    --border:#26313f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    padding:0 0 40px 0;
+  }
+  header{
+    padding:28px 20px 18px 20px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg, rgba(31,78,121,0.25) 0%, rgba(15,20,27,0) 100%);
+  }
+  header h1{
+    margin:0 0 6px 0;
+    font-size:1.6rem;
+    letter-spacing:0.5px;
+  }
+  header .brand-accent{color:var(--accent-bright);}
+  header p{
+    margin:0;
+    color:var(--text-dim);
+    font-size:0.95rem;
+  }
+  main{
+    max-width:640px;
+    margin:0 auto;
+    padding:20px 16px;
+  }
+  .card-link{
+    display:block;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 18px;
+    margin-bottom:14px;
+    text-decoration:none;
+    color:var(--text);
+    transition:border-color 0.15s ease, transform 0.1s ease;
+  }
+  .card-link:active{transform:scale(0.99);}
+  .card-link:hover{border-color:var(--accent-bright);}
+  .card-link.primary{
+    background:linear-gradient(135deg, var(--accent) 0%, #163a5c 100%);
+    border:1px solid var(--accent-bright);
+    padding:22px 18px;
+  }
+  .card-link .label{
+    font-size:1.1rem;
+    font-weight:600;
+    margin-bottom:4px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .card-link.primary .label{font-size:1.25rem;}
+  .badge{
+    display:inline-block;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    background:rgba(255,255,255,0.15);
+    padding:2px 8px;
+    border-radius:20px;
+    font-weight:600;
+  }
+  .card-link .desc{
+    font-size:0.88rem;
+    color:var(--text-dim);
+  }
+  .card-link.primary .desc{color:#cfe0ee;}
+  .section-label{
+    font-size:0.75rem;
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    color:var(--text-dim);
+    margin:22px 0 10px 4px;
+  }
+  .howto{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px 18px;
+    margin-top:24px;
+    font-size:0.86rem;
+    color:var(--text-dim);
+  }
+  .howto h2{
+    font-size:0.95rem;
+    color:var(--text);
+    margin:0 0 10px 0;
+  }
+  .howto ul{
+    margin:0;
+    padding-left:18px;
+  }
+  .howto li{margin-bottom:8px;}
+  .howto li:last-child{margin-bottom:0;}
+  footer{
+    text-align:center;
+    color:var(--text-dim);
+    font-size:0.75rem;
+    margin-top:30px;
+    padding:0 20px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Devy<span class="brand-accent">Dose</span></h1>
+  <p>Alpha Universe — the live devy dynasty board</p>
+</header>
+<main>
+  <div class="section-label">Start here</div>
+  <a class="card-link primary" href="Alpha_Board_v5.0_mobile.html">
+    <div class="label">Mobile Board <span class="badge">Best on phone</span></div>
+    <div class="desc">The lightweight, phone-friendly board — fast load, tap-friendly. This is the one to pin.</div>
+  </a>
+
+  <div class="section-label">Tools</div>
+  <a class="card-link" href="trade.html">
+    <div class="label">Trade Evaluator <span class="badge">New</span></div>
+    <div class="desc">Enter both sides of a proposed devy trade — the model returns a value comparison and a plain-English verdict on who wins and by how much.</div>
+  </a>
+
+  <div class="section-label">Explore more</div>
+  <a class="card-link" href="Alpha_Portal.html">
+    <div class="label">Full Board (Portal)</div>
+    <div class="desc">The complete interactive board — searchable, filterable, tap any player for a full card.</div>
+  </a>
+  <a class="card-link" href="Alpha_ProspectCards.html">
+    <div class="label">Prospect Cards</div>
+    <div class="desc">444 individual player cards — deep dives on every name on the board.</div>
+  </a>
+  <a class="card-link" href="Alpha_BuzzFeed.html">
+    <div class="label">Buzz Feed</div>
+    <div class="desc">The latest buzz notes and movers driving board changes.</div>
+  </a>
+
+  <div class="section-label">Under the hood</div>
+  <a class="card-link" href="methodology.html">
+    <div class="label">How the Board Is Built</div>
+    <div class="desc">The methodology: comp-based, production-first, backtested against real NFL outcomes — and honest about what it can't do.</div>
+  </a>
+
+  <div class="howto">
+    <h2>How to read this board</h2>
+    <ul>
+      <li><strong>Alpha Rating is a relative currency, not a points projection.</strong> It ranks players against each other — it does not forecast fantasy points.</li>
+      <li><strong>The TE level and freshman discount are stated league-format priors</strong> — policy choices, not numbers fitted or backtested against outcomes.</li>
+      <li><strong>Freshmen (marked FR) have no college production yet.</strong> Their placement on the board is a projection and is not backtested.</li>
+    </ul>
+  </div>
+</main>
+<footer>
+  DevyDose · Alpha Universe · Updated regularly. Not affiliated with any NFL, NCAA, or fantasy platform.
+</footer>
+</body>
+</html>
