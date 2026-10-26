@@ -256,7 +256,7 @@ async function loadPool(){
   S.pool = slim;
   lsSet(POOL_CACHE_KEY, JSON.stringify({ts:Date.now(), data:slim}));
 }
-function PL(id){ return S.pool[id] || { n:'Player '+id, pos:'?', t:'', lg:'', unknown:true }; }
+function PL(id){ return S.pool[id] || { n:'Unlisted player ('+id+')', pos:'?', t:'', lg:'', unknown:true }; }
 
 /* ---- AU values -> Fantrax IDs ----------------------------------------------
    Exact name + position within the right pool (college board -> NCAAF pool,
@@ -469,9 +469,10 @@ function renderRank(){
   let html = `<h2 class="sec">Power Rankings — AU Value</h2>
     <p class="secsub">Total Alpha Universe value of every rostered player, college <span class="badge col">CFB</span> and NFL <span class="badge pro">NFL</span>. Tap a team to see its roster.</p>`;
   if (!S.leagues.some(l => S.myTeam[l.id])) html += `<div class="note warn"><span class="t">Pick your team</span>Choose your team next to each league above so the tool knows which roster is yours.</div>`;
-  html += `<div class="tblwrap"><table><thead><tr><th>#</th><th>Team</th><th class="num">College</th><th class="num">NFL</th><th class="num">Total</th><th class="hide-sm"></th></tr></thead><tbody>`
+  const both = fr.some(f => f.col) && fr.some(f => f.pro);
+  html += `<div class="tblwrap"><table><thead><tr><th>#</th><th>Team</th>${both?'<th class="num">College</th><th class="num">NFL</th>':''}<th class="num">${both?'Total':'AU value'}</th><th class="hide-sm"></th></tr></thead><tbody>`
     + fr.map((f,i) => `<tr class="click ${f.me?'me':''}" data-k="${esc(f.key)}"><td>${i+1}</td><td><span class="nm">${esc(f.name)}</span>${f.me?' <span class="badge pro">You</span>':''}${f.names.length>1?'<br><span class="sub">'+esc(f.names.slice(1).join(' · '))+'</span>':''}</td>
-      <td class="num">${fmt(f.col)}</td><td class="num">${fmt(f.pro)}</td><td class="num"><b>${fmt(f.total)}</b></td>
+      ${both?`<td class="num">${fmt(f.col)}</td><td class="num">${fmt(f.pro)}</td>`:''}<td class="num"><b>${fmt(f.total)}</b></td>
       <td class="hide-sm" style="width:30%"><div class="bar"><span class="c" style="width:${f.col/max*100}%"></span><span class="p" style="width:${f.pro/max*100}%"></span></div></td></tr>`).join('')
     + `</tbody></table></div>`;
   el.innerHTML = html;
@@ -686,7 +687,11 @@ function renderFA(){
   const want = el.dataset.lg || (sides.has('college') || sides.has('mixed') ? 'college' : 'pro');
   const posF = el.dataset.pos || 'ALL';
   const covered = want==='college' ? (sides.has('college') || sides.has('mixed')) : (sides.has('pro') || sides.has('mixed'));
-  let list = Object.keys(S.val).filter(id => S.val[id].lg===want && !rostered.has(id) && (posF==='ALL' || PL(id).pos===posF));
+  // Fantrax's own player status wins where a league reports one (FA vs. taken / waivers / outside the pool)
+  const fxStatus = id => { for (const l of S.leagues){ const pi = l.playerInfo[id]; if (pi) return pi.status; } return null; };
+  const hasInfo = S.leagues.some(l => Object.keys(l.playerInfo).length);
+  let list = Object.keys(S.val).filter(id => S.val[id].lg===want && !rostered.has(id) && (posF==='ALL' || PL(id).pos===posF)
+    && (!hasInfo || fxStatus(id)==='FA' || fxStatus(id)===null));
   list.sort((a,b) => V(b)-V(a));
   const top = list.slice(0, 50);
   let html = `<h2 class="sec">Free Agents on the AU Board</h2>
