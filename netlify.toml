@@ -36,3 +36,8 @@
   from = "/how"
   to = "/methodology.html"
   status = 200
+
+[[redirects]]
+  from = "/sleeper"
+  to = "/sleeper.html"
+  status = 200
