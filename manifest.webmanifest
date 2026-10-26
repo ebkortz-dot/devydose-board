@@ -13,6 +13,7 @@
   ],
   "shortcuts": [
     { "name": "Sleeper Roster Manager", "url": "sleeper.html" },
+    { "name": "Fantrax C2C Manager", "url": "fantrax.html" },
     { "name": "Devy Trade Evaluator", "url": "trade.html" }
   ]
 }

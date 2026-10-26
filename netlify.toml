@@ -46,3 +46,8 @@
   from = "/tools"
   to = "/tools.html"
   status = 200
+
+[[redirects]]
+  from = "/fantrax"
+  to = "/fantrax.html"
+  status = 200

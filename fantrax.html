@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DevyDose — Fantrax C2C Manager</title>
+<meta name="description" content="DevyDose Fantrax C2C manager: connect your Fantrax college and NFL leagues to see every roster valued on the Alpha Universe board, find fair trades across the league, and spot unrostered devy prospects.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#020817">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="assets/app-icon-180.png">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  :root{
+    --bg:#020817;
+    --panel:#04122e;
+    --panel-2:#071a3d;
+    --accent:#04122e;
+    --accent-bright:#56e5ff;
+    --text:#f5f8ff;
+    --text-dim:#98a7c3;
+    --border:rgba(139,167,225,.26);
+    --good:#c8ff1a;
+    --warn:#ff5a20;
+    --col:#56e5ff;
+    --pro:#c8ff1a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--au-mono, "IBM Plex Mono"),-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    padding:0 0 50px 0;
+  }
+  header{
+    padding:28px 20px 18px 20px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg, rgba(86,229,255,0.12) 0%, rgba(2,8,23,0) 100%);
+  }
+  header h1{ margin:0 0 6px 0; font-size:1.5rem; letter-spacing:0.4px; font-family:var(--au-display,inherit); font-weight:700; }
+  header .brand-accent{color:var(--accent-bright);}
+  header p{ margin:0; color:var(--text-dim); font-size:0.95rem; }
+  .backlink{ display:inline-block; margin:14px auto 0 auto; font-size:0.8rem; color:var(--accent-bright); text-decoration:none; }
+  .backlink:hover{text-decoration:underline;}
+  main{ max-width:960px; margin:0 auto; padding:22px 16px; }
+
+  .panel{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:14px; }
+  .connect{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .connect input, select{
+    padding:9px 11px; border-radius:8px; border:1px solid var(--border);
+    background:var(--panel-2); color:var(--text); font-size:0.9rem; font-family:inherit; max-width:100%;
+  }
+  .connect input{ flex:1; min-width:200px; }
+  input:focus, select:focus{ outline:none; border-color:var(--accent-bright); }
+  .btn{
+    background:linear-gradient(135deg, var(--accent) 0%, #03102a 100%);
+    border:1px solid var(--accent-bright); color:#fff; font-weight:600; font-family:inherit;
+    font-size:0.88rem; padding:9px 18px; border-radius:10px; cursor:pointer;
+  }
+  .btn:hover{ filter:brightness(1.12); }
+  .btn.ghost{ background:none; border:1px solid var(--border); color:var(--text-dim); font-weight:500; }
+  .btn.sm{ font-size:0.75rem; padding:5px 10px; border-radius:7px; }
+  .status{ font-size:0.8rem; color:var(--text-dim); margin-top:8px; min-height:1.2em; }
+  .status.err{ color:var(--warn); }
+  .hint{ font-size:0.74rem; color:var(--text-dim); margin-top:6px; }
+
+  .lrow{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:8px 0; border-bottom:1px solid rgba(139,167,225,.12); font-size:0.82rem; }
+  .lrow:last-child{ border-bottom:none; }
+  .lrow .ln{ flex:1; min-width:180px; }
+  .lrow select{ min-width:180px; flex:1; }
+
+  .tabs{ display:flex; gap:6px; flex-wrap:wrap; margin:6px 0 14px 0; }
+  .tab{
+    background:var(--panel); border:1px solid var(--border); color:var(--text-dim);
+    padding:8px 14px; border-radius:999px; cursor:pointer; font-family:inherit; font-size:0.8rem;
+    text-transform:uppercase; letter-spacing:0.08em;
+  }
+  .tab.on{ color:var(--good); border-color:var(--good); }
+
+  h2.sec{ font-family:var(--au-display,inherit); font-size:1.15rem; margin:0 0 4px 0; letter-spacing:0.3px; }
+  .secsub{ color:var(--text-dim); font-size:0.8rem; margin:0 0 12px 0; }
+  .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px; font-size:0.8rem; color:var(--text-dim); }
+  .controls label{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+
+  .tblwrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table{ width:100%; border-collapse:collapse; font-size:0.8rem; }
+  th{ text-align:left; color:var(--text-dim); font-weight:500; text-transform:uppercase; font-size:0.68rem; letter-spacing:0.06em; padding:6px 8px; border-bottom:1px solid var(--border); white-space:nowrap; }
+  td{ padding:7px 8px; border-bottom:1px solid rgba(139,167,225,.12); vertical-align:middle; }
+  td.num, th.num{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  tr.me td{ background:rgba(200,255,26,0.06); }
+  tr.click{ cursor:pointer; } tr.click:hover td{ background:rgba(86,229,255,0.06); }
+  .nm{ font-weight:600; }
+  .sub{ color:var(--text-dim); font-size:0.7rem; }
+
+  .badge{
+    display:inline-block; font-size:0.6rem; text-transform:uppercase; letter-spacing:0.4px;
+    padding:1px 6px; border-radius:20px; font-weight:700; background:rgba(255,255,255,0.12); white-space:nowrap;
+  }
+  .badge.col{ background:rgba(86,229,255,0.16); color:var(--col); }
+  .badge.pro{ background:rgba(200,255,26,0.16); color:var(--pro); }
+  .badge.fr{ background:rgba(255,90,32,0.2); color:var(--warn); }
+  .badge.inj{ background:rgba(255,90,32,0.2); color:var(--warn); }
+
+  .bar{ display:flex; height:8px; border-radius:4px; overflow:hidden; background:var(--panel-2); min-width:80px; }
+  .bar .c{ background:var(--col); } .bar .p{ background:var(--pro); }
+
+  .note{
+    background:var(--panel); border:1px solid var(--border); border-left:3px solid var(--accent-bright);
+    border-radius:8px; padding:10px 13px; margin:10px 0; font-size:0.82rem;
+  }
+  .note.warn{ border-left-color:var(--warn); }
+  .note .t{ font-weight:700; display:block; margin-bottom:3px; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-dim); }
+
+  .cards{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:10px; }
+  .card{ background:var(--panel-2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; font-size:0.8rem; }
+  .card .hd{ display:flex; justify-content:space-between; gap:8px; align-items:baseline; margin-bottom:6px; }
+  .card .hd b{ font-size:0.88rem; }
+  .card .gv{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0; }
+  .card .gv > div{ background:rgba(2,8,23,0.5); border-radius:7px; padding:6px 8px; }
+  .card .gv .lbl{ font-size:0.62rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-dim); display:block; }
+  .card .gv .give .lbl{ color:var(--warn); }
+  .card .gv .get .lbl{ color:var(--good); }
+  .card .gv .pl{ margin-top:4px; }
+  .card .ft{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:6px; color:var(--text-dim); font-size:0.72rem; }
+  .delta.pos{ color:var(--good); } .delta.neg{ color:var(--warn); }
+
+  .empty{ text-align:center; color:var(--text-dim); padding:22px; font-size:0.85rem; }
+  .howto{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-top:22px; font-size:0.8rem; color:var(--text-dim); }
+  .howto h2{ font-size:0.9rem; color:var(--text); margin:0 0 8px 0; }
+  .howto ul{ margin:0; padding-left:18px; } .howto li{ margin-bottom:6px; }
+  footer{ text-align:center; color:var(--text-dim); font-size:0.75rem; margin-top:30px; padding:0 20px; }
+  .hidden{ display:none !important; }
+  @media (max-width:620px){ .hide-sm{ display:none; } }
+</style>
+</head>
+<body>
+<div class="au-header">
+  <a class="au-brand" href="index.html" aria-label="DevyDose Alpha Universe home">
+    <img class="au-logo" src="assets/devydose-logo-neon.png" alt="DevyDose">
+    <span class="au-wordmark">Alpha Universe</span>
+  </a>
+  <nav class="au-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="Alpha_ProspectCards.html">Players</a>
+        <a href="Alpha_Portal.html">Boards</a>
+        <a href="tools.html" class="on">Tools</a>
+        <a href="Alpha_BuzzFeed.html">Buzz</a>
+        <a href="methodology.html">About</a>
+  </nav>
+  <span class="au-pill"><i></i><span class="au-online">v5.0 &bull; SYSTEM ONLINE</span></span>
+</div>
+<header>
+  <h1>Devy<span class="brand-accent">Dose</span> — Fantrax C2C Manager</h1>
+  <p>Every roster in your C2C league valued on the Alpha Universe board — college and NFL on one scale.</p>
+  <a class="backlink" href="tools.html">&larr; All tools</a>
+</header>
+
+<main>
+  <div class="panel">
+    <div class="connect">
+      <input type="text" id="leagueInput" placeholder="Fantrax league URL or ID — add both sides of a C2C" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button class="btn" id="addBtn">Add league</button>
+    </div>
+    <div class="hint">Open your league on fantrax.com and copy the address — it looks like fantrax.com/fantasy/league/<b>abc123xyz</b>/… Add your college league and your NFL league (if it's on Fantrax); teams with the same name are linked as one C2C franchise. Separate several with commas.</div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="panel hidden" id="leaguesPanel">
+    <div id="leagueList"></div>
+  </div>
+
+  <div class="tabs hidden" id="tabs">
+    <button class="tab on" data-tab="rank">Power Rankings</button>
+    <button class="tab" data-tab="roster">My Roster</button>
+    <button class="tab" data-tab="trades">Trade Finder</button>
+    <button class="tab" data-tab="fa">Free Agents</button>
+  </div>
+
+  <section id="tab-rank" class="tabpane hidden"></section>
+  <section id="tab-roster" class="tabpane hidden"></section>
+  <section id="tab-trades" class="tabpane hidden"></section>
+  <section id="tab-fa" class="tabpane hidden"></section>
+
+  <div class="howto">
+    <h2>How this works</h2>
+    <ul>
+      <li><strong>Read-only, no login.</strong> The tool reads Fantrax's public league feed with just the league ID. Fantrax doesn't let outside tools submit trades or claims, so every offer has a copy button — paste it into Fantrax yourself.</li>
+      <li><strong>One scale, both sides.</strong> College players are valued on the live Alpha Universe devy board; NFL players on the AU NFL dynasty values. Both sit on the same scale, so a college prospect and a pro can be weighed in one deal — but read a close college-vs-pro verdict as a tier comparison, not point-for-point.</li>
+      <li><strong>C2C franchises.</strong> Add your college league and your NFL league; teams with matching names are combined into one franchise, so rankings and trades see both rosters. If your NFL side is on Sleeper or MFL, add just the college league — the tool works on that side alone.</li>
+      <li><strong>Freshmen (FR)</strong> have no college production yet — their value is a projection, not backtested. Players off the AU board carry no value and aren't used in offers.</li>
+      <li><strong>Fair offers</strong> land within the value band you set. Two-for-ones are only offered when both pieces are real (no throw-ins under a quarter of the value) and neither beats the single player coming back — a raw sum flatters the side with more bodies.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  DevyDose · Alpha Universe · League data from Fantrax. A decision aid, not a guarantee. Not affiliated with Fantrax, the NFL, or the NCAA.
+</footer>
+<div class="au-footer">
+  <div class="au-fmark">DevyDose Alpha Universe &mdash; &copy; 2026 all rights reserved</div>
+  <div class="au-tele">SOURCE <b>FANTRAX</b> &nbsp; STATUS <b>LIVE</b></div>
+  <div class="au-honesty"><p>Alpha Rating is a relative currency, not a fantasy-points projection. Freshman placements are projections, not backtested.</p></div>
+</div>
+
+<script>
+/* ============================================================================
+   Fantrax C2C Manager — read-only client for Fantrax's public league feed
+   (fantrax.com/fxea/general/*). Nothing here writes to Fantrax.
+============================================================================ */
+const FX = 'https://www.fantrax.com/fxea/general';
+const POOL_CACHE_KEY = 'dd_fantrax_pool_v1';
+const POOL_CACHE_MS  = 24 * 3600 * 1000;
+const SKILL = ['QB','RB','WR','TE'];
+
+const S = {
+  pool:{},              // fantraxId -> {n, pos, t, lg:'college'|'pro'}
+  val:{},               // fantraxId -> AU value record
+  coverage:null,
+  leagues:[],           // loaded leagues
+  myTeam:{},            // leagueId -> teamId
+  tab:'rank'
+};
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function $(id){ return document.getElementById(id); }
+function setStatus(msg, err){ const el=$('status'); el.textContent=msg||''; el.className='status'+(err?' err':''); }
+async function getJSON(url){
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('HTTP '+r.status);
+  return r.json();
+}
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } }
+function fmt(n){ return n ? Math.round(n) : '—'; }
+
+/* ---- Fantrax player pools (NFL + NCAAF), slimmed and cached daily --------- */
+function flipName(n){ const i = n.indexOf(', '); return i<0 ? n : n.slice(i+2)+' '+n.slice(0,i); }
+async function loadPool(){
+  const cached = lsGet(POOL_CACHE_KEY);
+  if (cached){
+    try{ const c = JSON.parse(cached); if (Date.now()-c.ts < POOL_CACHE_MS && c.data){ S.pool = c.data; return; } }catch(e){}
+  }
+  setStatus('Downloading the Fantrax player pools (once a day)…');
+  const [nfl, ncaaf] = await Promise.all([
+    getJSON(FX+'/getPlayerIds?sport=NFL'), getJSON(FX+'/getPlayerIds?sport=NCAAF')
+  ]);
+  const slim = {};
+  const add = (src, lg) => { for (const id in src){ const p = src[id];
+    if (p.position==='OL') continue;                 // never rostered in fantasy, half the college pool
+    slim[id] = { n:flipName(p.name||''), pos:p.position||'', t:(p.team && p.team!=='(N/A)') ? p.team : '', lg }; } };
+  add(nfl, 'pro'); add(ncaaf, 'college');
+  S.pool = slim;
+  lsSet(POOL_CACHE_KEY, JSON.stringify({ts:Date.now(), data:slim}));
+}
+function PL(id){ return S.pool[id] || { n:'Player '+id, pos:'?', t:'', lg:'', unknown:true }; }
+
+/* ---- AU values -> Fantrax IDs ----------------------------------------------
+   Exact name + position within the right pool (college board -> NCAAF pool,
+   NFL values -> NFL pool). A name with several players at one position is
+   resolved by school/team: the school map is learned from the unambiguous
+   matches themselves (Fantrax "OSU" <- AU "Ohio State" because every unique
+   OSU match is an Ohio State player). Anything still ambiguous stays
+   unmatched — no guessing — and the coverage count is published. */
+function normName(s){ return s.toLowerCase().replace(/\b(jr|sr|ii|iii|iv|v)\.?\s*$/,'').replace(/[^a-z]/g,''); }
+const NFL_ALIAS = { LA:'LAR', AZ:'ARI', LAR:'LA', ARI:'AZ' };
+async function loadValues(){
+  const [col, pro] = await Promise.all([
+    getJSON('board_values.json').catch(() => null),
+    getJSON('pro_values.json').catch(() => null)
+  ]);
+  const index = { college:{}, pro:{} };
+  for (const id in S.pool){
+    const p = S.pool[id];
+    const k = normName(p.n)+'|'+p.pos;
+    (index[p.lg][k] = index[p.lg][k] || []).push(id);
+  }
+  const sets = [
+    { lg:'college', list:(col && col.players) || [], org:p => p.school || '' },
+    { lg:'pro', list:(pro && pro.ready && pro.players) || [], org:p => p.team || '' }
+  ];
+  const cov = {};
+  for (const set of sets){
+    const pending = [], votes = {};
+    let matched = 0;
+    for (const v of set.list){
+      const ids = index[set.lg][normName(v.name)+'|'+v.pos] || [];
+      if (ids.length === 1){
+        assign(ids[0], v, set.lg); matched++;
+        const t = S.pool[ids[0]].t, o = set.org(v);
+        if (t && o){ (votes[t] = votes[t] || {})[o] = ((votes[t]||{})[o]||0) + 1; }
+      } else if (ids.length > 1) pending.push({v, ids});
+    }
+    const orgOf = {};
+    for (const t in votes){ orgOf[t] = Object.entries(votes[t]).sort((a,b)=>b[1]-a[1])[0][0]; }
+    for (const {v, ids} of pending){
+      const o = set.org(v);
+      const hit = ids.filter(id => { const t = S.pool[id].t;
+        return orgOf[t]===o || t===o || NFL_ALIAS[t]===o; });
+      if (hit.length === 1){ assign(hit[0], v, set.lg); matched++; }
+    }
+    cov[set.lg] = { matched, total:set.list.length };
+  }
+  S.coverage = { cov, generated:(col && col.generated) || (pro && pro.generated) || '' };
+}
+function assign(id, v, lg){
+  S.val[id] = { val:+v.val, rank:v.rank||null, posrank:v.posrank||null,
+                tier:v.tier || (lg==='pro' ? 'NFL asset' : ''), fr:!!v.fr, lg };
+}
+function V(id){ const v = S.val[id]; return v ? v.val : 0; }
+
+/* ---- leagues ------------------------------------------------------------------ */
+function parseLeagueIds(s){
+  const out = [];
+  s.split(/[\s,]+/).forEach(tok => {
+    if (!tok) return;
+    const m = tok.match(/league\/([a-z0-9]{8,})/i) || tok.match(/leagueId=([a-z0-9]{8,})/i);
+    if (m) out.push(m[1]);
+    else if (/^[a-z0-9]{8,}$/i.test(tok)) out.push(tok);
+  });
+  return [...new Set(out)];
+}
+async function loadLeague(id){
+  const [info, ros] = await Promise.all([
+    getJSON(FX+'/getLeagueInfo?leagueId='+encodeURIComponent(id)),
+    getJSON(FX+'/getTeamRosters?leagueId='+encodeURIComponent(id))
+  ]);
+  if (info.error) throw new Error(info.error.message || 'league not found');
+  if (ros.error) throw new Error(ros.error.message || 'rosters unavailable');
+  const teams = {};
+  const tinfo = info.teamInfo || {};
+  for (const tid in (ros.rosters || {})){
+    const r = ros.rosters[tid];
+    teams[tid] = { id:tid, name:r.teamName || (tinfo[tid] && tinfo[tid].name) || tid,
+                   roster:(r.rosterItems || []).map(x => ({ id:x.id, pos:x.position, st:x.status })) };
+  }
+  // which side of a C2C is this? decided by where its rostered players live
+  let c = 0, p = 0;
+  Object.values(teams).forEach(t => t.roster.forEach(x => { const lg = PL(x.id).lg; if (lg==='college') c++; else if (lg==='pro') p++; }));
+  const side = c && p ? 'mixed' : (c ? 'college' : 'pro');
+  return { id, name:info.leagueName || id, year:info.seasonYear, side, teams,
+           playerInfo:info.playerInfo || {}, rosterInfo:info.rosterInfo || {} };
+}
+async function addLeagues(){
+  const ids = parseLeagueIds($('leagueInput').value);
+  if (!ids.length){ setStatus('Paste a Fantrax league URL or league ID.', true); return; }
+  try{
+    await ensureData();
+    for (const id of ids){
+      if (S.leagues.some(l => l.id===id)) continue;
+      setStatus('Loading league '+id+'…');
+      const l = await loadLeague(id);
+      S.leagues.push(l);
+    }
+    $('leagueInput').value = '';
+    saveLeagues();
+    afterLeaguesChanged();
+  }catch(e){
+    setStatus('Could not load that league from Fantrax: '+e.message+'. Check the ID — private leagues may need to be made viewable.', true);
+  }
+}
+let dataReady = null;
+function ensureData(){
+  if (!dataReady){
+    dataReady = (async () => {
+      await loadPool();
+      setStatus('Matching Alpha Universe values to Fantrax players…');
+      await loadValues();
+    })();
+    dataReady.catch(() => { dataReady = null; });
+  }
+  return dataReady;
+}
+function saveLeagues(){
+  lsSet('dd_fantrax_leagues', JSON.stringify(S.leagues.map(l => l.id)));
+  lsSet('dd_fantrax_myteam', JSON.stringify(S.myTeam));
+}
+function removeLeague(id){
+  S.leagues = S.leagues.filter(l => l.id !== id);
+  delete S.myTeam[id];
+  saveLeagues(); afterLeaguesChanged();
+}
+function afterLeaguesChanged(){
+  const has = S.leagues.length > 0;
+  $('leaguesPanel').classList.toggle('hidden', !has);
+  $('tabs').classList.toggle('hidden', !has);
+  renderLeagueList();
+  if (has){
+    const c = S.coverage && S.coverage.cov;
+    setStatus(`${S.leagues.length} league${S.leagues.length>1?'s':''} loaded` + (c ? ` · AU values matched: ${c.college.matched}/${c.college.total} college, ${c.pro.matched}/${c.pro.total} NFL` : ''));
+  } else setStatus('');
+  renderTab();
+}
+function renderLeagueList(){
+  $('leagueList').innerHTML = S.leagues.map(l => {
+    const teams = Object.values(l.teams).sort((a,b) => a.name.localeCompare(b.name));
+    return `<div class="lrow">
+      <span class="ln"><b>${esc(l.name)}</b> <span class="badge ${l.side==='college'?'col':'pro'}">${l.side==='college'?'College':(l.side==='pro'?'NFL':'College + NFL')}</span><br>
+        <span class="sub">${teams.length} teams${l.year?' · '+esc(l.year):''}</span></span>
+      <select data-lid="${esc(l.id)}" aria-label="My team in ${esc(l.name)}">
+        <option value="">Which team is yours?</option>
+        ${teams.map(t => `<option value="${esc(t.id)}" ${S.myTeam[l.id]===t.id?'selected':''}>${esc(t.name)}</option>`).join('')}
+      </select>
+      <button class="btn ghost sm" data-rm="${esc(l.id)}">Remove</button>
+    </div>`;
+  }).join('');
+  $('leagueList').querySelectorAll('select').forEach(s => s.onchange = () => {
+    S.myTeam[s.dataset.lid] = s.value;
+    // pick the same-named team in the other linked leagues automatically
+    const nm = teamKey(findTeam(s.dataset.lid, s.value));
+    S.leagues.forEach(l => { if (l.id!==s.dataset.lid && !S.myTeam[l.id]){
+      const t = Object.values(l.teams).find(t => teamKey(t)===nm); if (t) S.myTeam[l.id] = t.id; } });
+    saveLeagues(); renderLeagueList(); renderTab();
+  });
+  $('leagueList').querySelectorAll('[data-rm]').forEach(b => b.onclick = () => removeLeague(b.dataset.rm));
+}
+function findTeam(lid, tid){ const l = S.leagues.find(x => x.id===lid); return l && l.teams[tid]; }
+function teamKey(t){ return t ? t.name.toLowerCase().replace(/[^a-z0-9]/g,'') : ''; }
+
+/* ---- franchises: same-named teams across the linked leagues -------------------- */
+function franchises(){
+  const map = {};
+  for (const l of S.leagues){
+    for (const t of Object.values(l.teams)){
+      const mine = S.myTeam[l.id] === t.id;
+      const k = mine ? '__me__' : teamKey(t)+'';
+      const f = map[k] = map[k] || { key:k, names:[], me:mine, assets:[] };
+      if (!f.names.includes(t.name)) f.names.push(t.name);
+      t.roster.forEach(x => f.assets.push({ id:x.id, st:x.st, league:l.name }));
+    }
+  }
+  const out = Object.values(map);
+  out.forEach(f => {
+    f.name = f.names[0];
+    f.col = f.assets.filter(a => PL(a.id).lg==='college').reduce((s,a) => s+V(a.id), 0);
+    f.pro = f.assets.filter(a => PL(a.id).lg!=='college').reduce((s,a) => s+V(a.id), 0);
+    f.total = f.col + f.pro;
+  });
+  return out.sort((a,b) => b.total-a.total);
+}
+function myFranchise(fr){ return fr.find(f => f.me); }
+
+/* ---- player rendering ----------------------------------------------------------- */
+function stBadge(st){
+  if (!st || st==='ACTIVE') return '';
+  const lbl = { RESERVE:'Bench', MINORS:'Minors', INJURED_RESERVE:'IR' }[st] || st.toLowerCase();
+  return `<span class="badge ${st==='INJURED_RESERVE'?'inj':''}">${esc(lbl)}</span>`;
+}
+function lgBadge(id){
+  const lg = PL(id).lg;
+  return lg==='college' ? '<span class="badge col">CFB</span>' : (lg==='pro' ? '<span class="badge pro">NFL</span>' : '');
+}
+function playerCell(id, st){
+  const p = PL(id), v = S.val[id];
+  const fr = v && v.fr ? ' <span class="badge fr">FR</span>' : '';
+  const rk = v && v.rank ? ` · AU #${v.rank}` : '';
+  return `<span class="nm">${esc(p.n)}</span> ${lgBadge(id)}${fr} ${stBadge(st)}<br>
+    <span class="sub">${esc(p.pos)}${p.t?' · '+esc(p.t):''}${rk}${v && v.tier ? ' · '+esc(v.tier) : ''}</span>`;
+}
+
+/* ---- power rankings ------------------------------------------------------------- */
+function renderRank(){
+  const el = $('tab-rank');
+  const fr = franchises();
+  const max = Math.max(1, ...fr.map(f => f.total));
+  let html = `<h2 class="sec">Power Rankings — AU Value</h2>
+    <p class="secsub">Total Alpha Universe value of every rostered player, college <span class="badge col">CFB</span> and NFL <span class="badge pro">NFL</span>. Tap a team to see its roster.</p>`;
+  if (!S.leagues.some(l => S.myTeam[l.id])) html += `<div class="note warn"><span class="t">Pick your team</span>Choose your team next to each league above so the tool knows which roster is yours.</div>`;
+  html += `<div class="tblwrap"><table><thead><tr><th>#</th><th>Team</th><th class="num">College</th><th class="num">NFL</th><th class="num">Total</th><th class="hide-sm"></th></tr></thead><tbody>`
+    + fr.map((f,i) => `<tr class="click ${f.me?'me':''}" data-k="${esc(f.key)}"><td>${i+1}</td><td><span class="nm">${esc(f.name)}</span>${f.me?' <span class="badge pro">You</span>':''}${f.names.length>1?'<br><span class="sub">'+esc(f.names.slice(1).join(' · '))+'</span>':''}</td>
+      <td class="num">${fmt(f.col)}</td><td class="num">${fmt(f.pro)}</td><td class="num"><b>${fmt(f.total)}</b></td>
+      <td class="hide-sm" style="width:30%"><div class="bar"><span class="c" style="width:${f.col/max*100}%"></span><span class="p" style="width:${f.pro/max*100}%"></span></div></td></tr>`).join('')
+    + `</tbody></table></div>`;
+  el.innerHTML = html;
+  el.querySelectorAll('tr.click').forEach(tr => tr.onclick = () => { S.viewKey = tr.dataset.k; S.tab = 'roster'; renderTab(); });
+}
+
+/* ---- roster view ---------------------------------------------------------------------- */
+function renderRoster(){
+  const el = $('tab-roster');
+  const fr = franchises();
+  const f = fr.find(x => x.key===S.viewKey) || myFranchise(fr) || fr[0];
+  if (!f){ el.innerHTML = '<div class="empty">No teams loaded.</div>'; return; }
+  const rank = fr.indexOf(f) + 1;
+  const sect = (title, list) => {
+    if (!list.length) return '';
+    list.sort((a,b) => V(b.id)-V(a.id));
+    return `<h2 class="sec" style="margin-top:14px">${title} <span class="sub">· ${fmt(list.reduce((s,a)=>s+V(a.id),0))} value</span></h2>
+      <div class="tblwrap"><table><thead><tr><th>Player</th><th class="num">AU value</th><th class="hide-sm">League</th></tr></thead><tbody>`
+      + list.map(a => `<tr><td>${playerCell(a.id, a.st)}</td><td class="num">${fmt(V(a.id))}</td><td class="hide-sm sub">${esc(a.league)}</td></tr>`).join('')
+      + `</tbody></table></div>`;
+  };
+  const col = f.assets.filter(a => PL(a.id).lg==='college' && SKILL.includes(PL(a.id).pos));
+  const pro = f.assets.filter(a => PL(a.id).lg!=='college' && SKILL.includes(PL(a.id).pos));
+  const other = f.assets.filter(a => !SKILL.includes(PL(a.id).pos));
+  const byPos = {};
+  SKILL.forEach(p => byPos[p] = f.assets.filter(a => PL(a.id).pos===p).reduce((s,a)=>s+V(a.id),0));
+  let html = `<div class="controls"><label>Team <select id="rTeam">${fr.map(x => `<option value="${esc(x.key)}" ${x===f?'selected':''}>${esc(x.name)}${x.me?' (you)':''}</option>`).join('')}</select></label></div>
+    <h2 class="sec">${esc(f.name)} — #${rank} of ${fr.length}</h2>
+    <p class="secsub">College ${fmt(f.col)} · NFL ${fmt(f.pro)} · Total ${fmt(f.total)} &nbsp;|&nbsp; by position: ${SKILL.map(p => p+' '+fmt(byPos[p])).join(' · ')}</p>`;
+  const offBoard = col.filter(a => !V(a.id)).length;
+  html += sect('College', col) + sect('NFL', pro);
+  if (other.length) html += `<p class="sub" style="margin-top:10px">Also rostered (not valued by AU): ${other.map(a => esc(PL(a.id).n)+' '+esc(PL(a.id).pos)).join(', ')}</p>`;
+  if (offBoard) html += `<p class="sub">${offBoard} college player${offBoard>1?'s':''} on this roster ${offBoard>1?'are':'is'} not on the AU board — no value, not a zero judgement on the player.</p>`;
+  el.innerHTML = html;
+  $('rTeam').onchange = e => { S.viewKey = e.target.value; renderRoster(); };
+}
+
+/* ---- trade finder -------------------------------------------------------------------- */
+function posRanks(fr){
+  const rank = {};
+  for (const pos of SKILL){
+    const score = f => f.assets.filter(a => PL(a.id).pos===pos).map(a => V(a.id)).sort((a,b)=>b-a).slice(0,4).reduce((s,v)=>s+v,0);
+    fr.slice().sort((a,b) => score(b)-score(a)).forEach((f,i) => { (rank[f.key] = rank[f.key]||{})[pos] = i+1; });
+  }
+  return rank;
+}
+function realPair(ids, single){
+  const v = ids.map(V);
+  return Math.max(...v) <= single && Math.min(...v) >= single*0.25;
+}
+function valued(f){ return [...new Set(f.assets.map(a => a.id))].filter(id => V(id) > 0); }
+function offersShop(fr, me, giveId, band){
+  const give = V(giveId), rk = posRanks(fr), n = fr.length;
+  const res = [];
+  for (const f of fr){
+    if (f===me) continue;
+    const theirs = valued(f);
+    let best = null;
+    const consider = ids => {
+      const got = ids.reduce((s,id)=>s+V(id),0);
+      if (Math.abs(got-give)/give > band) return;
+      if (ids.length===2 && !realPair(ids, give)) return;
+      const fit = ids.some(id => rk[me.key][PL(id).pos] > n*2/3) ? 1 : 0;
+      const score = (ids.length===1?10000:0) + fit*1000 - Math.abs(got-give);
+      if (!best || score > best.score) best = { f, give:[giveId], get:ids, giveVal:give, gotVal:got, score };
+    };
+    theirs.forEach(id => consider([id]));
+    for (let i=0;i<theirs.length;i++) for (let j=i+1;j<theirs.length;j++) consider([theirs[i],theirs[j]]);
+    if (best) res.push(best);
+  }
+  return res.sort((a,b) => b.score-a.score);
+}
+function offersTarget(fr, me, getId, band){
+  const want = V(getId);
+  const owner = fr.find(f => f!==me && f.assets.some(a => a.id===getId));
+  const mine = valued(me);
+  const res = [];
+  const consider = ids => {
+    const g = ids.reduce((s,id)=>s+V(id),0);
+    if (Math.abs(g-want)/want > band) return;
+    if (ids.length===2 && !realPair(ids, want)) return;
+    res.push({ f:owner, give:ids, get:[getId], giveVal:g, gotVal:want, score:(ids.length===1?10000:0) - Math.abs(g-want) });
+  };
+  mine.forEach(id => consider([id]));
+  for (let i=0;i<mine.length;i++) for (let j=i+1;j<mine.length;j++) consider([mine[i],mine[j]]);
+  return res.sort((a,b) => b.score-a.score).slice(0,12);
+}
+function offersAuto(fr, me, band){
+  const rk = posRanks(fr), my = rk[me.key];
+  const order = SKILL.slice().sort((a,b) => my[a]-my[b]);
+  const sell = order.slice(0,2), buy = order.slice(2);
+  const res = [];
+  for (const f of fr){
+    if (f===me) continue;
+    const tr = rk[f.key];
+    const theyNeed = sell.filter(p => tr[p] > my[p]);
+    const theyHave = buy.filter(p => tr[p] < my[p]);
+    if (!theyNeed.length || !theyHave.length) continue;
+    let best = null;
+    for (const g of valued(me).filter(id => theyNeed.includes(PL(id).pos))){
+      for (const t of valued(f).filter(id => theyHave.includes(PL(id).pos))){
+        const gv = V(g), tv = V(t);
+        if (Math.abs(gv-tv)/Math.max(gv,tv) > band) continue;
+        const score = (gv+tv) - Math.abs(gv-tv)*3;
+        if (!best || score > best.score) best = { f, give:[g], get:[t], giveVal:gv, gotVal:tv, score,
+          why:`You rank #${my[PL(g).pos]} at ${PL(g).pos} and #${my[PL(t).pos]} at ${PL(t).pos}; ${f.name} ranks #${tr[PL(g).pos]} and #${tr[PL(t).pos]}.` };
+      }
+    }
+    if (best) res.push(best);
+  }
+  return { offers:res.sort((a,b)=>b.score-a.score), buy, sell };
+}
+function offerText(o){
+  const names = ids => ids.map(id => PL(id).n).join(' + ');
+  return `Trade offer to ${o.f.name}: I send ${names(o.give)} for ${names(o.get)}.`;
+}
+function offerCard(o){
+  const dv = Math.round(o.gotVal - o.giveVal);
+  const list = ids => ids.map(id => `<div class="pl"><b>${esc(PL(id).n)}</b> ${lgBadge(id)}${S.val[id] && S.val[id].fr ? ' <span class="badge fr">FR</span>':''}<br><span class="sub">${esc(PL(id).pos)} · ${esc(PL(id).t||'—')} · ${fmt(V(id))}</span></div>`).join('');
+  const cross = new Set(o.give.concat(o.get).map(id => PL(id).lg)).size > 1;
+  return `<div class="card">
+    <div class="hd"><b>${esc(o.f.name)}</b>${cross?'<span class="badge">CFB ↔ NFL</span>':''}</div>
+    <div class="gv"><div class="give"><span class="lbl">You give</span>${list(o.give)}</div><div class="get"><span class="lbl">You get</span>${list(o.get)}</div></div>
+    ${o.why ? `<div class="sub">${esc(o.why)}</div>` : ''}
+    <div class="ft"><span>Net <span class="delta ${dv>=0?'pos':'neg'}">${dv>0?'+':''}${dv}</span></span>
+      <button class="btn ghost sm" data-copy="${esc(offerText(o))}">Copy offer</button></div>
+  </div>`;
+}
+function renderTrades(){
+  const el = $('tab-trades');
+  const fr = franchises(), me = myFranchise(fr);
+  if (!me){ el.innerHTML = '<div class="empty">Choose your team next to each league above first.</div>'; return; }
+  const mode = el.dataset.mode || 'shop', band = el.dataset.band || '10', scope = el.dataset.scope || 'all';
+  const inScope = id => scope==='all' || PL(id).lg===scope;
+  const rk = posRanks(fr)[me.key], n = fr.length;
+  const mine = valued(me).filter(inScope).sort((a,b)=>V(b)-V(a));
+  const others = [];
+  fr.forEach(f => { if (f!==me) valued(f).filter(inScope).forEach(id => others.push({id, f})); });
+  others.sort((a,b) => V(b.id)-V(a.id));
+
+  let html = `<h2 class="sec">Trade Finder</h2>
+    <p class="secsub">Your rank by position (1 = best of ${n}, college + NFL): ${SKILL.map(p => `${p} <b>${rk[p]}</b>${rk[p] > n*2/3 ? ' <span class="badge inj">need</span>' : (rk[p] <= n/3 ? ' <span class="badge pro">deep</span>' : '')}`).join(' · ')}</p>
+    <div class="controls">
+      <label>Mode <select id="tMode">
+        <option value="shop" ${mode==='shop'?'selected':''}>Shop my player to every team</option>
+        <option value="target" ${mode==='target'?'selected':''}>Build offers for a target</option>
+        <option value="auto" ${mode==='auto'?'selected':''}>Auto: fill my needs league-wide</option>
+      </select></label>
+      <label>Players <select id="tScope">
+        <option value="all" ${scope==='all'?'selected':''}>College + NFL</option>
+        <option value="college" ${scope==='college'?'selected':''}>College only</option>
+        <option value="pro" ${scope==='pro'?'selected':''}>NFL only</option>
+      </select></label>
+      ${mode==='shop' ? `<label>Player <select id="tPlayer">${mine.map(id => `<option value="${esc(id)}" ${id===el.dataset.pid?'selected':''}>${esc(PL(id).n)} (${esc(PL(id).pos)}${PL(id).lg==='college'?' · CFB':''}) ${fmt(V(id))}</option>`).join('')}</select></label>` : ''}
+      ${mode==='target' ? `<label>Target <select id="tPlayer">${others.map(o => `<option value="${esc(o.id)}" ${o.id===el.dataset.pid?'selected':''}>${esc(PL(o.id).n)} (${esc(PL(o.id).pos)}${PL(o.id).lg==='college'?' · CFB':''}) — ${esc(o.f.name)}</option>`).join('')}</select></label>` : ''}
+      <label>Fair within ±<select id="tBand">${['5','10','15','20'].map(b => `<option ${b===band?'selected':''}>${b}</option>`).join('')}</select>%</label>
+    </div>`;
+
+  let offers = [];
+  const pool = id => inScope(id);
+  if (mode==='shop' && mine.length){
+    const pid = mine.includes(el.dataset.pid) ? el.dataset.pid : mine[0];
+    offers = offersShop(fr, me, pid, (+band)/100).filter(o => o.get.every(pool));
+    html += `<p class="secsub">Best fair return for <b>${esc(PL(pid).n)}</b> from every team — positions you need come first.</p>`;
+  } else if (mode==='target' && others.length){
+    const pid = others.some(o => o.id===el.dataset.pid) ? el.dataset.pid : others[0].id;
+    offers = offersTarget(fr, me, pid, (+band)/100).filter(o => o.give.every(pool));
+    html += `<p class="secsub">Packages from your roster for <b>${esc(PL(pid).n)}</b>.</p>`;
+  } else if (mode==='auto'){
+    const a = offersAuto(fr, me, (+band)/100);
+    offers = a.offers.filter(o => o.give.concat(o.get).every(pool));
+    html += `<p class="secsub">Buying ${a.buy.join(' / ')} (your weakest spots), dealing from ${a.sell.join(' / ')} (your strongest). One 1-for-1 per team that's weaker than you where you sell and stronger where you buy.</p>`;
+  }
+  if (offers.length){
+    html += `<div class="controls"><button class="btn sm" id="copyAll">Copy all ${offers.length} offers</button></div>
+      <div class="cards">${offers.map(offerCard).join('')}</div>`;
+    if (offers.some(o => new Set(o.give.concat(o.get).map(id => PL(id).lg)).size > 1)){
+      html += `<div class="note warn"><span class="t">College ↔ NFL offers</span>Offers marked CFB ↔ NFL swap a college prospect for a pro. Both sit on one AU scale, but read a close cross-league deal as a tier comparison, not point-for-point — let your timeline (contending now vs. building) break the tie.</div>`;
+    }
+    if (offers.some(o => o.give.concat(o.get).some(id => S.val[id] && S.val[id].fr))){
+      html += `<div class="note warn"><span class="t">Freshmen</span>FR-tagged players have no college production yet — their value is a projection, not backtested. Treat those offers as softer.</div>`;
+    }
+  } else {
+    html += `<div class="empty">No fair offers inside ±${band}%. Widen the band, change the player scope or pick another player.</div>`;
+  }
+  html += `<div class="note"><span class="t">Sending offers</span>Fantrax doesn't let outside tools submit trades. Copy an offer, then propose it in Fantrax (Team → Trade).</div>`;
+  el.innerHTML = html;
+  $('tMode').onchange = e => { el.dataset.mode = e.target.value; el.dataset.pid=''; renderTrades(); };
+  $('tScope').onchange = e => { el.dataset.scope = e.target.value; el.dataset.pid=''; renderTrades(); };
+  if ($('tPlayer')) $('tPlayer').onchange = e => { el.dataset.pid = e.target.value; renderTrades(); };
+  $('tBand').onchange = e => { el.dataset.band = e.target.value; renderTrades(); };
+  el.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyText(b.dataset.copy, b));
+  if ($('copyAll')) $('copyAll').onclick = e => copyText(offers.map(offerText).join('\n'), e.target);
+}
+function copyText(t, btn){
+  const done = () => { const o = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => btn.textContent = o, 1200); };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(done, () => fallbackCopy(t, done));
+  } else fallbackCopy(t, done);
+}
+function fallbackCopy(t, done){
+  const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); done(); }catch(e){} document.body.removeChild(ta);
+}
+
+/* ---- free agents: AU-board players nobody rosters ---------------------------------- */
+function renderFA(){
+  const el = $('tab-fa');
+  const rostered = new Set();
+  S.leagues.forEach(l => Object.values(l.teams).forEach(t => t.roster.forEach(x => rostered.add(x.id))));
+  const sides = new Set(S.leagues.map(l => l.side));
+  const want = el.dataset.lg || (sides.has('college') || sides.has('mixed') ? 'college' : 'pro');
+  const posF = el.dataset.pos || 'ALL';
+  const covered = want==='college' ? (sides.has('college') || sides.has('mixed')) : (sides.has('pro') || sides.has('mixed'));
+  let list = Object.keys(S.val).filter(id => S.val[id].lg===want && !rostered.has(id) && (posF==='ALL' || PL(id).pos===posF));
+  list.sort((a,b) => V(b)-V(a));
+  const top = list.slice(0, 50);
+  let html = `<h2 class="sec">Free Agents on the AU Board</h2>
+    <p class="secsub">Players the Alpha Universe board values who aren't on any roster in your linked leagues${want==='college'?' — the devy pickups your league is sleeping on':''}.</p>
+    <div class="controls">
+      <label>Side <select id="faLg"><option value="college" ${want==='college'?'selected':''}>College</option><option value="pro" ${want==='pro'?'selected':''}>NFL</option></select></label>
+      <label>Position <select id="faPos">${['ALL',...SKILL].map(p => `<option ${p===posF?'selected':''}>${p}</option>`).join('')}</select></label>
+    </div>`;
+  if (!covered){
+    html += `<div class="note warn"><span class="t">No ${want==='college'?'college':'NFL'} league linked</span>None of your added leagues hold ${want==='college'?'college':'NFL'} players, so everyone below shows as available. Add that side's Fantrax league for a real free-agent list.</div>`;
+  }
+  if (!top.length) html += '<div class="empty">Every AU-valued player at this position is rostered.</div>';
+  else html += `<div class="tblwrap"><table><thead><tr><th>Player</th><th class="num">AU value</th></tr></thead><tbody>`
+    + top.map(id => `<tr><td>${playerCell(id)}</td><td class="num">${fmt(V(id))}</td></tr>`).join('') + `</tbody></table></div>`;
+  el.innerHTML = html;
+  $('faLg').onchange = e => { el.dataset.lg = e.target.value; renderFA(); };
+  $('faPos').onchange = e => { el.dataset.pos = e.target.value; renderFA(); };
+}
+
+/* ---- tabs + boot ------------------------------------------------------------------- */
+function renderTab(){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab===S.tab));
+  document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('hidden', p.id!=='tab-'+S.tab || !S.leagues.length));
+  if (!S.leagues.length) return;
+  try{
+    if (S.tab==='rank') renderRank();
+    else if (S.tab==='roster') renderRoster();
+    else if (S.tab==='trades') renderTrades();
+    else if (S.tab==='fa') renderFA();
+  }catch(e){
+    $('tab-'+S.tab).innerHTML = '<div class="empty">Something went wrong: '+esc(e.message)+'</div>';
+  }
+}
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => { S.tab = t.dataset.tab; if (S.tab==='roster') S.viewKey = null; renderTab(); });
+$('addBtn').onclick = addLeagues;
+$('leagueInput').addEventListener('keydown', e => { if (e.key==='Enter') addLeagues(); });
+(async function init(){
+  try{ S.myTeam = JSON.parse(lsGet('dd_fantrax_myteam') || '{}') || {}; }catch(e){ S.myTeam = {}; }
+  const q = new URLSearchParams(location.search).get('league');
+  let ids = [];
+  try{ ids = JSON.parse(lsGet('dd_fantrax_leagues') || '[]') || []; }catch(e){}
+  if (q) ids = [...new Set(ids.concat(parseLeagueIds(q)))];
+  if (!ids.length) return;
+  $('leagueInput').value = ids.join(', ');
+  addLeagues();
+})();
+</script>
+</body>
+</html>
