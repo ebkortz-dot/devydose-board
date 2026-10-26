@@ -41,3 +41,8 @@
   from = "/sleeper"
   to = "/sleeper.html"
   status = 200
+
+[[redirects]]
+  from = "/tools"
+  to = "/tools.html"
+  status = 200

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DevyDose — Tools</title>
+<meta name="description" content="DevyDose Alpha Universe tools: the devy trade evaluator, the Sleeper roster manager and the NFL dynasty board. Install to your home screen to use it like an app.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#020817">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AU Tools">
+<link rel="apple-touch-icon" href="assets/app-icon-180.png">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  :root{
+    --bg:#020817;
+    --panel:#04122e;
+    --panel-2:#071a3d;
+    --accent-bright:#56e5ff;
+    --text:#f5f8ff;
+    --text-dim:#98a7c3;
+    --border:rgba(139,167,225,.26);
+    --good:#c8ff1a;
+    --warn:#ff5a20;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--au-mono, "IBM Plex Mono"),-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    padding:0 0 50px 0;
+  }
+  header{
+    padding:28px 20px 18px 20px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg, rgba(86,229,255,0.12) 0%, rgba(2,8,23,0) 100%);
+  }
+  header h1{ margin:0 0 6px 0; font-size:1.5rem; letter-spacing:0.4px; font-family:var(--au-display,inherit); font-weight:700; }
+  header .brand-accent{color:var(--accent-bright);}
+  header p{ margin:0; color:var(--text-dim); font-size:0.95rem; }
+  main{ max-width:960px; margin:0 auto; padding:22px 16px; }
+
+  .tools{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+  a.tool{
+    display:flex; flex-direction:column; gap:8px; text-decoration:none; color:var(--text);
+    background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px 18px 16px;
+    transition:border-color .2s ease, transform .2s ease;
+  }
+  a.tool:hover{ border-color:var(--good); transform:translateY(-2px); }
+  .tool .ic{ width:42px; height:42px; border-radius:10px; background:var(--panel-2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; }
+  .tool .ic svg{ width:24px; height:24px; fill:none; stroke:var(--good); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .tool h2{ margin:4px 0 0 0; font-family:var(--au-display,inherit); font-size:1.35rem; font-weight:700; letter-spacing:0.3px; }
+  .tool p{ margin:0; color:var(--text-dim); font-size:0.82rem; }
+  .tool ul{ margin:2px 0 0 0; padding-left:16px; color:var(--text-dim); font-size:0.76rem; }
+  .tool .go{ margin-top:auto; padding-top:6px; color:var(--accent-bright); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.12em; }
+  .tag{ display:inline-block; font-size:0.6rem; text-transform:uppercase; letter-spacing:0.08em; padding:1px 7px; border-radius:20px; font-weight:700; background:rgba(200,255,26,0.16); color:var(--good); margin-left:6px; vertical-align:middle; }
+
+  .install{ background:var(--panel); border:1px solid var(--border); border-left:3px solid var(--accent-bright); border-radius:12px; padding:14px 16px; margin-top:22px; font-size:0.82rem; color:var(--text-dim); }
+  .install h2{ font-size:0.9rem; color:var(--text); margin:0 0 6px 0; }
+  .install b{ color:var(--text); }
+  .btn{
+    background:linear-gradient(135deg, #04122e 0%, #03102a 100%);
+    border:1px solid var(--accent-bright); color:#fff; font-weight:600; font-family:inherit;
+    font-size:0.85rem; padding:9px 18px; border-radius:10px; cursor:pointer; margin-top:8px;
+  }
+  .hidden{ display:none !important; }
+  footer{ text-align:center; color:var(--text-dim); font-size:0.75rem; margin-top:30px; padding:0 20px; }
+</style>
+</head>
+<body>
+<div class="au-header">
+  <a class="au-brand" href="index.html" aria-label="DevyDose Alpha Universe home">
+    <img class="au-logo" src="assets/devydose-logo-neon.png" alt="DevyDose">
+    <span class="au-wordmark">Alpha Universe</span>
+  </a>
+  <nav class="au-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="Alpha_ProspectCards.html">Players</a>
+        <a href="Alpha_Portal.html">Boards</a>
+        <a href="tools.html" class="on">Tools</a>
+        <a href="Alpha_BuzzFeed.html">Buzz</a>
+        <a href="methodology.html">About</a>
+  </nav>
+  <span class="au-pill"><i></i><span class="au-online">v5.0 &bull; SYSTEM ONLINE</span></span>
+</div>
+<header>
+  <h1>Devy<span class="brand-accent">Dose</span> — Tools</h1>
+  <p>Run your dynasty and devy rosters on Alpha Universe values.</p>
+</header>
+
+<main>
+  <div class="tools">
+    <a class="tool" href="sleeper.html">
+      <div class="ic"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="6" width="34" height="36" rx="3"/><path d="M15 16h18"/><path d="M15 24h18"/><path d="M15 32h10"/></svg></div>
+      <h2>Sleeper Roster Manager<span class="tag">New</span></h2>
+      <p>Connect your Sleeper username and manage every league at once.</p>
+      <ul>
+        <li>Start/sit, scored on each league's own settings</li>
+        <li>Waiver targets, FAAB left and drop candidates</li>
+        <li>Mass trade offers to every team in a league</li>
+        <li>Lineup check and player exposure across all your leagues</li>
+      </ul>
+      <span class="go">Open &rarr;</span>
+    </a>
+    <a class="tool" href="trade.html">
+      <div class="ic"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 15h27"/><path d="M29 8l7 7-7 7"/><path d="M40 33H13"/><path d="M19 26l-7 7 7 7"/></svg></div>
+      <h2>Devy Trade Evaluator</h2>
+      <p>Enter both sides of a devy or dynasty deal. The model tells you who wins and by how much, with the superflex and freshman caveats called out.</p>
+      <span class="go">Open &rarr;</span>
+    </a>
+    <a class="tool" href="NFL_Dynasty_Board.html">
+      <div class="ic"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="7" width="8" height="34"/><rect x="15" y="7" width="8" height="34"/><rect x="25" y="7" width="8" height="34"/><rect x="35" y="7" width="8" height="34"/></svg></div>
+      <h2>NFL Dynasty Board</h2>
+      <p>The NFL dynasty values the trade tools run on, on the same scale as the college board.</p>
+      <span class="go">Open &rarr;</span>
+    </a>
+  </div>
+
+  <div class="install" id="install">
+    <h2>Use it like an app</h2>
+    <div id="installIos" class="hidden">On iPhone: tap <b>Share</b> in Safari, then <b>Add to Home Screen</b>. AU Tools opens full screen from your home screen, like an app.</div>
+    <div id="installOther">Add <b>AU Tools</b> to your home screen and it opens full screen, like an app. In Chrome: open the menu, then <b>Install app</b> or <b>Add to Home screen</b>. On iPhone: Safari's <b>Share</b> button, then <b>Add to Home Screen</b>.</div>
+    <button class="btn hidden" id="installBtn">Install AU Tools</button>
+  </div>
+</main>
+
+<footer>
+  DevyDose · Alpha Universe · Decision aids, not guarantees. Not affiliated with any NFL, NCAA, or fantasy platform.
+</footer>
+<div class="au-footer">
+  <div class="au-fmark">DevyDose Alpha Universe &mdash; &copy; 2026 all rights reserved</div>
+  <div class="au-tele">TOOLS <b>3</b> &nbsp; STATUS <b>LIVE</b></div>
+  <div class="au-honesty"><p>Alpha Rating is a relative currency, not a fantasy-points projection. Freshman placements are projections, not backtested.</p></div>
+</div>
+<script>
+(function(){
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (standalone){ document.getElementById('install').classList.add('hidden'); return; }
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)){
+    document.getElementById('installIos').classList.remove('hidden');
+    document.getElementById('installOther').classList.add('hidden');
+  }
+  let deferred = null;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault(); deferred = e;
+    document.getElementById('installBtn').classList.remove('hidden');
+  });
+  document.getElementById('installBtn').addEventListener('click', () => {
+    if (!deferred) return;
+    deferred.prompt(); deferred = null;
+    document.getElementById('installBtn').classList.add('hidden');
+  });
+})();
+</script>
+</body>
+</html>

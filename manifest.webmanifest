@@ -1,0 +1,18 @@
+{
+  "name": "DevyDose Alpha Universe Tools",
+  "short_name": "AU Tools",
+  "description": "Sleeper roster manager, devy trade evaluator and NFL dynasty board on Alpha Universe values.",
+  "start_url": "tools.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#020817",
+  "theme_color": "#020817",
+  "icons": [
+    { "src": "assets/app-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Sleeper Roster Manager", "url": "sleeper.html" },
+    { "name": "Devy Trade Evaluator", "url": "trade.html" }
+  ]
+}
