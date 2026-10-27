@@ -36,3 +36,29 @@
   from = "/how"
   to = "/methodology.html"
   status = 200
+
+[[redirects]]
+  from = "/sleeper"
+  to = "/sleeper.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools"
+  to = "/tools.html"
+  status = 200
+
+[[redirects]]
+  from = "/command"
+  to = "/command.html"
+  status = 200
+
+# old name of the Command Center — keep shared links working
+[[redirects]]
+  from = "/fantrax"
+  to = "/command.html"
+  status = 301
+
+[[redirects]]
+  from = "/fantrax.html"
+  to = "/command.html"
+  status = 301
