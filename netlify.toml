@@ -37,10 +37,11 @@
   to = "/methodology.html"
   status = 200
 
+# the Sleeper Roster Manager now lives inside the Command Center
 [[redirects]]
   from = "/sleeper"
-  to = "/sleeper.html"
-  status = 200
+  to = "/command.html"
+  status = 301
 
 [[redirects]]
   from = "/tools"

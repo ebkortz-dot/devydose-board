@@ -1,7 +1,7 @@
 {
   "name": "Alpha Universe Command Center",
   "short_name": "AU Command",
-  "description": "Alpha Command Center and Sleeper Roster Manager on Alpha Universe values.",
+  "description": "Alpha Command Center: every Fantrax and Sleeper league on Alpha Universe values.",
   "start_url": "/command",
   "scope": "/",
   "display": "standalone",
@@ -13,7 +13,6 @@
   ],
   "shortcuts": [
     { "name": "Alpha Command Center", "url": "/command" },
-    { "name": "Sleeper Roster Manager", "url": "/sleeper" },
     { "name": "Trade Lab", "url": "/trade-lab" }
   ]
 }

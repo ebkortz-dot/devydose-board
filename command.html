@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DevyDose — Alpha Command Center</title>
-<meta name="description" content="Alpha Command Center: connect your C2C, dynasty or college fantasy leagues on Fantrax and Sleeper. Every roster valued on the Alpha Universe board, power rankings, mass trade offers and the free agents your league is sleeping on.">
+<meta name="description" content="Alpha Command Center: every C2C, dynasty, redraft and college fantasy league you play on Fantrax and Sleeper in one place. Power rankings, start/sit, waivers, mass trade offers and the free agents your league is sleeping on.">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#020817">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -130,6 +130,18 @@
   .card .ft{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:6px; color:var(--text-dim); font-size:0.72rem; }
   .delta.pos{ color:var(--good); } .delta.neg{ color:var(--warn); }
 
+  tr.swap td{ background:rgba(200,255,26,0.06); }
+  .slot{ display:inline-block; min-width:44px; font-size:0.65rem; font-weight:700; color:var(--text-dim); text-transform:uppercase; }
+  .badge.out{ background:rgba(242,21,34,0.22); color:#ff6b74; }
+  .note.good{ border-left-color:var(--good); }
+  .summary{ display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; margin-bottom:12px; }
+  .sumcard{ background:var(--panel-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; cursor:pointer; }
+  .sumcard:hover{ border-color:var(--accent-bright); }
+  .sumcard .ln{ font-weight:600; font-size:0.85rem; margin-bottom:4px; }
+  .sumcard .ok{ color:var(--good); font-size:0.75rem; }
+  .sumcard .bad{ color:var(--warn); font-size:0.75rem; }
+  .viewbar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; font-size:0.8rem; color:var(--text-dim); }
+  .viewbar select{ flex:1; min-width:220px; }
   .empty{ text-align:center; color:var(--text-dim); padding:22px; font-size:0.85rem; }
   .howto{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-top:22px; font-size:0.8rem; color:var(--text-dim); }
   .howto h2{ font-size:0.9rem; color:var(--text); margin:0 0 8px 0; }
@@ -157,7 +169,7 @@
 </div>
 <header>
   <h1>Alpha <span class="brand-accent">Command Center</span></h1>
-  <p>C2C, dynasty and college fantasy leagues on one Alpha Universe value scale. Power rankings, mass trade offers and free agents for Fantrax and Sleeper.</p>
+  <p>Every C2C, dynasty and college fantasy league you play, on Fantrax and Sleeper, in one place. Power rankings, start/sit, waivers and mass trade offers on the Alpha Universe value scale.</p>
   <a class="backlink" href="tools.html">&larr; All tools</a>
 </header>
 
@@ -174,7 +186,6 @@
       <input type="text" id="slUser" placeholder="Sleeper username" autocomplete="off" autocapitalize="off" spellcheck="false">
       <button class="btn" id="slFind">Find leagues</button>
     </div>
-    <div id="slPick"></div>
     <div class="status" id="status"></div>
   </div>
 
@@ -186,22 +197,32 @@
     <div id="slMap"></div>
   </div>
 
+  <div class="panel hidden" id="viewPanel">
+    <div class="viewbar"><label for="viewSel"><b>Viewing</b></label><select id="viewSel" aria-label="League to view"></select></div>
+    <div class="sub" id="viewMeta" style="margin-top:6px"></div>
+  </div>
+
   <div class="tabs hidden" id="tabs">
     <button class="tab on" data-tab="rank">Power Rankings</button>
     <button class="tab" data-tab="roster">My Roster</button>
+    <button class="tab" data-tab="lineup">Start / Sit</button>
     <button class="tab" data-tab="trades">Trade Finder</button>
     <button class="tab" data-tab="fa">Free Agents</button>
+    <button class="tab" data-tab="all">All Leagues</button>
   </div>
 
   <section id="tab-rank" class="tabpane hidden"></section>
   <section id="tab-roster" class="tabpane hidden"></section>
   <section id="tab-trades" class="tabpane hidden"></section>
   <section id="tab-fa" class="tabpane hidden"></section>
+  <section id="tab-lineup" class="tabpane hidden"></section>
+  <section id="tab-all" class="tabpane hidden"></section>
 
   <div class="howto">
     <h2>How this works</h2>
     <ul>
       <li><strong>Built for three kinds of league.</strong> <b>C2C:</b> link your college and NFL sides — on Fantrax, or Fantrax college + Sleeper NFL — and run the whole franchise as one. <b>Dynasty:</b> connect a Sleeper or Fantrax NFL league on its own. <b>College fantasy (CFF):</b> add a Fantrax college league on its own.</li>
+      <li><strong>One page, every league.</strong> The <b>Viewing</b> switcher picks a Fantrax league set, any Sleeper league, or a linked C2C. <b>Start / Sit</b> and projection-based waivers work for Sleeper leagues (Fantrax doesn't publish projections). <b>All Leagues</b> checks every Sleeper lineup at once and shows the players you hold in more than one league.</li>
       <li><strong>Read-only, no login.</strong> Fantrax needs just the league ID; Sleeper just your username. Neither app lets outside tools submit trades or claims, so every offer has a copy button — paste it in yourself.</li>
       <li><strong>One scale, both sides.</strong> College players are valued on the live Alpha Universe devy board; NFL players on the AU NFL dynasty values. Both sit on the same scale, so a college prospect and a pro can be weighed in one deal — but read a close college-vs-pro verdict as a tier comparison, not point-for-point.</li>
       <li><strong>C2C franchises.</strong> Add your college league and your NFL league; teams with matching names are combined into one franchise, so rankings and trades see both rosters. If your NFL side is on Sleeper, link it below the leagues — each Sleeper manager is matched to his Fantrax team (exact name, the name in parentheses, or by elimination; you can fix any pairing), and trade offers can then mix college and NFL players across both apps.</li>
@@ -236,7 +257,8 @@ const S = {
   pool:{},              // fantraxId -> {n, pos, t, lg:'college'|'pro'}
   val:{},               // fantraxId -> AU value record
   coverage:null,
-  leagues:[],           // loaded leagues
+  fxAll:[],             // every Fantrax league added
+  leagues:[],           // Fantrax leagues in the current view (derived)
   myTeam:{},            // leagueId -> teamId
   tab:'rank'
 };
@@ -333,7 +355,14 @@ function assign(id, v, lg){
   S.val[id] = { val:+v.val, rank:v.rank||null, posrank:v.posrank||null,
                 tier:v.tier || (lg==='pro' ? 'NFL asset' : ''), fr:!!v.fr, lg };
 }
-function V(id){ const v = S.val[id]; return v ? v.val : 0; }
+function V(id){
+  if (nearTermMode() && id.startsWith('s:')) return nearTerm(id.slice(2), S.sl.league);
+  const v = S.val[id]; return v ? v.val : 0;
+}
+/* A redraft Sleeper league viewed on its own values players on projected
+   points over the next few weeks, not on dynasty value. */
+function nearTermMode(){ return !!(S.sl && !S.leagues.length && !isDynasty(S.sl.league)); }
+function valueLabel(){ return nearTermMode() ? `projected points, next ${PROJ_WEEKS} weeks (redraft league)` : 'AU value'; }
 
 /* ---- leagues ------------------------------------------------------------------ */
 function parseLeagueIds(s){
@@ -373,10 +402,10 @@ async function addLeagues(){
   try{
     await ensureData();
     for (const id of ids){
-      if (S.leagues.some(l => l.id===id)) continue;
+      if (S.fxAll.some(l => l.id===id)) continue;
       setStatus('Loading league '+id+'…');
       const l = await loadLeague(id);
-      S.leagues.push(l);
+      S.fxAll.push(l);
     }
     $('leagueInput').value = '';
     saveLeagues();
@@ -398,30 +427,29 @@ function ensureData(){
   return dataReady;
 }
 function saveLeagues(){
-  lsSet('dd_fantrax_leagues', JSON.stringify(S.leagues.map(l => l.id)));
+  lsSet('dd_fantrax_leagues', JSON.stringify(S.fxAll.map(l => l.id)));
   lsSet('dd_fantrax_myteam', JSON.stringify(S.myTeam));
 }
 function removeLeague(id){
-  S.leagues = S.leagues.filter(l => l.id !== id);
+  S.fxAll = S.fxAll.filter(l => l.id !== id);
   delete S.myTeam[id];
   saveLeagues(); afterLeaguesChanged();
 }
 function hasData(){ return S.leagues.length > 0 || !!S.sl; }
 function afterLeaguesChanged(){
-  const has = S.leagues.length > 0;
+  const has = S.fxAll.length > 0;
   $('leaguesPanel').classList.toggle('hidden', !has);
-  $('tabs').classList.toggle('hidden', !hasData());
-  $('sleeperPanel').classList.toggle('hidden', !S.sl);
   renderLeagueList();
-  if (S.sl) autoMapSleeper(), renderSleeperMap();
   if (has){
     const c = S.coverage && S.coverage.cov;
-    setStatus(`${S.leagues.length} league${S.leagues.length>1?'s':''} loaded` + (c ? ` · AU values matched: ${c.college.matched}/${c.college.total} college, ${c.pro.matched}/${c.pro.total} NFL` : ''));
-  } else if (!S.sl) setStatus('');
-  renderTab();
+    setStatus(`${S.fxAll.length} Fantrax league${S.fxAll.length>1?'s':''} loaded` + (c ? ` · AU values matched: ${c.college.matched}/${c.college.total} college, ${c.pro.matched}/${c.pro.total} NFL` : ''));
+  } else if (!S.slAll.length) setStatus('');
+  if (has && !S.slUser) S.view = 'fx';
+  else if (has) guessC2C();
+  return applyView();
 }
 function renderLeagueList(){
-  $('leagueList').innerHTML = S.leagues.map(l => {
+  $('leagueList').innerHTML = S.fxAll.map(l => {
     const teams = Object.values(l.teams).sort((a,b) => a.name.localeCompare(b.name));
     return `<div class="lrow">
       <span class="ln"><b>${esc(l.name)}</b> <span class="badge ${l.side==='college'?'col':'pro'}">${l.side==='college'?'College':(l.side==='pro'?'NFL':'College + NFL')}</span><br>
@@ -437,15 +465,15 @@ function renderLeagueList(){
     S.myTeam[s.dataset.lid] = s.value;
     // pick the same-named team in the other linked leagues automatically
     const nm = teamKey(findTeam(s.dataset.lid, s.value));
-    S.leagues.forEach(l => { if (l.id!==s.dataset.lid && !S.myTeam[l.id]){
+    S.fxAll.forEach(l => { if (l.id!==s.dataset.lid && !S.myTeam[l.id]){
       const t = Object.values(l.teams).find(t => teamKey(t)===nm); if (t) S.myTeam[l.id] = t.id; } });
     saveLeagues(); renderLeagueList();
-    if (S.sl){ autoMapSleeper(); saveSleeper(); renderSleeperMap(); }
+    if (S.view==='c2c' && S.sl){ autoMapSleeper(S.sl); saveSleeper(); renderSleeperMap(); }
     renderTab();
   });
   $('leagueList').querySelectorAll('[data-rm]').forEach(b => b.onclick = () => removeLeague(b.dataset.rm));
 }
-function findTeam(lid, tid){ const l = S.leagues.find(x => x.id===lid); return l && l.teams[tid]; }
+function findTeam(lid, tid){ const l = S.fxAll.find(x => x.id===lid); return l && l.teams[tid]; }
 function teamKey(t){ return t ? t.name.toLowerCase().replace(/[^a-z0-9]/g,'') : ''; }
 
 /* ---- franchises: same-named teams across the linked leagues -------------------- */
@@ -461,8 +489,9 @@ function franchises(){
     }
   }
   if (S.sl){
+    const paired = S.leagues.length > 0;
     for (const r of S.sl.rosters){
-      const k = S.sl.map[r.roster_id] || ('sl:'+r.roster_id);
+      const k = (paired && S.sl.map[r.roster_id]) || (isMine(r) ? '__me__' : 'sl:'+r.roster_id);
       const f = map[k] = map[k] || { key:k, names:[], me:k==='__me__', assets:[] };
       if (!f.names.includes(r.label)) f.names.push(r.label);
       r.players.forEach(pid => f.assets.push({ id:'s:'+pid,
@@ -516,11 +545,11 @@ function renderRank(){
   const el = $('tab-rank');
   const fr = franchises();
   const max = Math.max(1, ...fr.map(f => f.total));
-  let html = `<h2 class="sec">Power Rankings — AU Value</h2>
-    <p class="secsub">Total Alpha Universe value of every rostered player${sidesLabel()}. Tap a team to see its roster.</p>`;
+  let html = `<h2 class="sec">Power Rankings — ${nearTermMode() ? 'Next '+PROJ_WEEKS+' Weeks' : 'AU Value'}</h2>
+    <p class="secsub">${nearTermMode() ? 'Projected points over the next '+PROJ_WEEKS+' weeks for every rostered player (redraft league)' : 'Total Alpha Universe value of every rostered player'+sidesLabel()}. Tap a team to see its roster.</p>`;
   if (!fr.some(f => f.me)) html += `<div class="note warn"><span class="t">Pick your team</span>Choose your team next to each league above so the tool knows which roster is yours.</div>`;
   const both = fr.some(f => f.col) && fr.some(f => f.pro);
-  html += `<div class="tblwrap"><table><thead><tr><th>#</th><th>Team</th>${both?'<th class="num">College</th><th class="num">NFL</th>':''}<th class="num">${both?'Total':'AU value'}</th><th class="hide-sm"></th></tr></thead><tbody>`
+  html += `<div class="tblwrap"><table><thead><tr><th>#</th><th>Team</th>${both?'<th class="num">College</th><th class="num">NFL</th>':''}<th class="num">${both?'Total':(nearTermMode()?'Proj pts':'AU value')}</th><th class="hide-sm"></th></tr></thead><tbody>`
     + fr.map((f,i) => `<tr class="click ${f.me?'me':''}" data-k="${esc(f.key)}"><td>${i+1}</td><td><span class="nm">${esc(f.name)}</span>${f.me?' <span class="badge pro">You</span>':''}${f.names.length>1?'<br><span class="sub">'+esc(f.names.slice(1).join(' · '))+'</span>':''}</td>
       ${both?`<td class="num">${fmt(f.col)}</td><td class="num">${fmt(f.pro)}</td>`:''}<td class="num"><b>${fmt(f.total)}</b></td>
       <td class="hide-sm" style="width:30%"><div class="bar"><span class="c" style="width:${f.col/max*100}%"></span><span class="p" style="width:${f.pro/max*100}%"></span></div></td></tr>`).join('')
@@ -660,7 +689,7 @@ function offerCard(o){
 function renderTrades(){
   const el = $('tab-trades');
   const fr = franchises(), me = myFranchise(fr);
-  if (!me){ el.innerHTML = '<div class="empty">Choose your team next to each Fantrax league above first.</div>'; return; }
+  if (!me){ el.innerHTML = '<div class="empty">'+(S.leagues.length ? 'Choose your team next to each Fantrax league above first.' : 'You don\'t own a team in this league.')+'</div>'; return; }
   const mode = el.dataset.mode || 'shop', band = el.dataset.band || '10', scope = el.dataset.scope || 'all';
   const inScope = id => scope==='all' || PL(id).lg===scope;
   const rk = posRanks(fr)[me.key], n = fr.length;
@@ -670,7 +699,7 @@ function renderTrades(){
   others.sort((a,b) => V(b.id)-V(a.id));
 
   let html = `<h2 class="sec">Trade Finder</h2>
-    <p class="secsub">Your rank by position (1 = best of ${n}${bothSides() ? ', college + NFL' : ''}): ${SKILL.map(p => `${p} <b>${rk[p]}</b>${rk[p] > n*2/3 ? ' <span class="badge inj">need</span>' : (rk[p] <= n/3 ? ' <span class="badge pro">deep</span>' : '')}`).join(' · ')}</p>
+    <p class="secsub">Values: ${valueLabel()}. Your rank by position (1 = best of ${n}${bothSides() ? ', college + NFL' : ''}): ${SKILL.map(p => `${p} <b>${rk[p]}</b>${rk[p] > n*2/3 ? ' <span class="badge inj">need</span>' : (rk[p] <= n/3 ? ' <span class="badge pro">deep</span>' : '')}`).join(' · ')}</p>
     <div class="controls">
       <label>Mode <select id="tMode">
         <option value="shop" ${mode==='shop'?'selected':''}>Shop my player to every team</option>
@@ -753,6 +782,7 @@ function renderFA(){
   const hasInfo = S.leagues.some(l => Object.keys(l.playerInfo).length);
   // NFL free agents come from Sleeper when the NFL side lives there
   const fromSleeper = want==='pro' && !!S.sl;
+  if (fromSleeper) return renderSleeperWaivers(el);
   let list = Object.keys(S.val).filter(id => S.val[id].lg===want && id.startsWith('s:')===fromSleeper && !rostered.has(id) && (posF==='ALL' || PL(id).pos===posF)
     && (!hasInfo || fxStatus(id)==='FA' || fxStatus(id)===null));
   list.sort((a,b) => V(b)-V(a));
@@ -774,13 +804,31 @@ function renderFA(){
   $('faPos').onchange = e => { el.dataset.pos = e.target.value; renderFA(); };
 }
 
-/* ---- Sleeper NFL side ---------------------------------------------------------------
-   Same player cache and ID matching as sleeper.html (shared localStorage key,
-   same slim format), so the database is downloaded once for both tools. */
+/* ---- Sleeper ----------------------------------------------------------------------
+   One username loads every Sleeper league you're in. Any of them can be viewed
+   on its own, and one can be linked to the Fantrax leagues as the NFL side of a
+   C2C. Same player cache (shared localStorage key, same slim format) and
+   AU-value matching as the earlier standalone Sleeper page. */
 const SL = 'https://api.sleeper.app/v1';
+const SL_PROJ = 'https://api.sleeper.com';
 const SL_CACHE_KEY = 'dd_sleeper_players_v1';
 const SL_KEEP = new Set(['QB','RB','WR','TE','K','DEF','DL','LB','DB']);
-S.slPlayers = {}; S.sl = null;
+const PROJ_POS = ['QB','RB','WR','TE','K','DEF'];
+const PROJ_WEEKS = 3;                         // horizon for near-term value and waiver projections
+/* Lineup slot -> eligible fantasy positions. IDP slots are left out on
+   purpose: Sleeper's projection feed doesn't cover defensive players, so the
+   tool leaves those slots to you rather than call them blind. */
+const SLOT_ELIG = {
+  QB:['QB'], RB:['RB'], WR:['WR'], TE:['TE'], K:['K'], DEF:['DEF'],
+  FLEX:['RB','WR','TE'], WRRB_FLEX:['RB','WR'], REC_FLEX:['WR','TE'],
+  SUPER_FLEX:['QB','RB','WR','TE']
+};
+const IDP_SLOTS = ['DL','LB','DB','IDP_FLEX'];
+const SLOT_LABEL = { FLEX:'FLEX', WRRB_FLEX:'W/R', REC_FLEX:'W/T', SUPER_FLEX:'SF', IDP_FLEX:'IDP' };
+const OUT_STATUSES = ['Out','IR','PUP','Sus','NA','DNR','COV'];
+Object.assign(S, { slPlayers:{}, sl:null, slAll:[], slData:{}, slMaps:{}, slUser:null,
+                   c2cLink:'', view:'', proj:{}, trending:{}, week:1, season:'' });
+
 async function loadSleeperPlayers(){
   if (Object.keys(S.slPlayers).length) return;
   const cached = lsGet(SL_CACHE_KEY);
@@ -804,6 +852,7 @@ async function loadSleeperPlayers(){
   S.slPlayers = slim;
   lsSet(SL_CACHE_KEY, JSON.stringify({ts:Date.now(), data:slim}));
 }
+function SP(id){ return S.slPlayers[id] || { n:'Player '+id, pos:'?', fp:[], t:'', inj:'' }; }
 /* AU NFL values -> Sleeper IDs: exact name + position, team breaks a name
    collision, a suffix/punctuation-stripped name only when it is unique. */
 function mapSleeperValues(){
@@ -822,67 +871,167 @@ function mapSleeperValues(){
   }
   S.slCoverage = { matched, total:(S.proList||[]).length };
 }
-async function findSleeperLeagues(){
-  const uname = $('slUser').value.trim();
+
+/* ---- projections, re-scored per league ---------------------------------------- */
+async function loadProjections(){
+  const qs = 'season_type=regular&' + PROJ_POS.map(p=>'position[]='+p).join('&');
+  const weeks = [];
+  for (let w = S.week; w < S.week+PROJ_WEEKS && w <= 18; w++) weeks.push(w);
+  const res = await Promise.all(weeks.map(w => getJSON(`${SL_PROJ}/projections/nfl/${S.season}/${w}?${qs}`).catch(() => [])));
+  weeks.forEach((w,i) => {
+    const m = {}, teams = new Set();
+    for (const row of res[i] || []){
+      m[row.player_id] = { stats:row.stats||{}, opp:row.opponent||'' };
+      teams.add(row.team || SP(row.player_id).t);
+    }
+    S.proj[w] = { rows:m, teams };
+  });
+}
+function scorePts(stats, ss){
+  if (!stats) return 0;
+  let pts = 0, hit = false;
+  for (const k in ss){
+    const v = stats[k];
+    if (typeof v === 'number' && v !== 0){ pts += v * ss[k]; hit = true; }
+  }
+  return hit ? pts : (stats.pts_ppr || 0);
+}
+function projPts(id, week, league){
+  const wk = S.proj[week]; if (!wk) return null;
+  const row = wk.rows[id];
+  if (!row) return null;               // bye week, or no projection published
+  return scorePts(row.stats, league.scoring_settings||{});
+}
+function onBye(id, week){ const t = SP(id).t, wk = S.proj[week]; return !!(t && wk && wk.teams.size && !wk.teams.has(t)); }
+function projOpp(id, week){ const wk = S.proj[week]; const r = wk && wk.rows[id]; return r ? r.opp : ''; }
+function nearTerm(id, league){
+  let t = 0;
+  for (let w = S.week; w < S.week+PROJ_WEEKS; w++){ const p = projPts(id, w, league); if (p) t += p; }
+  return t;
+}
+async function loadTrending(){
+  try{ (await getJSON(SL+'/players/nfl/trending/add?lookback_hours=24&limit=200')).forEach(r => { S.trending[r.player_id] = r.count; }); }catch(e){}
+}
+function leagueKind(l){ const t = l.settings && l.settings.type; return t===2?'Dynasty':(t===1?'Keeper':'Redraft'); }
+function isDynasty(l){ const t = l && l.settings && l.settings.type; return t===2 || t===1; }
+
+/* ---- connect + league loading ------------------------------------------------------ */
+async function connectSleeper(uname, restore){
+  uname = (uname || $('slUser').value).trim();
   if (!uname){ setStatus('Enter your Sleeper username.', true); return; }
   try{
     setStatus('Finding '+uname+' on Sleeper…');
     const [user, state] = await Promise.all([ getJSON(SL+'/user/'+encodeURIComponent(uname)), getJSON(SL+'/state/nfl') ]);
-    if (!user || !user.user_id){ setStatus('No Sleeper user named "'+uname+'".', true); return; }
-    const leagues = await getJSON(`${SL}/user/${user.user_id}/leagues/nfl/${state.league_season || state.season}`) || [];
+    if (!user || !user.user_id){ setStatus('No Sleeper user named "'+uname+'". Check the spelling.', true); return; }
     S.slUser = user;
-    // suggest the Sleeper league whose name matches a linked Fantrax league
-    const fxNames = S.leagues.map(l => normName(l.name).replace(/\d{4}$/,''));
-    const guess = leagues.find(l => fxNames.some(n => n && (normName(l.name)===n || normName(l.name).includes(n) || n.includes(normName(l.name)))));
-    $('slPick').innerHTML = `<div class="connect" style="margin-top:10px">
-      <select id="slLeague" style="flex:1">${leagues.map(l => `<option value="${esc(l.league_id)}" ${guess && guess.league_id===l.league_id?'selected':''}>${esc(l.name)} · ${l.total_rosters} teams</option>`).join('')}</select>
-      <button class="btn" id="slLink">${S.leagues.length ? 'Link as NFL side' : 'Open league'}</button></div>`;
-    $('slLink').onclick = () => linkSleeper($('slLeague').value, uname);
-    setStatus(`${leagues.length} Sleeper leagues found${guess ? ' — '+guess.name+' looks like the match' : ''}.`);
-  }catch(e){ setStatus('Could not reach Sleeper: '+e.message, true); }
-}
-async function linkSleeper(leagueId, uname, savedMap){
-  try{
+    S.season = state.league_season || state.season;
+    S.week = Math.max(1, +(state.display_week || state.week || 1));
+    S.slAll = await getJSON(`${SL}/user/${user.user_id}/leagues/nfl/${S.season}`) || [];
+    if (!S.slAll.length){ setStatus('No '+S.season+' NFL leagues on Sleeper for '+uname+'.', true); return; }
     await ensureData();
-    if (!S.slUser || S.slUser.display_name.toLowerCase() !== uname.toLowerCase()) S.slUser = await getJSON(SL+'/user/'+encodeURIComponent(uname));
-    setStatus('Loading the Sleeper league…');
-    const [league, rosters, users] = await Promise.all([
-      getJSON(SL+'/league/'+leagueId), getJSON(SL+'/league/'+leagueId+'/rosters'), getJSON(SL+'/league/'+leagueId+'/users') ]);
     await loadSleeperPlayers();
     mapSleeperValues();
-    const uById = {}; (users||[]).forEach(u => uById[u.user_id] = u);
-    S.sl = { id:leagueId, name:league.name, user:uname, map:savedMap || {}, auto:{}, rosters:rosters.map(r => {
-      const u = uById[r.owner_id] || {};
-      const tn = u.metadata && u.metadata.team_name;
-      return { roster_id:r.roster_id, owner_id:r.owner_id, dn:u.display_name || ('Team '+r.roster_id), tn:tn || '',
-               label:(u.display_name || 'Team '+r.roster_id) + (tn ? ' ('+tn+')' : ''),
-               players:r.players || [], starters:r.starters || [], reserve:r.reserve || [], taxi:r.taxi || [] };
-    }) };
-    autoMapSleeper();
-    saveSleeper();
-    $('slPick').innerHTML = '';
-    afterLeaguesChanged();
-    setStatus(`Linked Sleeper ${league.name} · AU NFL values matched to Sleeper: ${S.slCoverage.matched}/${S.slCoverage.total}`);
-  }catch(e){ setStatus('Could not link the Sleeper league: '+e.message, true); }
+    setStatus('Loading projections…');
+    await Promise.all([ loadProjections(), loadTrending() ]);
+    if (restore){
+      S.c2cLink = S.slAll.some(l => l.league_id===restore.c2cLink) ? restore.c2cLink : '';
+      S.slMaps = restore.maps || {};
+      S.view = restore.view || '';
+    } else guessC2C();
+    if (!S.view || !viewOptions().some(o => o.v===S.view)) S.view = defaultView();
+    await applyView();
+    setStatus(`Sleeper ${user.display_name}: ${S.slAll.length} leagues · ${S.season} week ${S.week} · AU NFL values matched to Sleeper: ${S.slCoverage.matched}/${S.slCoverage.total}`);
+  }catch(e){ setStatus('Could not reach Sleeper: '+e.message, true); }
 }
-/* Pair each Sleeper manager with a Fantrax franchise. Only certain matches are
-   made automatically: your own team (by username), an exact name or team-name
-   match, a Fantrax name carrying the Sleeper name in parentheses, then a
-   single leftover pair by elimination. Anything else waits for you. */
+/* Suggest the C2C partner: the Sleeper league whose name matches a Fantrax league. */
+function guessC2C(){
+  if (!S.fxAll.length || !S.slAll.length || S.c2cLink) return;
+  const fxNames = S.fxAll.map(l => normName(l.name).replace(/\d{4}$/,''));
+  const guess = S.slAll.find(l => fxNames.some(n => n && (normName(l.name)===n || normName(l.name).includes(n) || n.includes(normName(l.name)))));
+  if (guess){ S.c2cLink = guess.league_id; S.view = 'c2c'; }
+}
+async function loadSlLeague(id){
+  if (S.slData[id]) return S.slData[id];
+  const league = S.slAll.find(l => l.league_id===id) || await getJSON(SL+'/league/'+id);
+  const [rosters, users] = await Promise.all([ getJSON(SL+'/league/'+id+'/rosters'), getJSON(SL+'/league/'+id+'/users') ]);
+  const uById = {}; (users||[]).forEach(u => uById[u.user_id] = u);
+  const d = { id, name:league.name, league, map:S.slMaps[id] || (S.slMaps[id] = {}), auto:{}, rosters:(rosters||[]).map(r => {
+    const u = uById[r.owner_id] || {};
+    const tn = u.metadata && u.metadata.team_name;
+    return { roster_id:r.roster_id, owner_id:r.owner_id, co_owners:r.co_owners || [], settings:r.settings || {},
+             dn:u.display_name || ('Team '+r.roster_id), tn:tn || '',
+             label:(u.display_name || 'Team '+r.roster_id) + (tn ? ' ('+tn+')' : ''),
+             players:r.players || [], starters:r.starters || [], reserve:r.reserve || [], taxi:r.taxi || [] };
+  }) };
+  d.mine = d.rosters.find(isMine) || null;
+  S.slData[id] = d;
+  return d;
+}
+function isMine(r){ const u = S.slUser && S.slUser.user_id; return !!u && (r.owner_id===u || r.co_owners.includes(u)); }
+
+/* ---- the view: a Fantrax set, one Sleeper league, or the linked C2C -------------- */
+function viewOptions(){
+  const o = [];
+  if (S.fxAll.length && S.c2cLink){
+    const sl = S.slAll.find(l => l.league_id===S.c2cLink);
+    o.push({ g:'C2C', v:'c2c', t:`${S.fxAll.map(l => l.name).join(' + ')} + ${sl ? sl.name : 'Sleeper'}` });
+  }
+  if (S.fxAll.length) o.push({ g:'Fantrax', v:'fx', t:S.fxAll.map(l => l.name).join(' + ') + (S.fxAll.length > 1 ? ' (linked)' : '') });
+  S.slAll.forEach(l => o.push({ g:'Sleeper', v:'sl:'+l.league_id, t:`${l.name} · ${l.total_rosters} teams · ${leagueKind(l)}` }));
+  return o;
+}
+function defaultView(){ const o = viewOptions(); return o.length ? o[0].v : ''; }
+async function applyView(){
+  if (!viewOptions().some(o => o.v===S.view)) S.view = defaultView();
+  const v = S.view;
+  const slId = v==='c2c' ? S.c2cLink : (v.startsWith('sl:') ? v.slice(3) : '');
+  S.leagues = (v==='fx' || v==='c2c') ? S.fxAll : [];
+  S.sl = null;
+  if (slId){
+    setStatus('Loading '+((S.slAll.find(l => l.league_id===slId)||{}).name || 'league')+'…');
+    try{ S.sl = await loadSlLeague(slId); }catch(e){ setStatus('Could not load that Sleeper league: '+e.message, true); }
+    if (S.sl && v==='c2c') autoMapSleeper(S.sl);
+    if (S.slUser) setStatus(`Sleeper ${S.slUser.display_name}: ${S.slAll.length} leagues · ${S.season} week ${S.week}`);
+  }
+  saveSleeper();
+  renderViewBar();
+  renderSleeperMap();
+  $('tabs').classList.toggle('hidden', !hasData());
+  renderTab();
+}
+function renderViewBar(){
+  const opts = viewOptions();
+  $('viewPanel').classList.toggle('hidden', !opts.length);
+  const groups = ['C2C','Fantrax','Sleeper'].filter(g => opts.some(o => o.g===g));
+  $('viewSel').innerHTML = groups.map(g => `<optgroup label="${g}">` + opts.filter(o => o.g===g).map(o =>
+    `<option value="${esc(o.v)}" ${o.v===S.view?'selected':''}>${esc(o.t)}</option>`).join('') + `</optgroup>`).join('');
+  let meta = '';
+  if (S.sl){
+    const l = S.sl.league, st = l.settings || {};
+    meta = `${leagueKind(l)} · ` + (l.roster_positions||[]).filter(x => x!=='BN').map(x => SLOT_LABEL[x]||x).join(' · ');
+    if (st.waiver_type===2 && S.sl.mine) meta += ` · FAAB left $${(st.waiver_budget||0) - (S.sl.mine.settings.waiver_budget_used||0)}`;
+  } else if (S.leagues.length) meta = 'Fantrax · ' + S.leagues.map(l => l.side==='college' ? 'college' : (l.side==='pro' ? 'NFL' : 'college + NFL')).join(' + ');
+  $('viewMeta').textContent = meta;
+}
+$('viewSel').onchange = e => { S.view = e.target.value; applyView(); };
+
+/* Pair each Sleeper manager with a Fantrax franchise (C2C view only). Only
+   certain matches are made automatically: your own team (by username), an
+   exact name or team-name match, a Fantrax name carrying the Sleeper name in
+   parentheses, then a single leftover pair by elimination. Anything else
+   waits for you. */
 function fantraxFranchises(){
-  const keep = S.sl; S.sl = null;
-  const fr = franchises(); S.sl = keep;
+  const keep = [S.sl, S.leagues]; S.sl = null; S.leagues = S.fxAll;
+  const fr = franchises(); [S.sl, S.leagues] = keep;
   return fr;
 }
-function autoMapSleeper(){
-  const sl = S.sl; if (!sl) return;
+function autoMapSleeper(sl){
   const fx = fantraxFranchises();
   const taken = new Set(Object.values(sl.map).filter(Boolean));
   const set = (r, k, how) => { if (!k || taken.has(k)) return; sl.map[r.roster_id] = k; sl.auto[r.roster_id] = how; taken.add(k); };
-  const meUid = S.slUser && S.slUser.user_id;
   for (const r of sl.rosters){
     if (sl.map[r.roster_id] !== undefined) continue;
-    if (r.owner_id && r.owner_id === meUid){ sl.map[r.roster_id] = '__me__'; sl.auto[r.roster_id] = 'you'; taken.add('__me__'); continue; }
+    if (isMine(r)){ sl.map[r.roster_id] = '__me__'; sl.auto[r.roster_id] = 'you'; taken.add('__me__'); continue; }
     const cands = [r.dn, r.tn].filter(Boolean).map(normName);
     const hit = fx.filter(f => !f.me && f.names.some(nm => {
       const n = normName(nm), paren = (nm.match(/\(([^)]+)\)/) || [])[1];
@@ -895,38 +1044,277 @@ function autoMapSleeper(){
   if (openR.length === 1 && openF.length === 1) set(openR[0], openF[0].key, 'elimination');
 }
 function saveSleeper(){
-  if (!S.sl){ lsSet('dd_c2c_sleeper', ''); return; }
-  lsSet('dd_c2c_sleeper', JSON.stringify({ id:S.sl.id, user:S.sl.user, map:S.sl.map }));
+  if (!S.slUser) return;                // nothing connected yet; Disconnect clears it explicitly
+  lsSet('dd_cc_sleeper', JSON.stringify({ user:S.slUser.display_name, view:S.view, c2cLink:S.c2cLink, maps:S.slMaps }));
 }
+/* Sleeper account row, the C2C partner picker and (in C2C view) the pairings. */
 function renderSleeperMap(){
-  const sl = S.sl;
-  if (!sl){ $('slMap').innerHTML = ''; return; }
-  const fx = fantraxFranchises();
-  const pairing = S.leagues.length > 0;
-  const unmatched = pairing ? sl.rosters.filter(r => !sl.map[r.roster_id]).length : 0;
-  const how = { you:'your team', name:'name match', elimination:'by elimination' };
-  $('slMap').innerHTML = `<div class="lrow"><span class="ln"><b>${esc(sl.name)}</b> <span class="badge pro">NFL · Sleeper</span><br>
-      <span class="sub">${sl.rosters.length} teams${pairing ? ' · '+(unmatched ? unmatched+' not linked to Fantrax yet' : 'every manager linked to Fantrax') : ''}</span></span>
-      ${pairing ? `<button class="btn ghost sm" id="slToggle">${S.slOpen ? 'Hide' : 'Check'} pairings</button>` : ''}
-      <button class="btn ghost sm" id="slRemove">Unlink</button></div>
-    <div id="slRows" class="${pairing && (S.slOpen || unmatched) ? '' : 'hidden'}">` + sl.rosters.map(r => `<div class="lrow">
-      <span class="ln">${esc(r.label)}${sl.auto[r.roster_id] ? ` <span class="sub">· ${how[sl.auto[r.roster_id]]}</span>` : ''}</span>
-      <select data-rid="${r.roster_id}" aria-label="Fantrax team for ${esc(r.dn)}">
-        <option value="">— not linked —</option>
-        ${fx.map(f => `<option value="${esc(f.key)}" ${sl.map[r.roster_id]===f.key?'selected':''}>${esc(f.name)}${f.me?' (you)':''}</option>`).join('')}
-      </select></div>`).join('') + `</div>`;
-  $('slMap').querySelectorAll('select').forEach(sel => sel.onchange = () => {
+  $('sleeperPanel').classList.toggle('hidden', !S.slUser);
+  if (!S.slUser){ $('slMap').innerHTML = ''; return; }
+  let html = `<div class="lrow"><span class="ln"><b>Sleeper · ${esc(S.slUser.display_name)}</b><br><span class="sub">${S.slAll.length} leagues · week ${S.week}</span></span>
+    <button class="btn ghost sm" id="slRemove">Disconnect</button></div>`;
+  if (S.fxAll.length){
+    html += `<div class="lrow"><span class="ln">C2C: Sleeper league that is the NFL side of your Fantrax league</span>
+      <select id="c2cSel"><option value="">— none —</option>${S.slAll.map(l => `<option value="${esc(l.league_id)}" ${l.league_id===S.c2cLink?'selected':''}>${esc(l.name)}</option>`).join('')}</select></div>`;
+  }
+  const sl = S.view==='c2c' ? S.sl : null;
+  if (sl){
+    const fx = fantraxFranchises();
+    const unmatched = sl.rosters.filter(r => !sl.map[r.roster_id]).length;
+    const how = { you:'your team', name:'name match', elimination:'by elimination' };
+    html += `<div class="lrow"><span class="ln"><span class="sub">${unmatched ? unmatched+' Sleeper manager'+(unmatched>1?'s':'')+' not linked to a Fantrax team yet' : 'Every Sleeper manager is linked to a Fantrax team'}</span></span>
+      <button class="btn ghost sm" id="slToggle">${S.slOpen ? 'Hide' : 'Check'} pairings</button></div>
+      <div class="${S.slOpen || unmatched ? '' : 'hidden'}">` + sl.rosters.map(r => `<div class="lrow">
+        <span class="ln">${esc(r.label)}${sl.auto[r.roster_id] ? ` <span class="sub">· ${how[sl.auto[r.roster_id]]}</span>` : ''}</span>
+        <select data-rid="${r.roster_id}" aria-label="Fantrax team for ${esc(r.dn)}">
+          <option value="">— not linked —</option>
+          ${fx.map(f => `<option value="${esc(f.key)}" ${sl.map[r.roster_id]===f.key?'selected':''}>${esc(f.name)}${f.me?' (you)':''}</option>`).join('')}
+        </select></div>`).join('') + `</div>`;
+  }
+  $('slMap').innerHTML = html;
+  $('slRemove').onclick = () => { lsSet('dd_cc_sleeper', ''); lsSet('dd_c2c_sleeper', ''); S.slUser = null; S.slAll = []; S.slData = {}; S.c2cLink = ''; S.view = ''; saveSleeper(); applyView(); setStatus(''); };
+  if ($('c2cSel')) $('c2cSel').onchange = e => { S.c2cLink = e.target.value; S.view = S.c2cLink ? 'c2c' : 'fx'; applyView(); };
+  if ($('slToggle')) $('slToggle').onclick = () => { S.slOpen = !S.slOpen; renderSleeperMap(); };
+  $('slMap').querySelectorAll('select[data-rid]').forEach(sel => sel.onchange = () => {
     const rid = sel.dataset.rid;
     // one Sleeper team per franchise: free the franchise from whoever held it
-    for (const k in sl.map) if (sl.map[k] === sel.value && k !== rid) sl.map[k] = '';
+    for (const k in sl.map) if (sl.map[k] === sel.value && String(k) !== rid) sl.map[k] = '';
     sl.map[rid] = sel.value; delete sl.auto[rid];
     saveSleeper(); renderSleeperMap(); renderTab();
   });
-  if ($('slToggle')) $('slToggle').onclick = () => { S.slOpen = !S.slOpen; renderSleeperMap(); };
-  $('slRemove').onclick = () => { S.sl = null; saveSleeper(); renderSleeperMap(); afterLeaguesChanged(); };
 }
-$('slFind').onclick = findSleeperLeagues;
-$('slUser').addEventListener('keydown', e => { if (e.key==='Enter') findSleeperLeagues(); });
+$('slFind').onclick = () => connectSleeper();
+$('slUser').addEventListener('keydown', e => { if (e.key==='Enter') connectSleeper(); });
+
+/* ---- start / sit -------------------------------------------------------------------
+   Fill the most restrictive slots first (QB before SUPER_FLEX, RB before FLEX),
+   each with the highest-projected eligible player still available. For the
+   nested slot sets Sleeper uses, that greedy order yields the best lineup. */
+function availablePts(id, l){
+  if (OUT_STATUSES.includes(SP(id).inj)) return 0;
+  const pts = projPts(id, S.week, l);
+  return pts == null ? 0 : pts;
+}
+function optimalLineup(roster, l){
+  const slots = (l.roster_positions||[]).map((s,i) => ({s,i})).filter(o => SLOT_ELIG[o.s]);
+  const pool = roster.players.filter(id => !roster.reserve.includes(id) && !roster.taxi.includes(id));
+  const used = new Set();
+  const out = new Array((l.roster_positions||[]).length).fill(null);
+  slots.sort((a,b) => SLOT_ELIG[a.s].length - SLOT_ELIG[b.s].length);
+  for (const o of slots){
+    let best = null, bestPts = -1;
+    for (const id of pool){
+      if (used.has(id) || !SP(id).fp.some(f => SLOT_ELIG[o.s].includes(f))) continue;
+      const pts = availablePts(id, l);
+      if (pts > bestPts){ best = id; bestPts = pts; }
+    }
+    if (best){ used.add(best); out[o.i] = best; }
+  }
+  return alignToCurrent(out, roster.starters, l);
+}
+/* Same players, fewer moves: keep each recommended starter in the slot he
+   already occupies, and only re-seat the rest. Falls back to the solver's
+   own seating if the re-seat can't place everyone legally. */
+function alignToCurrent(opt, cur, l){
+  const rp = l.roster_positions||[];
+  const optSet = new Set(opt.filter(Boolean));
+  const out = rp.map((s,i) => (SLOT_ELIG[s] && cur[i] && optSet.has(cur[i])) ? cur[i] : null);
+  const placed = new Set(out.filter(Boolean));
+  const rest = [...optSet].filter(id => !placed.has(id)).sort((a,b) => SP(a).fp.length - SP(b).fp.length);
+  const open = rp.map((s,i) => i).filter(i => SLOT_ELIG[rp[i]] && !out[i])
+    .sort((a,b) => SLOT_ELIG[rp[a]].length - SLOT_ELIG[rp[b]].length);
+  for (const i of open){
+    const k = rest.findIndex(id => SP(id).fp.some(f => SLOT_ELIG[rp[i]].includes(f)));
+    if (k >= 0) out[i] = rest.splice(k,1)[0];
+  }
+  return rest.length ? opt : out;
+}
+function lineupIssues(d){
+  const l = d.league, r = d.mine;
+  if (!r) return null;
+  const opt = optimalLineup(r, l);
+  const cur = r.starters;
+  const rp = l.roster_positions||[];
+  const scored = (id,i) => id && id!=='0' && SLOT_ELIG[rp[i]];   // IDP slots are left to the manager
+  const curSet = new Set(cur.filter(scored));
+  const optSet = new Set(opt.filter(Boolean));
+  const benchIn = [...optSet].filter(id => !curSet.has(id));
+  const benchOut = [...curSet].filter(id => !optSet.has(id));
+  const curPts = cur.reduce((s,id,i) => s + (scored(id,i) ? availablePts(id,l) : 0), 0);
+  const optPts = opt.reduce((s,id) => s + (id ? availablePts(id,l) : 0), 0);
+  const empties = cur.filter((id,i) => SLOT_ELIG[rp[i]] && (!id || id==='0')).length;
+  const dead = cur.filter((id,i) => scored(id,i) && (OUT_STATUSES.includes(SP(id).inj) || projPts(id,S.week,l)==null)).length;
+  return { opt, cur, benchIn, benchOut, curPts, optPts, gain:optPts-curPts, empties, dead };
+}
+function fmt1(n){ return n==null ? '—' : (+n).toFixed(1); }
+function injBadge(id){
+  const s = SP(id).inj;
+  return s ? `<span class="badge ${OUT_STATUSES.includes(s)?'out':'inj'}">${esc(s)}</span>` : '';
+}
+function slCell(id, extra){
+  const p = SP(id);
+  return `<span class="nm">${esc(p.n)}</span> ${injBadge(id)} ${extra||''}<br><span class="sub">${esc(p.pos)}${p.t?' · '+esc(p.t):''}</span>`;
+}
+function opp(id){
+  const o = projOpp(id, S.week);
+  if (o) return `<span class="sub">vs ${esc(o)}</span>`;
+  if (onBye(id, S.week)) return '<span class="badge inj">Bye</span>';
+  return SP(id).t ? '<span class="badge">No proj</span>' : '<span class="badge">FA</span>';
+}
+function renderLineup(){
+  const el = $('tab-lineup');
+  if (!S.sl){
+    el.innerHTML = `<div class="empty">Start / Sit runs on Sleeper leagues — Fantrax doesn't publish weekly projections.${S.slUser ? ' Pick a Sleeper league (or your C2C) in <b>Viewing</b> above.' : ' Connect your Sleeper username above.'}</div>`;
+    return;
+  }
+  const d = S.sl, l = d.league, r = d.mine;
+  if (!r){ el.innerHTML = '<div class="empty">You don\'t own a team in this Sleeper league.</div>'; return; }
+  const iss = lineupIssues(d);
+  let html = `<h2 class="sec">Start / Sit — Week ${S.week} · ${esc(d.name)}</h2>
+    <p class="secsub">Projections re-scored with this league's scoring, best legal lineup built for your slots.</p>`;
+  if (iss.empties || iss.dead){
+    html += `<div class="note warn"><span class="t">Fix now</span>${iss.empties?iss.empties+' empty starting slot'+(iss.empties>1?'s':'')+'. ':''}${iss.dead?iss.dead+' starter'+(iss.dead>1?'s are':' is')+' out, on bye, or has no projection.':''}</div>`;
+  }
+  if (iss.benchIn.length){
+    html += `<div class="note good"><span class="t">Recommended changes · +${fmt1(iss.gain)} projected pts</span>`
+      + iss.benchIn.map((id,i) => {
+          const outId = iss.benchOut[i];
+          return `Start <b>${esc(SP(id).n)}</b> (${fmt1(availablePts(id,l))})` + (outId ? ` over <b>${esc(SP(outId).n)}</b> (${fmt1(availablePts(outId,l))})` : '');
+        }).join('<br>') + `</div>`;
+  } else {
+    html += `<div class="note good"><span class="t">Lineup is optimal</span>Your current starters match the best projected lineup (${fmt1(iss.curPts)} pts).</div>`;
+  }
+  if ((l.roster_positions||[]).some(x => IDP_SLOTS.includes(x))){
+    html += `<div class="note"><span class="t">IDP slots</span>Sleeper doesn't publish IDP projections, so your defensive slots aren't scored here — set those yourself.</div>`;
+  }
+  html += `<div class="tblwrap"><table><thead><tr><th>Slot</th><th>Current</th><th class="num">Proj</th><th>Optimal</th><th class="num">Proj</th></tr></thead><tbody>`;
+  (l.roster_positions||[]).forEach((x,i) => {
+    if (!SLOT_ELIG[x]) return;
+    const c = iss.cur[i], o = iss.opt[i], cOk = c && c!=='0';
+    html += `<tr class="${(cOk ? c : null) !== o ? 'swap' : ''}"><td><span class="slot">${esc(SLOT_LABEL[x]||x)}</span></td>
+      <td>${cOk ? slCell(c, opp(c)) : '<span class="sub">— empty —</span>'}</td>
+      <td class="num">${cOk ? fmt1(projPts(c,S.week,l)) : '—'}</td>
+      <td>${o ? slCell(o, opp(o)) : '<span class="sub">no eligible player</span>'}</td>
+      <td class="num">${o ? fmt1(availablePts(o,l)) : '—'}</td></tr>`;
+  });
+  html += `</tbody></table></div>`;
+  const starters = new Set(iss.opt.filter(Boolean));
+  const bench = r.players.filter(id => !starters.has(id) && !r.starters.includes(id) && SLOT_ELIG.SUPER_FLEX.concat(['K','DEF']).some(f => SP(id).fp.includes(f)))
+    .sort((a,b) => availablePts(b,l)-availablePts(a,l));
+  if (bench.length){
+    html += `<h2 class="sec" style="margin-top:18px">Bench</h2><div class="tblwrap"><table><thead><tr><th>Player</th><th class="num">Proj</th><th class="num hide-sm">${PROJ_WEEKS}-wk</th><th class="num">AU value</th></tr></thead><tbody>`
+      + bench.map(id => `<tr><td>${slCell(id, (r.reserve.includes(id)?'<span class="badge">IR</span>':'')+(r.taxi.includes(id)?'<span class="badge">Taxi</span>':'')+opp(id))}</td>
+        <td class="num">${fmt1(projPts(id,S.week,l))}</td><td class="num hide-sm">${fmt1(nearTerm(id,l))}</td><td class="num">${fmt(auVal(id))}</td></tr>`).join('')
+      + `</tbody></table></div>`;
+  }
+  el.innerHTML = html;
+}
+function auVal(rawId){ const v = S.val['s:'+rawId]; return v ? v.val : 0; }
+
+/* ---- Sleeper waivers (the NFL side of Free Agents when it lives on Sleeper) ------- */
+function renderSleeperWaivers(el){
+  const d = S.sl, l = d.league, r = d.mine;
+  const rostered = new Set(); d.rosters.forEach(x => x.players.forEach(id => rostered.add(id)));
+  const posOk = new Set(); (l.roster_positions||[]).forEach(x => (SLOT_ELIG[x]||[]).forEach(p => posOk.add(p)));
+  const dyn = isDynasty(l);
+  const posFilter = el.dataset.wpos || 'ALL';
+  const sortBy = el.dataset.wsort || (dyn ? 'val' : 'near');
+  let pool = [];
+  for (const id in S.slPlayers){
+    if (rostered.has(id)) continue;
+    const p = S.slPlayers[id];
+    if (!p.fp.some(f => posOk.has(f)) || (posFilter!=='ALL' && !p.fp.includes(posFilter))) continue;
+    const near = nearTerm(id, l), val = auVal(id), hot = S.trending[id]||0, wk = projPts(id,S.week,l);
+    if (!near && !val && !hot) continue;
+    if (!p.t && !val) continue;          // free agents in real life, not just in this league
+    pool.push({id, near, val, hot, wk:wk||0});
+  }
+  pool.sort((a,b) => (b[sortBy]-a[sortBy]) || (b.near-a.near));
+  pool = pool.slice(0, 40);
+  let dropHtml = '';
+  if (r){
+    const opt = new Set(optimalLineup(r,l).filter(Boolean));
+    const metric = id => dyn ? auVal(id) : nearTerm(id,l);
+    const bench = r.players.filter(id => !opt.has(id) && !r.reserve.includes(id) && !r.taxi.includes(id)).sort((a,b) => metric(a)-metric(b));
+    if (bench.length){
+      dropHtml = `<div class="note"><span class="t">Drop candidates on your bench</span>`
+        + bench.slice(0,3).map(id => `<b>${esc(SP(id).n)}</b> <span class="sub">${esc(SP(id).pos)} · ${dyn ? 'AU value '+fmt(auVal(id)) : fmt1(nearTerm(id,l))+' pts / '+PROJ_WEEKS+' wks'}</span>`).join(' &nbsp;·&nbsp; ')
+        + `</div>`;
+    }
+  }
+  const st = l.settings||{};
+  const faab = (st.waiver_type===2 && r) ? `FAAB left: <b>$${(st.waiver_budget||0)-(r.settings.waiver_budget_used||0)}</b> of $${st.waiver_budget||0}. ` : '';
+  const positions = ['ALL', ...['QB','RB','WR','TE','K','DEF'].filter(p => posOk.has(p))];
+  let html = `<h2 class="sec">Free Agents — ${esc(d.name)}</h2>
+    <p class="secsub">${faab}Unrostered players in this Sleeper league, ranked by ${dyn?'AU value':'projected points'}. 🔥 = Sleeper-wide adds in the last 24h.</p>
+    <div class="controls">
+      <label class="${bothSides() ? '' : 'hidden'}">Side <select id="faLg"><option value="college">College</option><option value="pro" selected>NFL</option></select></label>
+      <label>Position <select id="wPos">${positions.map(p => `<option ${p===posFilter?'selected':''}>${p}</option>`).join('')}</select></label>
+      <label>Sort <select id="wSort">
+        <option value="val" ${sortBy==='val'?'selected':''}>AU value</option>
+        <option value="near" ${sortBy==='near'?'selected':''}>Next ${PROJ_WEEKS} weeks</option>
+        <option value="wk" ${sortBy==='wk'?'selected':''}>This week</option>
+        <option value="hot" ${sortBy==='hot'?'selected':''}>Trending adds</option>
+      </select></label>
+    </div>${dropHtml}`;
+  if (!pool.length) html += '<div class="empty">No notable free agents at this position.</div>';
+  else html += `<div class="tblwrap"><table><thead><tr><th>Player</th><th class="num">Wk ${S.week}</th><th class="num">${PROJ_WEEKS}-wk</th><th class="num">AU value</th><th class="num">🔥 24h</th></tr></thead><tbody>`
+      + pool.map(x => `<tr><td>${slCell(x.id, opp(x.id))}</td><td class="num">${fmt1(x.wk)}</td><td class="num">${fmt1(x.near)}</td>
+          <td class="num">${fmt(x.val)}</td><td class="num">${x.hot?x.hot.toLocaleString():'—'}</td></tr>`).join('')
+      + `</tbody></table></div>`;
+  el.innerHTML = html;
+  $('faLg').onchange = e => { el.dataset.lg = e.target.value; renderFA(); };
+  $('wPos').onchange = e => { el.dataset.wpos = e.target.value; renderFA(); };
+  $('wSort').onchange = e => { el.dataset.wsort = e.target.value; renderFA(); };
+}
+
+/* ---- all leagues: every Sleeper lineup at once + exposure across both apps -------- */
+async function renderAll(){
+  const el = $('tab-all');
+  if (!S.slAll.length && !S.fxAll.length){ el.innerHTML = '<div class="empty">Connect Fantrax or Sleeper above.</div>'; return; }
+  el.innerHTML = '<div class="empty">Loading every league…</div>';
+  const all = [];
+  for (const l of S.slAll){ try{ all.push(await loadSlLeague(l.league_id)); }catch(e){} }
+  let html = '';
+  if (all.length){
+    html += `<h2 class="sec">All Sleeper Leagues — Week ${S.week}</h2>
+      <p class="secsub">Lineup check across every league. Tap a league to open it.</p><div class="summary">`;
+    for (const d of all){
+      const iss = lineupIssues(d);
+      let line;
+      if (!iss) line = '<span class="sub">No team owned</span>';
+      else if (iss.empties || iss.dead) line = `<span class="bad">${iss.empties?iss.empties+' empty · ':''}${iss.dead} out/bye in lineup</span>`;
+      else if (iss.benchIn.length) line = `<span class="bad">${iss.benchIn.length} swap${iss.benchIn.length>1?'s':''} · +${fmt1(iss.gain)} pts</span>`;
+      else line = '<span class="ok">Lineup optimal</span>';
+      html += `<div class="sumcard" data-v="${esc(d.id===S.c2cLink && S.fxAll.length ? 'c2c' : 'sl:'+d.id)}"><div class="ln">${esc(d.name)}</div>${line}</div>`;
+    }
+    html += '</div>';
+  }
+  if (S.fxAll.length){
+    html += `<h2 class="sec" style="margin-top:14px">Fantrax</h2><div class="summary">` + S.fxAll.map(l => {
+      const mine = S.myTeam[l.id] && l.teams[S.myTeam[l.id]];
+      return `<div class="sumcard" data-v="fx"><div class="ln">${esc(l.name)}</div><span class="sub">${mine ? esc(mine.name)+' · no lineup check (Fantrax has no projections)' : 'Pick your team above'}</span></div>`;
+    }).join('') + '</div>';
+  }
+  // exposure: the same player across every roster you own, matched by name + position
+  const count = {}, who = {};
+  const add = (key, label, id) => { (count[key] = count[key] || []).push(label); who[key] = who[key] || id; };
+  all.forEach(d => { if (d.mine) d.mine.players.forEach(id => { const p = SP(id); add(normName(p.n)+'|'+p.pos, d.name, 's:'+id); }); });
+  S.fxAll.forEach(l => { const t = S.myTeam[l.id] && l.teams[S.myTeam[l.id]];
+    if (t) t.roster.forEach(x => { const p = PL(x.id); add(normName(p.n)+'|'+p.pos, l.name, x.id); }); });
+  const leaguesOwned = all.filter(d => d.mine).length + S.fxAll.filter(l => S.myTeam[l.id]).length;
+  const rows = Object.entries(count).filter(([,ls]) => ls.length > 1).sort((a,b) => b[1].length-a[1].length || V(who[b[0]])-V(who[a[0]]));
+  html += `<h2 class="sec" style="margin-top:18px">Player Exposure</h2><p class="secsub">Players you roster in more than one league — your biggest bets.</p>`;
+  if (rows.length){
+    html += `<div class="tblwrap"><table><thead><tr><th>Player</th><th class="num">Leagues</th><th class="num">Share</th><th class="num">AU value</th></tr></thead><tbody>`
+      + rows.slice(0,60).map(([k,ls]) => { const id = who[k], p = PL(id);
+          return `<tr><td><span class="nm">${esc(p.n)}</span> ${lgBadge(id)}<br><span class="sub">${esc(p.pos)}${p.t?' · '+esc(p.t):''} · ${esc(ls.join(' · '))}</span></td>
+            <td class="num">${ls.length}</td><td class="num">${Math.round(ls.length/Math.max(1,leaguesOwned)*100)}%</td><td class="num">${fmt((S.val[id]||{}).val)}</td></tr>`; }).join('')
+      + `</tbody></table></div>`;
+  } else html += '<div class="empty">No player is on more than one of your rosters.</div>';
+  el.innerHTML = html;
+  el.querySelectorAll('.sumcard').forEach(c => c.onclick = () => { S.view = c.dataset.v; S.tab = c.dataset.v==='fx' ? 'rank' : 'lineup'; applyView(); });
+}
 
 /* ---- tabs + boot ------------------------------------------------------------------- */
 function renderTab(){
@@ -938,6 +1326,8 @@ function renderTab(){
     else if (S.tab==='roster') renderRoster();
     else if (S.tab==='trades') renderTrades();
     else if (S.tab==='fa') renderFA();
+    else if (S.tab==='lineup') renderLineup();
+    else if (S.tab==='all') renderAll().catch(e => { $('tab-all').innerHTML = '<div class="empty">Something went wrong: '+esc(e.message)+'</div>'; });
   }catch(e){
     $('tab-'+S.tab).innerHTML = '<div class="empty">Something went wrong: '+esc(e.message)+'</div>';
   }
@@ -947,14 +1337,22 @@ $('addBtn').onclick = addLeagues;
 $('leagueInput').addEventListener('keydown', e => { if (e.key==='Enter') addLeagues(); });
 (async function init(){
   try{ S.myTeam = JSON.parse(lsGet('dd_fantrax_myteam') || '{}') || {}; }catch(e){ S.myTeam = {}; }
-  const q = new URLSearchParams(location.search).get('league');
+  const params = new URLSearchParams(location.search);
+  let saved = null;
+  try{ saved = JSON.parse(lsGet('dd_cc_sleeper') || 'null'); }catch(e){}
   let ids = [];
   try{ ids = JSON.parse(lsGet('dd_fantrax_leagues') || '[]') || []; }catch(e){}
-  if (q) ids = [...new Set(ids.concat(parseLeagueIds(q)))];
+  if (params.get('league')) ids = [...new Set(ids.concat(parseLeagueIds(params.get('league'))))];
   if (ids.length){ $('leagueInput').value = ids.join(', '); await addLeagues(); }
-  let saved = null;
-  try{ saved = JSON.parse(lsGet('dd_c2c_sleeper') || 'null'); }catch(e){}
-  if (saved && saved.id){ $('slUser').value = saved.user; await linkSleeper(saved.id, saved.user, saved.map); }
+  if (!saved){
+    // carry over a link made before Sleeper leagues moved into the Command Center
+    let old = null;
+    try{ old = JSON.parse(lsGet('dd_c2c_sleeper') || 'null'); }catch(e){}
+    if (old && old.id) saved = { user:old.user, c2cLink:old.id, view:'c2c', maps:{ [old.id]:old.map || {} } };
+    else if (lsGet('dd_sleeper_user')) saved = { user:lsGet('dd_sleeper_user') };
+  }
+  const user = params.get('user') || (saved && saved.user);
+  if (user){ $('slUser').value = user; await connectSleeper(user, saved && saved.user===user ? saved : null); }
 })();
 </script>
 </body>

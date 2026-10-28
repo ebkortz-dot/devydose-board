@@ -1,7 +1,7 @@
 {
   "name": "DevyDose Alpha Universe Tools",
   "short_name": "AU Tools",
-  "description": "Alpha Command Center, Sleeper roster manager, devy trade evaluator and NFL dynasty board on Alpha Universe values.",
+  "description": "Alpha Command Center, devy trade evaluator and NFL dynasty board on Alpha Universe values.",
   "start_url": "tools.html",
   "scope": "./",
   "display": "standalone",
@@ -13,7 +13,6 @@
   ],
   "shortcuts": [
     { "name": "Alpha Command Center", "url": "command.html" },
-    { "name": "Sleeper Roster Manager", "url": "sleeper.html" },
     { "name": "Devy Trade Evaluator", "url": "trade.html" }
   ]
 }
