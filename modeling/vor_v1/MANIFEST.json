@@ -1,0 +1,58 @@
+{
+ "code/vor_bridge.py": {
+  "bytes": 7910,
+  "sha256": "e6dab4892941a71984b418911249c61502a3b64c954ce795397685f0b3bc21a1"
+ },
+ "code/vor_live.py": {
+  "bytes": 3741,
+  "sha256": "bd6c3db349c65deac3eda3d720c1bc36ddffb04958cba6d72eaf0d47a6417a44"
+ },
+ "code/vor_nfl.py": {
+  "bytes": 11638,
+  "sha256": "917628fe4532061372cd1811d3a72771dc48e31f35346f5228fc71217899efde"
+ },
+ "results/waiver/au_vor_values_waiver.csv": {
+  "bytes": 562375,
+  "sha256": "57c223b3268916253405cc9a7d71377ae03eaf0ddebb1e43566e0f85d67f0c8a"
+ },
+ "results/waiver/bridge_test_waiver.json": {
+  "bytes": 521,
+  "sha256": "c6e5e3a0ce89e13d65394d55758e3546acf38188d05aa00af5f91b34610a20f4"
+ },
+ "results/waiver/nfl_vor_2026_w08_waiver.csv": {
+  "bytes": 86428,
+  "sha256": "6fc31c7475787915747a7364b80fdd48b04458952c6f7736af6c197061907c94"
+ },
+ "results/waiver/vor_gate_report.json": {
+  "bytes": 7593,
+  "sha256": "89499d99cccd4e96f1958522ed37110c0b8016d6f4de7603691434498fd70989"
+ },
+ "results/starter/au_vor_values_starter.csv": {
+  "bytes": 561207,
+  "sha256": "174d626c98697fe10d06be7b4e07831a07d2cec3048c9011e953d0d1c2b02450"
+ },
+ "results/starter/bridge_test_starter.json": {
+  "bytes": 522,
+  "sha256": "acf7d1b77a63f9499c7bfe589eac7070621d8f4456a559b6b72eeaafe52f9660"
+ },
+ "results/starter/nfl_vor_2026_w08_starter.csv": {
+  "bytes": 86067,
+  "sha256": "d385da8e99658b6810bd8e3af7af578deb261f0e3c580fe9360ceee5c5656f42"
+ },
+ "results/starter/vor_gate_report.json": {
+  "bytes": 7591,
+  "sha256": "689b89c0442a7a264459330cbfc4f54c6a2fdbf955be35f0cf5c9be43d6c5cb6"
+ },
+ "inputs/draft_signal_2026_w09_v86w.json": {
+  "bytes": 931867,
+  "sha256": "1db4ffcbe9c580fae63cb695167038ea949b97ae5e22aacfb42b858c70711ea6"
+ },
+ "_external_inputs": {
+  "rookie-anchor-feed.json": {
+   "url": "https://devyalphauniverse.netlify.app/data/rookie-anchor-feed.json",
+   "sha256": "a974d449511d5c29269d917d5732d7997333ed205ece22223f1e9e001c5463bc",
+   "note": "live Trade Lab feed as fetched 2026-11-04 (6.2 MB, not committed)"
+  },
+  "nflverse": "stats_player_week_2012..2026.csv, players.csv, roster_weekly_2026.csv from github.com/nflverse/nflverse-data releases, fetched 2026-11-04"
+ }
+}

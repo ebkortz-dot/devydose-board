@@ -1,0 +1,390 @@
+{
+ "R": {
+  "QB": 16.741978214093596,
+  "RB": 10.001907342657343,
+  "WR": 10.12116797418268,
+  "TE": 9.774066521085752
+ },
+ "R_by_season": {
+  "2013": {
+   "QB": 15.857142857142858,
+   "QB_starters": 24,
+   "RB": 10.034,
+   "RB_starters": 33,
+   "WR": 10.286666666666667,
+   "WR_starters": 49,
+   "TE": 10.206666666666667,
+   "TE_starters": 14
+  },
+  "2014": {
+   "QB": 17.066666666666666,
+   "QB_starters": 24,
+   "RB": 9.91875,
+   "RB_starters": 28,
+   "WR": 9.806666666666667,
+   "WR_starters": 56,
+   "TE": 9.75,
+   "TE_starters": 12
+  },
+  "2015": {
+   "QB": 18.60363636363636,
+   "QB_starters": 24,
+   "RB": 10.39375,
+   "RB_starters": 32,
+   "WR": 10.176363636363636,
+   "WR_starters": 50,
+   "TE": 10.26875,
+   "TE_starters": 14
+  },
+  "2016": {
+   "QB": 16.985333333333333,
+   "QB_starters": 24,
+   "RB": 10.166666666666668,
+   "RB_starters": 33,
+   "WR": 10.5375,
+   "WR_starters": 48,
+   "TE": 10.50625,
+   "TE_starters": 15
+  },
+  "2017": {
+   "QB": 16.133333333333333,
+   "QB_starters": 24,
+   "RB": 9.520000000000001,
+   "RB_starters": 33,
+   "WR": 9.435714285714285,
+   "WR_starters": 51,
+   "TE": 8.94375,
+   "TE_starters": 12
+  },
+  "2018": {
+   "QB": 16.08727272727273,
+   "QB_starters": 24,
+   "RB": 10.166666666666666,
+   "RB_starters": 35,
+   "WR": 10.325,
+   "WR_starters": 49,
+   "TE": 9.215384615384615,
+   "TE_starters": 12
+  },
+  "2019": {
+   "QB": 17.473846153846157,
+   "QB_starters": 24,
+   "RB": 10.39375,
+   "RB_starters": 34,
+   "WR": 10.446666666666667,
+   "WR_starters": 50,
+   "TE": 9.646666666666667,
+   "TE_starters": 12
+  },
+  "2020": {
+   "QB": 18.081333333333337,
+   "QB_starters": 24,
+   "RB": 10.879999999999999,
+   "RB_starters": 32,
+   "WR": 10.83125,
+   "WR_starters": 52,
+   "TE": 10.014285714285714,
+   "TE_starters": 12
+  },
+  "2021": {
+   "QB": 16.378461538461536,
+   "QB_starters": 24,
+   "RB": 9.766666666666667,
+   "RB_starters": 37,
+   "WR": 10.178571428571429,
+   "WR_starters": 46,
+   "TE": 9.9375,
+   "TE_starters": 13
+  },
+  "2022": {
+   "QB": 15.603333333333333,
+   "QB_starters": 24,
+   "RB": 9.83,
+   "RB_starters": 35,
+   "WR": 9.794117647058824,
+   "WR_starters": 49,
+   "TE": 9.3625,
+   "TE_starters": 12
+  },
+  "2023": {
+   "QB": 16.8,
+   "QB_starters": 24,
+   "RB": 9.985714285714286,
+   "RB_starters": 35,
+   "WR": 10.106666666666666,
+   "WR_starters": 49,
+   "TE": 9.433333333333334,
+   "TE_starters": 12
+  },
+  "2024": {
+   "QB": 16.072857142857142,
+   "QB_starters": 24,
+   "RB": 9.814285714285715,
+   "RB_starters": 32,
+   "WR": 10.0,
+   "WR_starters": 51,
+   "TE": 9.944444444444445,
+   "TE_starters": 13
+  },
+  "2025": {
+   "QB": 16.5025,
+   "QB_starters": 24,
+   "RB": 9.154545454545454,
+   "RB_starters": 33,
+   "WR": 9.65,
+   "WR_starters": 46,
+   "TE": 9.833333333333334,
+   "TE_starters": 17
+  }
+ },
+ "sigma": {
+  "QB": [
+   5.337506730339646,
+   0.2026335578161922
+  ],
+  "RB": [
+   2.265608605276001,
+   0.3935629743055996
+  ],
+  "WR": [
+   2.01883556860675,
+   0.43911301855426027
+  ],
+  "TE": [
+   1.5563071632493934,
+   0.4942094199483082
+  ]
+ },
+ "splits": {
+  "A: train 2013-17 (purged) -> test 2018-23": {
+   "all": {
+    "n": 3058,
+    "mae_pred": 33.82,
+    "rho_pred": 0.7543,
+    "mae_base0": 40.51,
+    "rho_base0": 0.6579,
+    "mae_naive": 49.52,
+    "rho_naive": 0.5157
+   },
+   "QB": {
+    "n": 358,
+    "mae_pred": 56.9,
+    "rho_pred": 0.7745,
+    "mae_base0": 69.96,
+    "rho_base0": 0.677,
+    "mae_naive": 80.51,
+    "rho_naive": 0.5907
+   },
+   "RB": {
+    "n": 797,
+    "mae_pred": 38.85,
+    "rho_pred": 0.7365,
+    "mae_base0": 45.16,
+    "rho_base0": 0.6181,
+    "mae_naive": 59.04,
+    "rho_naive": 0.4424
+   },
+   "WR": {
+    "n": 1231,
+    "mae_pred": 32.0,
+    "rho_pred": 0.7656,
+    "mae_base0": 38.27,
+    "rho_base0": 0.6691,
+    "mae_naive": 48.1,
+    "rho_naive": 0.4987
+   },
+   "TE": {
+    "n": 672,
+    "mae_pred": 18.87,
+    "rho_pred": 0.7206,
+    "mae_base0": 23.39,
+    "rho_base0": 0.6254,
+    "mae_naive": 24.33,
+    "rho_naive": 0.5365
+   },
+   "vets": {
+    "n": 2156,
+    "mae_pred": 37.22,
+    "rho_pred": 0.776,
+    "mae_base0": 44.37,
+    "rho_base0": 0.6798,
+    "mae_naive": 55.5,
+    "rho_naive": 0.6484
+   },
+   "no_prior": {
+    "n": 902,
+    "mae_pred": 25.67,
+    "rho_pred": 0.6591,
+    "mae_base0": 31.26,
+    "rho_base0": 0.5628,
+    "mae_naive": 35.23,
+    "rho_naive": 0.0334
+   },
+   "top200": {
+    "n": 1200,
+    "mae_pred": 64.92,
+    "rho_pred": 0.6408,
+    "mae_base0": 71.69,
+    "rho_base0": 0.5036,
+    "mae_naive": 95.8,
+    "rho_naive": 0.3632
+   }
+  },
+  "B: train 2018-23 -> test 2013-17": {
+   "all": {
+    "n": 2396,
+    "mae_pred": 34.25,
+    "rho_pred": 0.7306,
+    "mae_base0": 40.14,
+    "rho_base0": 0.6218,
+    "mae_naive": 52.17,
+    "rho_naive": 0.4849
+   },
+   "QB": {
+    "n": 282,
+    "mae_pred": 49.48,
+    "rho_pred": 0.7825,
+    "mae_base0": 59.35,
+    "rho_base0": 0.6856,
+    "mae_naive": 66.28,
+    "rho_naive": 0.6415
+   },
+   "RB": {
+    "n": 643,
+    "mae_pred": 36.9,
+    "rho_pred": 0.6502,
+    "mae_base0": 44.14,
+    "rho_base0": 0.5113,
+    "mae_naive": 64.5,
+    "rho_naive": 0.303
+   },
+   "WR": {
+    "n": 929,
+    "mae_pred": 34.99,
+    "rho_pred": 0.7569,
+    "mae_base0": 40.35,
+    "rho_base0": 0.6403,
+    "mae_naive": 52.21,
+    "rho_naive": 0.516
+   },
+   "TE": {
+    "n": 542,
+    "mae_pred": 21.89,
+    "rho_pred": 0.6992,
+    "mae_base0": 25.05,
+    "rho_base0": 0.5929,
+    "mae_naive": 30.12,
+    "rho_naive": 0.4721
+   },
+   "vets": {
+    "n": 1679,
+    "mae_pred": 38.04,
+    "rho_pred": 0.7497,
+    "mae_base0": 44.37,
+    "rho_base0": 0.6497,
+    "mae_naive": 58.74,
+    "rho_naive": 0.6101
+   },
+   "no_prior": {
+    "n": 717,
+    "mae_pred": 25.37,
+    "rho_pred": 0.633,
+    "mae_base0": 30.25,
+    "rho_base0": 0.4938,
+    "mae_naive": 36.77,
+    "rho_naive": 0.0316
+   },
+   "top200": {
+    "n": 1000,
+    "mae_pred": 61.87,
+    "rho_pred": 0.6339,
+    "mae_base0": 70.25,
+    "rho_base0": 0.4486,
+    "mae_naive": 94.88,
+    "rho_naive": 0.3113
+   }
+  }
+ },
+ "worst_of_two": {
+  "all": {
+   "n": [
+    3058,
+    2396
+   ],
+   "vs_base0_dMAE": -5.890000000000001,
+   "vs_base0_dRho": 0.09639999999999993,
+   "vs_naive_dMAE": -15.700000000000003,
+   "vs_naive_dRho": 0.23859999999999992
+  },
+  "QB": {
+   "n": [
+    358,
+    282
+   ],
+   "vs_base0_dMAE": -9.870000000000005,
+   "vs_base0_dRho": 0.09689999999999999,
+   "vs_naive_dMAE": -16.800000000000004,
+   "vs_naive_dRho": 0.14100000000000001
+  },
+  "RB": {
+   "n": [
+    797,
+    643
+   ],
+   "vs_base0_dMAE": -6.309999999999995,
+   "vs_base0_dRho": 0.11840000000000006,
+   "vs_naive_dMAE": -20.189999999999998,
+   "vs_naive_dRho": 0.29410000000000003
+  },
+  "WR": {
+   "n": [
+    1231,
+    929
+   ],
+   "vs_base0_dMAE": -5.359999999999999,
+   "vs_base0_dRho": 0.09649999999999992,
+   "vs_naive_dMAE": -16.1,
+   "vs_naive_dRho": 0.2409
+  },
+  "TE": {
+   "n": [
+    672,
+    542
+   ],
+   "vs_base0_dMAE": -3.16,
+   "vs_base0_dRho": 0.09520000000000006,
+   "vs_naive_dMAE": -5.459999999999997,
+   "vs_naive_dRho": 0.18410000000000004
+  },
+  "vets": {
+   "n": [
+    2156,
+    1679
+   ],
+   "vs_base0_dMAE": -6.329999999999998,
+   "vs_base0_dRho": 0.09620000000000006,
+   "vs_naive_dMAE": -18.28,
+   "vs_naive_dRho": 0.12760000000000005
+  },
+  "no_prior": {
+   "n": [
+    902,
+    717
+   ],
+   "vs_base0_dMAE": -4.879999999999999,
+   "vs_base0_dRho": 0.09630000000000005,
+   "vs_naive_dMAE": -9.559999999999995,
+   "vs_naive_dRho": 0.6014
+  },
+  "top200": {
+   "n": [
+    1200,
+    1000
+   ],
+   "vs_base0_dMAE": -6.769999999999996,
+   "vs_base0_dRho": 0.1372,
+   "vs_naive_dMAE": -30.879999999999995,
+   "vs_naive_dRho": 0.2776
+  }
+ }
+}

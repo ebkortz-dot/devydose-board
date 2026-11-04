@@ -1,0 +1,39 @@
+{
+ "n_pairs": 293,
+ "n_by_pos": {
+  "WR": 122,
+  "RB": 72,
+  "QB": 50,
+  "TE": 49
+ },
+ "loo_spearman_all": 0.965,
+ "loo_mae_all": 21.7,
+ "loo_by_pos": {
+  "QB": {
+   "n": 50,
+   "spearman": 0.9494,
+   "mae": 32.7
+  },
+  "RB": {
+   "n": 72,
+   "spearman": 0.9354,
+   "mae": 17.5
+  },
+  "WR": {
+   "n": 122,
+   "spearman": 0.9694,
+   "mae": 19.4
+  },
+  "TE": {
+   "n": 49,
+   "spearman": 0.9498,
+   "mae": 22.6
+  }
+ },
+ "rookies_2026": {
+  "n": 37,
+  "spearman": 0.8566,
+  "mean_pred_minus_actual": -0.6,
+  "mae": 20.4
+ }
+}
