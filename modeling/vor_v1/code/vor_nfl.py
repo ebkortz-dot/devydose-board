@@ -38,6 +38,7 @@ import os
 # last starter); 'waiver' = replacement is the player at rank 1.5 x starters + 1,
 # i.e. roughly the best player still on waivers once benches are filled.
 REPL_MODE = os.environ.get('VOR_REPL', 'starter')
+QB_REPL_RANK = int(os.environ.get('VOR_QB_RANK', 30))   # Erik 2026-11-04: QB30
 
 def fpts(df):
     g = lambda c: pd.to_numeric(df[c], errors='coerce').fillna(0)
@@ -46,11 +47,23 @@ def fpts(df):
             + (g('passing_2pt_conversions')+g('rushing_2pt_conversions')+g('receiving_2pt_conversions'))*2
             - (g('sack_fumbles_lost')+g('rushing_fumbles_lost')+g('receiving_fumbles_lost'))*2)
 
+# v4 position resolution (review: Travis Hunter is listed CB in nflverse stats):
+# keep the stats position when it is QB/RB/WR/TE; otherwise use the player's
+# 2026 team-roster position if that is QB/RB/WR/TE; FB counts as RB; anything
+# else (DB, punters, DL with a gadget carry) is dropped.
+_rp = pd.read_csv(f'{D}/roster_weekly_2026.csv', low_memory=False).sort_values('week').groupby('gsis_id').position.last()
+def resolve_pos(pid, pos):
+    if pos in POS: return pos
+    rp = _rp.get(pid)
+    if rp in POS: return rp
+    return 'RB' if pos == 'FB' else None
 frames = []
 for y in range(2012, 2027):
     df = pd.read_csv(f'{D}/stats_{y}.csv', low_memory=False)
-    df = df[(df.season_type == 'REG') & df.position.isin(POS)]
-    frames.append(pd.DataFrame({'pid': df.player_id, 'y': y, 'w': df.week.astype(int), 'pos': df.position, 'pts': fpts(df)}))
+    df = df[df.season_type == 'REG'].copy()
+    df['rpos'] = [resolve_pos(a, b) for a, b in zip(df.player_id, df.position)]
+    df = df[df.rpos.notna()]
+    frames.append(pd.DataFrame({'pid': df.player_id, 'y': y, 'w': df.week.astype(int), 'pos': df.rpos, 'pts': fpts(df)}))
 W = pd.concat(frames, ignore_index=True)
 assert not W.duplicated(['pid', 'y', 'w']).any()
 
@@ -68,7 +81,9 @@ def repl_season(y):
     for p in POS:
         n_st = int(((s.pos == p) & s.pid.isin(starters)).sum())
         if REPL_MODE == 'waiver':
-            out[p] = float(s[s.pos == p]['mean'].iloc[int(math.ceil(1.5*n_st))])
+            # Erik 2026-11-04: QB replacement = QB30; RB/WR/TE = rank 1.5 x starters + 1
+            k = QB_REPL_RANK if p == 'QB' else int(math.ceil(1.5*n_st)) + 1
+            out[p] = float(s[s.pos == p]['mean'].iloc[k - 1])
         else:
             nb = s[(s.pos == p) & ~s.pid.isin(starters)]
             out[p] = float(nb['mean'].iloc[0])
@@ -96,6 +111,9 @@ _bd = pd.to_datetime(_bd, errors='coerce')
 _sa['age'] = [(pd.Timestamp(f'{y}-09-01') - _bd.get(p_, pd.NaT)).days/365.25 if pd.notna(_bd.get(p_, pd.NaT)) else np.nan for p_, y in zip(_sa.pid, _sa.y)]
 _good = _sa[(_sa.g >= 8) & (_sa.ppg > _sa.pos.map(R))]
 AGE_GATE = {p: (float(np.percentile(_good[_good.pos == p].age.dropna(), 90)), float(np.percentile(_good[_good.pos == p].age.dropna(), 97.5))) for p in POS}
+# Erik 2026-11-04: more conservative curve -- QB knots two years later, the others one year later
+AGE_SHIFT = {'QB': 2.0, 'RB': 1.0, 'WR': 1.0, 'TE': 1.0}
+AGE_GATE = {p: (lo + AGE_SHIFT[p], hi + AGE_SHIFT[p]) for p, (lo, hi) in AGE_GATE.items()}
 def age_mult(age, p):
     lo, hi = AGE_GATE[p]
     return np.clip((hi - age) / (hi - lo), 0.0, 1.0)
@@ -130,6 +148,23 @@ early = W[W.w <= N].groupby(['pid', 'y']).agg(ge=('pts', 'size'), early=('pts', 
 ros = W[W.w > N].groupby(['pid', 'y']).agg(g_ros=('pts', 'size'), ppg_ros=('pts', 'mean'), vor_ros=('vor', 'sum')).reset_index()
 posy = W.groupby(['pid', 'y']).pos.agg(lambda s: s.mode().iloc[0]).reset_index()
 rows = early.merge(posy, on=['pid', 'y']).merge(ros, on=['pid', 'y'], how='left')
+# v4 (review finding 2): add players with NO games in weeks 1..N, so the model is
+# trained and gated on them: (a) veterans with >=1 game the previous season,
+# (b) players drafted that year (players.csv draft_year == y).
+_dy = pd.read_csv(f'{D}/players.csv', low_memory=False, usecols=['gsis_id', 'draft_year', 'position']).drop_duplicates('gsis_id').set_index('gsis_id')
+_have = set(zip(rows.pid, rows.y))
+_lastpos = W.groupby('pid').pos.agg(lambda s_: s_.mode().iloc[0])
+_z = []
+for y in range(2013, 2027):
+    prev = set(W[W.y == y-1].pid)
+    drafted = set(_dy.index[(_dy.draft_year == y) & (_dy.position.isin(POS))])
+    for p_ in (prev | drafted):
+        if (p_, y) in _have: continue
+        pos_ = _lastpos.get(p_, _dy.position.get(p_))
+        if pos_ not in POS: continue
+        _z.append({'pid': p_, 'y': y, 'ge': 0, 'early': 0.0, 'pos': pos_})
+_z = pd.DataFrame(_z).merge(ros, on=['pid', 'y'], how='left')
+rows = pd.concat([rows, _z], ignore_index=True)
 rows = rows[rows.y >= 2013]
 def lookup(pid, y, col):
     try:
@@ -178,8 +213,7 @@ def pav_curve(x, y):
             v2, w2, i2 = vals.pop(), wts.pop(), idxs.pop(); v1, w1, i1 = vals.pop(), wts.pop(), idxs.pop()
             vals.append((v1*w1 + v2*w2)/(w1 + w2)); wts.append(w1 + w2); idxs.append(i1 + i2)
     cx = np.array([x[ii].mean() for ii in idxs]); cy = np.array(vals)
-    cx = np.concatenate([[x.min()], cx, [x.max()]]); cy = np.concatenate([[cy[0]], cy, [cy[-1]]])
-    return cx, cy
+    return cx, cy   # v4: block centres only; above the last centre predict() continues proportionally
 
 def fit(train, use_inseason):
     """v2: linear core + per-position isotonic recalibration fitted on
@@ -200,7 +234,7 @@ def fit_core(train, use_inseason):
     M = {}
     for p in POS:
         t = train[train.pos == p]
-        npr = t[t.prior.isna()]
+        npr = t[t.prior.isna() & (t['ge'] > 0)]   # zero-game rows carry no early PPG
         tgt = npr.ppg_ros.fillna(npr.early)
         b, a = np.polyfit(npr.lpick, tgt, 1)
         dp = (a, b); m = {'dp': dp}
@@ -232,8 +266,30 @@ def predict(df, M, use_inseason, scaled=True):
             tot += v; parts.setdefault(w, np.zeros(len(df)))[ix] = v
             parts.setdefault(w + '_mu', np.zeros(len(df)))[ix] = mu
             parts.setdefault(w + '_g', np.zeros(len(df)))[ix] = g
-        out[ix] = np.interp(tot, *m['iso']) if (scaled and 'iso' in m) else tot
+        if scaled and 'iso' in m:
+            cx, cy = m['iso']
+            cal = np.interp(tot, cx, cy)
+            top = tot > cx[-1]   # v4: continue proportionally above the top knot (no flat cap)
+            if cx[-1] > 0: cal[top] = cy[-1] * tot[top] / cx[-1]
+            out[ix] = cal
+        else:
+            out[ix] = tot
     return out, parts
+
+def waiver_rank(p):
+    if p == 'QB' and REPL_MODE == 'waiver': return QB_REPL_RANK
+    return int(math.ceil(1.5 * RS[2025][p + '_starters'])) + 1
+def recentre(df, col, by=('y',)):
+    """v4 (review finding 3): subtract, per season and position, the value of the
+    player at the position's waiver rank, so the freely available player is worth 0
+    at every position (cross-position additivity)."""
+    out = df[col].copy()
+    for keys, g in df.groupby(list(by) + ['pos']):
+        p = keys[-1]; k = waiver_rank(p)
+        q = g[col].sort_values(ascending=False)
+        ref = q.iloc[k-1] if len(q) >= k else 0.0
+        out.loc[g.index] = g[col] - ref
+    return out
 
 def rank(v):
     return pd.Series(v).rank(method='average').values
@@ -249,15 +305,25 @@ if __name__ == '__main__':
         tr = comp[trsel(comp)]; ts = comp[comp.y.isin(te)].copy()
         M1 = fit(tr, True); M0 = fit(tr, False)
         ts['pred'], _ = predict(ts, M1, True); ts['base0'], _ = predict(ts, M0, False)
+        ts['pred_rc'] = recentre(ts, 'pred'); ts['base0_rc'] = recentre(ts, 'base0'); ts['H_rc'] = recentre(ts, 'H')
         res = {}
-        for grp in ['all'] + POS + ['vets', 'no_prior', 'top200']:
+        for grp in ['all'] + POS + ['vets', 'no_prior', 'zero_games', 'top200', 'all_recentred']:
             if grp == 'all': q = ts
             elif grp == 'vets': q = ts[ts.prior.notna()]
             elif grp == 'no_prior': q = ts[ts.prior.isna()]
+            elif grp == 'zero_games': q = ts[ts['ge'] == 0]
+            elif grp == 'all_recentred': q = ts
             elif grp == 'top200': q = ts[ts.pred.rank(ascending=False) <= 200*len(te)]
             else: q = ts[ts.pos == grp]
             if len(q) < 5: continue
             r = {'n': len(q)}
+            if grp == 'all_recentred':
+                q = ts
+                for col, tgt in [('pred', 'H_rc'), ('base0', 'H_rc'), ('naive', 'H_rc')]:
+                    c = col + '_rc' if col != 'naive' else 'naive'
+                    r['mae_' + col] = round(float(np.mean(np.abs(q[c] - q[tgt]))), 2)
+                    r['rho_' + col] = round(spearman(q[c], q[tgt]), 4)
+                res[grp] = r; continue
             for col in ['pred', 'base0', 'naive']:
                 r['mae_' + col] = round(float(np.mean(np.abs(q[col] - q.H))), 2)
                 r['rho_' + col] = round(spearman(q[col], q.H), 4)

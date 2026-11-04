@@ -52,11 +52,12 @@ if len(add):
     live = pd.concat([live, extra], ignore_index=True)
 live['age'] = live.groupby('pos').age.transform(lambda s: s.fillna(s.median()))
 live['vor_value'], parts = V.predict(live, M, True)
-v0, parts0 = V.predict(live, M0, False)
-z = (live['ge'] == 0).values
-live.loc[z, 'vor_value'] = v0[z]
-for k in parts: parts[k][z] = parts0[k][z]
-live['model'] = np.where(z, 'no_inseason(base0)', 'inseason')
+# v4: zero-game players are trained and gated in the main model (review finding 2)
+live['model'] = np.where(live['ge'] == 0, 'inseason(no 2026 games)', 'inseason')
+# component columns rescaled so they add up to the calibrated value
+raw = parts['ros'] + parts['y1'] + parts['y2']
+sc = np.where(np.abs(raw) > 1e-9, live['vor_value'].values / np.where(np.abs(raw) > 1e-9, raw, 1), 0)
+for k in ('ros', 'y1', 'y2'): parts[k] = parts[k] * sc
 for k in ('ros', 'y1', 'y2'):
     live['vor_' + k + '_exp'] = parts[k]; live['mu_' + k] = parts[k + '_mu']; live['g_' + k + '_exp'] = parts[k + '_g']
 st = ros.set_index('gsis_id')
@@ -67,9 +68,23 @@ live['name'] = live.pid.map(V.P.display_name)
 # Erik 2026-11-04: IR/PUP (RES) players are priced and flagged 'IR'
 live['priced'] = live.status.isin(['ACT', 'INA', 'RES'])
 live['flag'] = np.where(live.status == 'RES', 'IR', np.where(live.status == 'INA', 'inactive', ''))
+# v4: re-centre so the player at each position's replacement rank is worth 0
+# (QB30, RB/WR/TE 1.5 x starters + 1), among priced players
+pr = live[live.priced]
+ref = {p_: (pr[pr.pos == p_].vor_value.sort_values(ascending=False).iloc[V.waiver_rank(p_) - 1]
+            if (pr.pos == p_).sum() >= V.waiver_rank(p_) else 0.0) for p_ in V.POS}
+live['recentre_ref'] = live.pos.map(ref)
+live['vor_value'] = live.vor_value - live.recentre_ref
+for k in ('ros', 'y1', 'y2'):
+    live['vor_' + k + '_exp'] = live['vor_' + k + '_exp'] - live.recentre_ref / 3.0
+live['value'] = live.vor_value.clip(lower=0).round(1)        # display value; <=0 = droppable
+live['droppable'] = live.vor_value <= 0
+live['sleeper_id'] = live.sleeper_id.map(lambda v: str(int(v)) if pd.notna(v) else '')
+live['name'] = live.name.fillna(live.pid.map(st.full_name))
 live['rank'] = live.vor_value.where(live.priced).rank(ascending=False, method='first')
+print('recentre reference values:', {k: round(v, 1) for k, v in ref.items()})
 live = live.sort_values('vor_value', ascending=False)
-cols = ['pid', 'sleeper_id', 'name', 'pos', 'team', 'status', 'flag', 'priced', 'rank', 'vor_value', 'model', 'vor_ros_exp', 'vor_y1_exp', 'vor_y2_exp',
+cols = ['pid', 'sleeper_id', 'name', 'pos', 'team', 'status', 'flag', 'priced', 'rank', 'value', 'droppable', 'vor_value', 'model', 'vor_ros_exp', 'vor_y1_exp', 'vor_y2_exp',
         'mu_ros', 'mu_y1', 'mu_y2', 'g_ros_exp', 'g_y1_exp', 'g_y2_exp', 'ge', 'early', 'prior', 'prior2', 'age']
 live[cols].to_csv(f'{OUT}/nfl_vor_2026_w08.csv', index=False, float_format='%.3f')
 print('\nlive rows', len(live), 'priced', int(live.priced.sum()), live.status.value_counts().to_dict())
