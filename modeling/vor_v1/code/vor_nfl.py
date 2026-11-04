@@ -77,6 +77,13 @@ def repl_season(y):
 RS = {y: repl_season(y) for y in range(2013, 2026)}
 R = {p: float(np.mean([RS[y][p] for y in RS])) for p in POS}
 W['vor'] = np.maximum(0, W.pts - W.pos.map(R))
+# Baseline (v2, review finding 1): a replacement-level player still banks his
+# good weeks under max(0, pts-R). B_pos = mean weekly VOR of real seasons with
+# >=14 games and PPG within R +/- 0.5 (2013-2025). Value is measured ABOVE it,
+# so a replacement-level player is worth ~0 and values are additive.
+_s = W[W.y.between(2013, 2025)].groupby(['pid', 'y', 'pos']).agg(g=('pts', 'size'), ppg=('pts', 'mean'), v=('vor', 'mean')).reset_index()
+B = {p: float(_s[(_s.pos == p) & (_s.g >= 14) & ((_s.ppg - R[p]).abs() <= 0.5)].v.mean()) for p in POS}
+B_n = {p: int(((_s.pos == p) & (_s.g >= 14) & ((_s.ppg - R[p]).abs() <= 0.5)).sum()) for p in POS}
 
 # ---- weekly sd vs mean, per position ----
 pm = W[W.y <= 2025].groupby(['pid', 'y', 'pos']).pts.agg(['mean', 'std', 'size']).reset_index()
@@ -124,7 +131,8 @@ for k, nm in [(1, 'y1'), (2, 'y2')]:
     rows['ppg_' + nm] = [a for a, g in v]; rows['g_' + nm] = [g for a, g in v]
     rows['vor_' + nm] = [SE.loc[(p, y+k)]['vor'] if (p, y+k) in SE.index else 0.0 for p, y in zip(rows.pid, rows.y)]
 rows[['g_ros', 'vor_ros']] = rows[['g_ros', 'vor_ros']].fillna(0)
-rows['H'] = rows.vor_ros + rows.vor_y1 + rows.vor_y2
+rows['H_raw'] = rows.vor_ros + rows.vor_y1 + rows.vor_y2
+rows['H'] = rows.H_raw - rows.pos.map(B) * (rows.g_ros + rows.g_y1 + rows.g_y2)
 rows['H_complete'] = rows.y + 2 <= 2025
 rows['lpick'] = np.log(rows.pid.map(pick).fillna(260.0))
 rows['age'] = [(pd.Timestamp(f'{y}-09-01') - bd.get(p, pd.NaT)).days/365.25 if pd.notna(bd.get(p, pd.NaT)) else np.nan for p, y in zip(rows.pid, rows.y)]
@@ -146,7 +154,34 @@ def fit_lin(X, y, ridge=1e-3):
     A = X.T @ X + ridge*np.eye(X.shape[1]); A[0, 0] -= ridge
     return np.linalg.solve(A, X.T @ y)
 
+def pav_curve(x, y):
+    o = np.argsort(x); x, y = np.asarray(x, float)[o], np.asarray(y, float)[o]
+    vals, wts, idxs = [], [], []
+    for i, v in enumerate(y):
+        vals.append(v); wts.append(1.0); idxs.append([i])
+        while len(vals) > 1 and vals[-2] > vals[-1]:
+            v2, w2, i2 = vals.pop(), wts.pop(), idxs.pop(); v1, w1, i1 = vals.pop(), wts.pop(), idxs.pop()
+            vals.append((v1*w1 + v2*w2)/(w1 + w2)); wts.append(w1 + w2); idxs.append(i1 + i2)
+    cx = np.array([x[ii].mean() for ii in idxs]); cy = np.array(vals)
+    cx = np.concatenate([[x.min()], cx, [x.max()]]); cy = np.concatenate([[cy[0]], cy, [cy[-1]]])
+    return cx, cy
+
 def fit(train, use_inseason):
+    """v2: linear core + per-position isotonic recalibration fitted on
+    leave-one-season-out predictions within the training rows only."""
+    M = fit_core(train, use_inseason)
+    tr = train[train.H_complete].copy()
+    oof = np.full(len(tr), np.nan)
+    for s_ in sorted(tr.y.unique()):
+        ix = (tr.y == s_).values
+        Ms = fit_core(train[train.y != s_], use_inseason)
+        oof[ix], _ = predict(tr[ix], Ms, use_inseason, scaled=False)
+    for p in POS:
+        ix = (tr.pos == p).values
+        M[p]['iso'] = pav_curve(oof[ix], tr.H.values[ix])
+    return M
+
+def fit_core(train, use_inseason):
     M = {}
     for p in POS:
         t = train[train.pos == p]
@@ -162,11 +197,6 @@ def fit(train, use_inseason):
             m[w + '_g'] = fit_lin(X, t[gc].values.astype(float))
             m[w + '_max'] = mx
         M[p] = m
-    # per-position scale fitted on TRAINING rows only: sum(realized H) / sum(raw prediction)
-    raw, _ = predict(train, M, use_inseason, scaled=False)
-    for p in POS:
-        ix = (train.pos == p).values & train.H_complete.values
-        M[p]['scale'] = float(train.H.values[ix].sum() / max(raw[ix].sum(), 1e-9))
     return M
 
 def predict(df, M, use_inseason, scaled=True):
@@ -181,11 +211,11 @@ def predict(df, M, use_inseason, scaled=True):
             g = np.clip(X @ m[w + '_g'], 0, m[w + '_max'])
             # weekly noise plus uncertainty in the projection itself
             sig = np.sqrt((a + b*mu)**2 + m[w + '_s']**2)
-            v = g * ev_pos(mu, sig, R[p]) * (m.get('scale', 1.0) if scaled else 1.0)
+            v = g * (ev_pos(mu, sig, R[p]) - B[p])
             tot += v; parts.setdefault(w, np.zeros(len(df)))[ix] = v
             parts.setdefault(w + '_mu', np.zeros(len(df)))[ix] = mu
             parts.setdefault(w + '_g', np.zeros(len(df)))[ix] = g
-        out[ix] = tot
+        out[ix] = np.interp(tot, *m['iso']) if (scaled and 'iso' in m) else tot
     return out, parts
 
 def rank(v):
@@ -197,7 +227,7 @@ if __name__ == '__main__':
     comp = rows[rows.H_complete]
     splits = {'A: train 2013-17 (purged) -> test 2018-23': (lambda d: d.y + 2 < 2018, range(2018, 2024)),
               'B: train 2018-23 -> test 2013-17': (lambda d: d.y >= 2018, range(2013, 2018))}
-    rep = {'R': R, 'R_by_season': RS, 'sigma': SIG, 'splits': {}}
+    rep = {'R': R, 'R_by_season': RS, 'sigma': SIG, 'baseline_B': B, 'baseline_n': B_n, 'splits': {}}
     for nm, (trsel, te) in splits.items():
         tr = comp[trsel(comp)]; ts = comp[comp.y.isin(te)].copy()
         M1 = fit(tr, True); M0 = fit(tr, False)

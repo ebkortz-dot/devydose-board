@@ -15,17 +15,28 @@ import vor_nfl as V
 D, OUT = sys.argv[1], sys.argv[2]
 rows = V.rows
 
-# ---- calibration on split A (train purged 2013-17, test 2018-23) ----
+# ---- calibration on both splits ----
 comp = rows[rows.H_complete]
-tr = comp[comp.y + 2 < 2018]; ts = comp[comp.y.between(2018, 2023)].copy()
-ts['pred'], _ = V.predict(ts, V.fit(tr, True), True)
-ts['dec'] = pd.qcut(ts.pred.rank(method='first'), 10, labels=False)
-cal = ts.groupby('dec').agg(n=('H', 'size'), mean_pred=('pred', 'mean'), mean_H=('H', 'mean')).round(1)
-print('calibration (split A test), deciles of prediction:'); print(cal.to_string())
-print('overall mean pred %.1f vs mean realized %.1f' % (ts.pred.mean(), ts.H.mean()))
+calrep = {}
+for nm, trsel, te in [('A', lambda d: d.y + 2 < 2018, range(2018, 2024)), ('B', lambda d: d.y >= 2018, range(2013, 2018))]:
+    tr = comp[trsel(comp)]; ts = comp[comp.y.isin(te)].copy()
+    ts['pred'], _ = V.predict(ts, V.fit(tr, True), True)
+    ts['dec'] = pd.qcut(ts.pred.rank(method='first'), 10, labels=False)
+    cal = ts.groupby('dec').agg(n=('H', 'size'), mean_pred=('pred', 'mean'), mean_H=('H', 'mean')).round(1)
+    ts['r_season'] = ts.groupby('y').pred.rank(ascending=False)
+    ts['r_pos'] = ts.groupby(['y', 'pos']).pred.rank(ascending=False)
+    def ratio(q): return round(float(q.pred.sum() / q.H.sum()), 3)
+    c = {'overall': ratio(ts), 'top12_per_season': ratio(ts[ts.r_season <= 12]), 'rank13_60': ratio(ts[ts.r_season.between(13, 60)]),
+         'rank61_120': ratio(ts[ts.r_season.between(61, 120)]), 'TE_top3': ratio(ts[(ts.pos == 'TE') & (ts.r_pos <= 3)]),
+         'TE_top12': ratio(ts[(ts.pos == 'TE') & (ts.r_pos <= 12)]), 'QB_top12': ratio(ts[(ts.pos == 'QB') & (ts.r_pos <= 12)])}
+    calrep[nm] = c
+    print(f'calibration split {nm} (pred/realized):', c)
+    print(cal.to_string())
+json.dump(calrep, open(f'{OUT}/calibration.json', 'w'), indent=1)
 
 # ---- live 2026 ----
 M = V.fit(comp, True)
+M0 = V.fit(comp, False)   # no-in-season model, for players with no 2026 games (review finding 3)
 ros = pd.read_csv(f'{D}/roster_weekly_2026.csv', low_memory=False)
 ros = ros[ros.position.isin(V.POS)].sort_values('week').groupby('gsis_id').tail(1)
 live = rows[rows.y == 2026].copy()
@@ -41,6 +52,11 @@ if len(add):
     live = pd.concat([live, extra], ignore_index=True)
 live['age'] = live.groupby('pos').age.transform(lambda s: s.fillna(s.median()))
 live['vor_value'], parts = V.predict(live, M, True)
+v0, parts0 = V.predict(live, M0, False)
+z = (live['ge'] == 0).values
+live.loc[z, 'vor_value'] = v0[z]
+for k in parts: parts[k][z] = parts0[k][z]
+live['model'] = np.where(z, 'no_inseason(base0)', 'inseason')
 for k in ('ros', 'y1', 'y2'):
     live['vor_' + k + '_exp'] = parts[k]; live['mu_' + k] = parts[k + '_mu']; live['g_' + k + '_exp'] = parts[k + '_g']
 st = ros.set_index('gsis_id')
@@ -51,7 +67,7 @@ live['name'] = live.pid.map(V.P.display_name)
 live['priced'] = live.status.isin(['ACT', 'INA'])
 live['rank'] = live.vor_value.where(live.priced).rank(ascending=False, method='first')
 live = live.sort_values('vor_value', ascending=False)
-cols = ['pid', 'sleeper_id', 'name', 'pos', 'team', 'status', 'priced', 'rank', 'vor_value', 'vor_ros_exp', 'vor_y1_exp', 'vor_y2_exp',
+cols = ['pid', 'sleeper_id', 'name', 'pos', 'team', 'status', 'priced', 'rank', 'vor_value', 'model', 'vor_ros_exp', 'vor_y1_exp', 'vor_y2_exp',
         'mu_ros', 'mu_y1', 'mu_y2', 'g_ros_exp', 'g_y1_exp', 'g_y2_exp', 'ge', 'early', 'prior', 'prior2', 'age']
 live[cols].to_csv(f'{OUT}/nfl_vor_2026_w08.csv', index=False, float_format='%.3f')
 print('\nlive rows', len(live), 'priced', int(live.priced.sum()), live.status.value_counts().to_dict())
