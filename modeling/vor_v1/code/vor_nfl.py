@@ -85,6 +85,21 @@ _s = W[W.y.between(2013, 2025)].groupby(['pid', 'y', 'pos']).agg(g=('pts', 'size
 B = {p: float(_s[(_s.pos == p) & (_s.g >= 14) & ((_s.ppg - R[p]).abs() <= 0.5)].v.mean()) for p in POS}
 B_n = {p: int(((_s.pos == p) & (_s.g >= 14) & ((_s.ppg - R[p]).abs() <= 0.5)).sum()) for p in POS}
 
+# ---- explicit age gates (Erik, 2026-11-04) ----
+# POLICY with data-derived knots: among seasons with >=8 games above replacement
+# (2013-2025), full value through the position's 90th-percentile age, a linear
+# taper to zero at the 97.5th percentile, zero beyond. Applied to the y+1 and
+# y+2 windows (the rest of the current season is not gated: he is playing now).
+_sa = W[W.y.between(2013, 2025)].groupby(['pid', 'y', 'pos']).agg(g=('pts', 'size'), ppg=('pts', 'mean')).reset_index()
+_bd = pd.read_csv(f'{D}/players.csv', low_memory=False, usecols=['gsis_id', 'birth_date']).drop_duplicates('gsis_id').set_index('gsis_id').birth_date
+_bd = pd.to_datetime(_bd, errors='coerce')
+_sa['age'] = [(pd.Timestamp(f'{y}-09-01') - _bd.get(p_, pd.NaT)).days/365.25 if pd.notna(_bd.get(p_, pd.NaT)) else np.nan for p_, y in zip(_sa.pid, _sa.y)]
+_good = _sa[(_sa.g >= 8) & (_sa.ppg > _sa.pos.map(R))]
+AGE_GATE = {p: (float(np.percentile(_good[_good.pos == p].age.dropna(), 90)), float(np.percentile(_good[_good.pos == p].age.dropna(), 97.5))) for p in POS}
+def age_mult(age, p):
+    lo, hi = AGE_GATE[p]
+    return np.clip((hi - age) / (hi - lo), 0.0, 1.0)
+
 # ---- weekly sd vs mean, per position ----
 pm = W[W.y <= 2025].groupby(['pid', 'y', 'pos']).pts.agg(['mean', 'std', 'size']).reset_index()
 pm = pm[pm['size'] >= 6]
@@ -212,6 +227,8 @@ def predict(df, M, use_inseason, scaled=True):
             # weekly noise plus uncertainty in the projection itself
             sig = np.sqrt((a + b*mu)**2 + m[w + '_s']**2)
             v = g * (ev_pos(mu, sig, R[p]) - B[p])
+            if w != 'ros':
+                v = v * age_mult(df[ix].age.values + (1 if w == 'y1' else 2), p)
             tot += v; parts.setdefault(w, np.zeros(len(df)))[ix] = v
             parts.setdefault(w + '_mu', np.zeros(len(df)))[ix] = mu
             parts.setdefault(w + '_g', np.zeros(len(df)))[ix] = g
@@ -227,7 +244,7 @@ if __name__ == '__main__':
     comp = rows[rows.H_complete]
     splits = {'A: train 2013-17 (purged) -> test 2018-23': (lambda d: d.y + 2 < 2018, range(2018, 2024)),
               'B: train 2018-23 -> test 2013-17': (lambda d: d.y >= 2018, range(2013, 2018))}
-    rep = {'R': R, 'R_by_season': RS, 'sigma': SIG, 'baseline_B': B, 'baseline_n': B_n, 'splits': {}}
+    rep = {'R': R, 'R_by_season': RS, 'sigma': SIG, 'baseline_B': B, 'baseline_n': B_n, 'age_gate': AGE_GATE, 'splits': {}}
     for nm, (trsel, te) in splits.items():
         tr = comp[trsel(comp)]; ts = comp[comp.y.isin(te)].copy()
         M1 = fit(tr, True); M0 = fit(tr, False)

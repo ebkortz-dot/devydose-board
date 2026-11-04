@@ -41,7 +41,7 @@ ros = pd.read_csv(f'{D}/roster_weekly_2026.csv', low_memory=False)
 ros = ros[ros.position.isin(V.POS)].sort_values('week').groupby('gsis_id').tail(1)
 live = rows[rows.y == 2026].copy()
 have = set(live.pid)
-add = ros[(ros.status.isin(['ACT', 'INA'])) & ~ros.gsis_id.isin(have)]
+add = ros[(ros.status.isin(['ACT', 'INA', 'RES'])) & ~ros.gsis_id.isin(have)]
 if len(add):
     extra = pd.DataFrame({'pid': add.gsis_id.values, 'y': 2026, 'pos': add.position.values, 'ge': 0, 'early': 0.0})
     for lag, nm in [(1, 'prior'), (2, 'prior2')]:
@@ -64,10 +64,12 @@ live['status'] = live.pid.map(st.status).fillna('NOT_ON_2026_ROSTER')
 live['team'] = live.pid.map(st.team)
 live['sleeper_id'] = live.pid.map(st.sleeper_id)
 live['name'] = live.pid.map(V.P.display_name)
-live['priced'] = live.status.isin(['ACT', 'INA'])
+# Erik 2026-11-04: IR/PUP (RES) players are priced and flagged 'IR'
+live['priced'] = live.status.isin(['ACT', 'INA', 'RES'])
+live['flag'] = np.where(live.status == 'RES', 'IR', np.where(live.status == 'INA', 'inactive', ''))
 live['rank'] = live.vor_value.where(live.priced).rank(ascending=False, method='first')
 live = live.sort_values('vor_value', ascending=False)
-cols = ['pid', 'sleeper_id', 'name', 'pos', 'team', 'status', 'priced', 'rank', 'vor_value', 'model', 'vor_ros_exp', 'vor_y1_exp', 'vor_y2_exp',
+cols = ['pid', 'sleeper_id', 'name', 'pos', 'team', 'status', 'flag', 'priced', 'rank', 'vor_value', 'model', 'vor_ros_exp', 'vor_y1_exp', 'vor_y2_exp',
         'mu_ros', 'mu_y1', 'mu_y2', 'g_ros_exp', 'g_y1_exp', 'g_y2_exp', 'ge', 'early', 'prior', 'prior2', 'age']
 live[cols].to_csv(f'{OUT}/nfl_vor_2026_w08.csv', index=False, float_format='%.3f')
 print('\nlive rows', len(live), 'priced', int(live.priced.sum()), live.status.value_counts().to_dict())
