@@ -1,0 +1,529 @@
+name,pos,team,old,new,mult,prior_ppg,prior_src,ppg_2026,g_2026,id_via,note
+Josh Allen,QB,BUF,127.94,140.94,1.102,25.91,2025,29.97,7,board,
+Jared Goff,QB,DET,121.4,132.79,1.094,21.47,2025,24.58,7,board,
+Brock Purdy,QB,SF,120.78,124.01,1.027,24.15,2025,25.15,7,board,
+Patrick Mahomes,QB,KC,119.59,112.33,0.939,23.55,2025,21.36,7,board,
+Trevor Lawrence,QB,JAX,117.0,119.08,1.018,23.3,2025,23.94,7,board,
+Jalen Hurts,QB,PHI,115.84,107.42,0.927,21.94,2025,19.2,5,board,
+Justin Herbert,QB,LAC,114.42,79.79,0.697,21.18,2025,11.46,7,board,
+Joe Burrow,QB,CIN,113.28,144.11,1.272,21.06,2025,29.94,7,board,
+Bo Nix,QB,DEN,111.62,96.22,0.862,20.87,2025,16.64,8,board,
+Lamar Jackson,QB,BAL,110.21,105.2,0.955,19.76,2025,18.22,5,board,
+Sam Darnold,QB,SEA,110.02,106.84,0.971,16.79,2025,16.05,7,board,
+Baker Mayfield,QB,TB,107.8,82.73,0.767,19.05,2025,9.83,5,board,
+Jayden Daniels,QB,WAS,106.11,119.03,1.122,18.61,2025,22.53,5,board,
+Caleb Williams,QB,CHI,102.91,102.89,1.0,21.92,2025,21.92,5,board,
+Jeremiyah Love,RB,ARI,102.85,71.39,0.694,20.13,draft,8.9,6,board,
+Drake Maye,QB,NE,101.49,100.12,0.987,24.35,2025,23.86,8,board,
+Fernando Mendoza,QB,LV,98.84,83.81,0.848,17.12,draft,2.22,1,board,
+Jordan Love,QB,GB,98.16,111.78,1.139,18.74,2025,22.61,8,board,
+Kyler Murray,QB,MIN,97.86,84.18,0.86,17.96,2025,13.93,6,board,
+Jaxon Smith-Njigba,WR,SEA,88.46,111.43,1.26,21.17,2025,27.5,8,board,
+Rashee Rice,WR,KC,88.27,73.67,0.835,18.76,2025,14.08,4,board,
+J.J. McCarthy,QB,MIN,83.97,81.84,0.975,14.74,2025,9.57,3,board,
+Puka Nacua,WR,LA,83.84,82.9,0.989,23.44,2025,23.1,6,board,
+Malik Nabers,WR,NYG,80.92,94.78,1.171,14.28,2025,17.21,7,board,
+Ja'Marr Chase,WR,CIN,80.74,76.4,0.946,19.6,2025,18.31,7,board,
+Drake London,WR,ATL,80.61,68.08,0.845,16.82,2025,13.73,8,board,
+Tyler Shough,QB,NO,80.04,97.71,1.221,16.18,2025,21.71,7,board,
+Bijan Robinson,RB,ATL,79.38,73.82,0.93,21.81,2025,19.16,8,board,
+Daniel Jones,QB,IND,79.35,57.31,0.722,20.34,2025,10.15,8,board,
+Jahmyr Gibbs,RB,DET,79.25,91.88,1.159,21.58,2025,27.97,7,board,
+Tua Tagovailoa,QB,ATL,79.2,79.2,1.0,14.34,2025,-0.64,1,board,
+Dak Prescott,QB,DAL,77.43,77.44,1.0,21.99,2025,21.99,8,board,
+De'Von Achane,RB,MIA,76.6,58.1,0.758,20.18,2025,8.2,3,board,
+Amon-Ra St. Brown,WR,DET,75.39,78.93,1.047,19.06,2025,20.14,7,board,
+Jaxson Dart,QB,NYG,74.88,71.0,0.948,19.4,2025,16.7,2,board,
+Trey McBride,TE,AZ,73.99,74.68,1.009,18.58,2025,18.8,8,board,
+Carnell Tate,WR,TEN,73.49,67.61,0.92,12.24,draft,11.04,7,board,
+Ty Simpson,QB,LA,73.03,73.03,1.0,,,,0,board,no 2026 games through week 8
+Bryce Young,QB,CAR,72.03,86.83,1.205,16.5,2025,21.75,7,board,
+C.J. Stroud,QB,HOU,71.47,81.76,1.144,17.61,2025,21.53,7,board,
+Matthew Stafford,QB,LA,71.26,60.42,0.848,26.02,2025,20.21,8,board,
+Jonathan Taylor,RB,IND,71.12,64.78,0.911,21.31,2025,18.02,8,board,
+Justin Fields,QB,KC,70.84,70.84,1.0,,,,0,board,no 2026 games through week 8
+Omarion Hampton,RB,LAC,70.01,53.65,0.766,15.08,2025,8.89,7,board,
+Jordyn Tyson,WR,NO,68.05,68.05,1.0,,,,0,board,no 2026 games through week 8
+George Pickens,WR,DAL,67.89,54.16,0.798,17.17,2025,13.04,8,board,
+Cam Skattebo,RB,NYG,65.04,55.83,0.858,15.96,2025,11.73,6,board,
+Jadarian Price,RB,SEA,64.95,48.15,0.741,11.15,draft,4.93,4,board,
+Brock Bowers,TE,LV,64.53,83.66,1.297,14.68,2025,20.62,6,board,
+CeeDee Lamb,WR,DAL,64.03,84.21,1.315,15.45,2025,21.04,8,board,
+Chris Olave,WR,NO,63.4,66.68,1.052,16.75,2025,17.8,7,board,
+Tee Higgins,WR,CIN,62.17,83.81,1.348,14.11,2025,19.94,7,board,
+James Cook,RB,BUF,61.55,63.52,1.032,17.78,2025,18.81,7,board,
+Nico Collins,WR,HOU,61.18,61.6,1.007,15.08,2025,15.22,5,board,
+Tetairoa McMillan,WR,CAR,60.79,72.91,1.199,12.55,2025,15.56,7,board,
+Oronde Gadsden II,TE,LAC,60.67,58.86,0.97,8.76,2025,5.53,7,board,
+Zay Flowers,WR,BAL,60.6,71.69,1.183,14.31,2025,17.46,7,board,
+Cam Ward,QB,TEN,60.58,60.58,1.0,12.74,2025,14.07,8,board,
+Kenyon Sadiq,TE,NYJ,59.94,59.94,1.0,8.24,draft,5.74,8,board,
+Harold Fannin Jr.,TE,CLE,59.85,58.28,0.974,11.65,2025,11.26,8,board,
+Jameson Williams,WR,DET,59.12,64.6,1.093,12.94,2025,14.39,7,board,
+A.J. Brown,WR,NE,58.64,39.66,0.676,14.69,2025,6.37,3,board,
+Tyler Warren,TE,IND,58.39,64.25,1.1,11.09,2025,12.62,6,board,
+Chase Brown,RB,CIN,57.67,50.61,0.878,16.62,2025,12.99,7,board,
+Makai Lemon,WR,PHI,57.52,52.34,0.91,8.61,draft,7.7,8,board,
+Justin Jefferson,WR,MIN,57.49,67.28,1.17,11.85,2025,14.4,6,board,
+Colston Loveland,TE,CHI,57.47,52.72,0.917,10.32,2025,9.24,8,board,
+George Kittle,TE,SF,57.0,57.73,1.013,14.68,2025,14.93,7,board,
+Carson Beck,QB,ARI,56.6,56.6,1.0,,,,0,board,no 2026 games through week 8
+Quentin Johnston,WR,LAC,56.46,31.45,0.557,13.17,2025,5.42,6,board,
+Drew Allar,QB,PIT,54.93,54.93,1.0,,,,0,board,no 2026 games through week 8
+Ashton Jeanty,RB,LV,54.69,59.23,1.083,14.42,2025,16.54,8,board,
+Wan'Dale Robinson,WR,TEN,53.81,40.72,0.757,13.62,2025,9.66,8,board,
+Emeka Egbuka,WR,TB,53.49,54.72,1.023,11.51,2025,11.85,6,board,
+KC Concepcion,WR,CLE,52.96,55.7,1.052,8.2,draft,8.7,8,board,
+Omar Cooper Jr.,WR,NYJ,51.78,87.02,1.681,7.7,draft,16.27,3,board,
+De'Zhaun Stribling,WR,SF,51.35,51.35,1.0,,,,0,board,no 2026 games through week 8
+Cade Klubnik,QB,NYJ,51.17,51.17,1.0,,,,0,board,no 2026 games through week 8
+Brian Thomas Jr.,WR,JAX,50.46,32.17,0.638,9.91,2025,4.81,7,board,
+Garrett Wilson,WR,NYJ,49.24,49.23,1.0,14.21,2025,14.21,8,board,
+Troy Franklin,WR,DEN,48.89,29.41,0.602,10.42,2025,1.91,7,board,
+Sam LaPorta,TE,DET,48.88,50.12,1.025,11.88,2025,12.27,7,board,
+Tucker Kraft,TE,GB,48.53,39.2,0.808,14.65,2025,11.06,8,board,
+Ladd McConkey,WR,LAC,48.39,39.46,0.815,11.31,2025,8.6,6,board,
+Denzel Boston,WR,CLE,47.8,70.0,1.464,7.11,draft,10.86,8,board,
+Bucky Irving,RB,TB,47.65,52.45,1.101,13.85,2025,16.32,8,board,
+Germie Bernard,WR,PIT,46.95,63.06,1.343,6.69,draft,9.54,7,board,
+Kaelon Black,RB,SF,46.92,46.92,1.0,7.23,draft,4.39,7,board,
+Kyren Williams,RB,LA,46.63,52.15,1.118,15.49,2025,18.75,8,board,
+Javonte Williams,RB,DAL,46.47,49.89,1.074,15.18,2025,17.15,8,board,
+Cole Payton,QB,PHI,46.4,46.4,1.0,,,,0,board,no 2026 games through week 8
+Taylen Green,QB,CLE,45.98,45.98,1.0,,,,0,board,no 2026 games through week 8
+Kyle Pitts,TE,ATL,45.95,33.81,0.736,12.4,2025,8.21,8,board,
+Jonah Coleman,RB,DEN,45.86,52.75,1.15,6.53,draft,11.03,4,board,
+Mike Washington Jr.,RB,LV,45.55,45.55,1.0,,,,0,board,no 2026 games through week 8
+Marvin Harrison Jr.,WR,AZ,45.37,28.99,0.639,10.65,2025,5.58,6,board,
+Eli Stowers,TE,PHI,44.88,44.88,1.0,5.55,draft,4.15,2,board,
+Nate Boerkircher,TE,JAX,44.4,44.4,1.0,5.47,draft,4.55,6,board,
+Athan Kaliakmanis,QB,WAS,44.03,44.03,1.0,6.14,draft,13.04,1,name,
+Antonio Williams,WR,WAS,44.0,47.54,1.081,5.76,draft,7.84,7,board,
+Marlin Klein,TE,HOU,43.76,43.76,1.0,5.36,draft,2.6,1,board,
+Behren Morton,QB,NE,43.67,43.67,1.0,,,,0,name,no 2026 games through week 8
+Josh Jacobs,RB,GB,43.51,48.49,1.114,15.81,2025,21.65,2,board,
+Max Klare,TE,LA,43.49,43.49,1.0,,,,0,board,no 2026 games through week 8
+Ted Hurst,WR,TB,43.4,43.4,1.0,5.38,draft,4.83,7,board,
+Malachi Fields,WR,NYG,43.0,43.0,1.0,5.67,draft,6.69,7,board,
+Garrett Nussmeier,QB,KC,42.97,42.97,1.0,,,,0,board,no 2026 games through week 8
+Luther Burden III,WR,CHI,42.96,69.44,1.616,8.53,2025,14.45,8,board,
+Theo Johnson,TE,NYG,42.96,42.96,1.0,8.52,2025,3.88,4,board,
+Caleb Douglas,WR,MIA,42.52,61.21,1.44,5.64,draft,11.9,4,board,
+Zavion Thomas,WR,CHI,42.33,42.33,1.0,5.25,draft,1.6,7,board,
+Chris Brazzell II,WR,CAR,42.15,42.15,1.0,,,,0,board,no 2026 games through week 8
+Sam Roush,TE,CHI,41.88,41.88,1.0,5.01,draft,1.26,5,board,
+Brenton Strange,TE,JAX,41.65,40.99,0.984,9.83,2025,9.63,7,board,
+Ja'Kobi Lane,WR,BAL,41.6,41.6,1.0,5.49,draft,4.47,4,board,
+Brenen Thompson,WR,LAC,41.36,41.36,1.0,4.88,draft,2.3,1,board,
+Zachariah Branch,WR,ATL,41.3,41.3,1.0,5.52,draft,2.4,8,board,
+Saquon Barkley,RB,PHI,41.23,31.85,0.772,14.52,2025,8.42,6,board,
+Oscar Delp,TE,NO,41.18,41.18,1.0,4.89,draft,1.2,5,board,
+Emmett Johnson,RB,KC,41.06,41.06,1.0,5.02,draft,7.34,7,board,
+Shedeur Sanders,QB,CLE,40.69,40.69,1.0,12.36,2025,0.04,2,board,
+Nicholas Singleton,RB,TEN,40.66,40.66,1.0,4.93,draft,0.6,2,board,
+Christian McCaffrey,RB,SF,40.38,36.77,0.911,24.51,2025,20.57,7,board,
+Breece Hall,RB,NYJ,40.35,41.63,1.032,13.1,2025,14.17,3,board,
+Chris Bell,WR,MIA,40.09,40.09,1.0,5.13,draft,4.17,7,board,
+Parker Washington,WR,JAX,39.67,48.41,1.22,10.79,2025,13.64,7,board,
+Pat Freiermuth,TE,PIT,39.27,42.93,1.093,7.57,2025,9.88,8,board,
+Jayden Higgins,WR,HOU,39.01,39.01,1.0,,,,0,board,no 2026 games through week 8
+Will Kacmarek,TE,MIA,38.93,38.93,1.0,4.5,draft,0.9,6,board,
+Colbie Young,WR,CIN,38.69,38.69,1.0,4.23,draft,1.45,2,board,
+Kaytron Allen,RB,WAS,38.48,38.48,1.0,4.45,draft,1.03,4,board,
+Marcus Mariota,QB,WAS,38.44,37.97,0.988,14.55,2025,14.17,3,board,
+Travis Etienne,RB,NO,38.36,33.6,0.876,14.94,2025,10.3,3,board,
+Adam Randall,RB,BAL,38.14,38.14,1.0,,,,0,board,no 2026 games through week 8
+Cade Otton,TE,TB,38.03,38.03,1.0,8.15,2025,5.37,7,board,
+Jordan Addison,WR,MIN,37.91,33.44,0.882,9.65,2025,8.18,6,board,
+Eli Raridon,TE,NE,37.87,37.87,1.0,4.31,draft,6.04,7,board,
+Rome Odunze,WR,CHI,37.8,29.79,0.788,12.17,2025,9.1,8,board,
+Bryce Lance,WR,NO,37.75,37.75,1.0,4.3,draft,3.26,7,board,
+Keon Coleman,WR,BUF,37.73,41.37,1.097,8.53,2025,9.53,7,board,
+Elijah Sarratt,WR,BAL,37.72,37.72,1.0,4.67,draft,2.3,1,board,
+Christian Watson,WR,GB,37.64,50.33,1.337,13.24,2025,18.35,8,board,
+Dalton Kincaid,TE,BUF,37.64,39.81,1.058,10.51,2025,11.3,7,board,
+Demond Claiborne,RB,MIN,37.6,37.6,1.0,4.24,draft,1.03,4,board,
+Skyler Bell,WR,BUF,37.41,37.41,1.0,4.49,draft,0.0,2,board,
+Mason Taylor,TE,NYJ,37.4,37.4,1.0,6.84,2025,8.92,5,board,
+Michael Wilson,WR,AZ,37.35,38.85,1.04,12.98,2025,13.59,8,board,
+Kendrick Law,WR,DET,37.26,37.26,1.0,,,,0,board,no 2026 games through week 8
+Tory Horton,WR,SEA,37.04,33.36,0.901,7.39,2025,5.06,5,board,
+Kaden Wetjen,WR,PIT,36.84,36.84,1.0,4.56,draft,0.0,8,board,
+Aaron Rodgers,QB,PIT,36.82,37.83,1.028,17.19,2025,17.89,8,board,
+DeVonta Smith,WR,PHI,36.54,47.88,1.31,11.87,2025,17.25,4,board,
+DK Metcalf,WR,PIT,36.3,29.59,0.815,12.48,2025,9.74,8,board,
+AJ Barner,TE,SEA,36.23,35.57,0.982,8.66,2025,5.98,8,board,
+Reggie Virgil,WR,ARI,36.17,36.17,1.0,4.18,draft,2.45,2,board,
+CJ Daniels,WR,LA,36.14,36.14,1.0,,,,0,board,no 2026 games through week 8
+Jake Tonges,TE,SF,35.97,35.97,1.0,,,,0,board,no 2026 games through week 8
+Elic Ayomanor,WR,TEN,35.08,32.13,0.916,7.28,2025,5.01,8,board,
+Anthony Smith,WR,DAL,35.08,35.08,1.0,,,,0,name,no 2026 games through week 8
+Cyrus Allen,WR,KC,34.98,34.98,1.0,3.71,draft,2.3,5,board,
+Dallas Goedert,TE,PHI,34.91,31.49,0.902,12.34,2025,10.67,6,board,
+Alec Pierce,WR,IND,34.76,26.74,0.769,12.22,2025,6.1,2,board,
+Emmanuel Henderson Jr.,WR,SEA,34.56,34.56,1.0,,,,0,name,no 2026 games through week 8
+Barion Brown,WR,NO,34.2,34.2,1.0,3.54,draft,1.67,6,board,
+Jake Ferguson,TE,DAL,34.03,25.6,0.752,11.06,2025,6.36,7,board,
+Lewis Bond,WR,HOU,33.95,33.95,1.0,3.38,draft,0.0,1,name,
+Josh Cameron,WR,JAX,33.92,33.92,1.0,3.53,draft,4.53,7,board,
+Pat Bryant,WR,DEN,33.76,35.33,1.046,5.75,2025,7.97,4,board,
+Matthew Hibner,TE,BAL,33.68,33.68,1.0,3.57,draft,3.6,5,name,
+Seth McGowan,RB,IND,33.47,33.47,1.0,3.55,draft,2.69,8,board,
+Kevin Coleman Jr.,WR,MIA,33.31,33.31,1.0,3.7,draft,4.7,6,board,
+D'Andre Swift,RB,CHI,33.27,39.18,1.178,14.29,2025,18.84,8,board,
+CJ Williams,WR,JAX,33.25,33.25,1.0,,,,0,unmatched,id unmatched
+Jam Miller,RB,NE,32.77,32.77,1.0,,,,0,board,no 2026 games through week 8
+Jakobi Meyers,WR,JAX,32.13,28.11,0.875,10.99,2025,9.3,7,board,
+Xavier Worthy,WR,KC,31.99,32.49,1.016,7.85,2025,8.0,7,board,
+Justin Joly,TE,DEN,31.95,31.95,1.0,,,,0,board,no 2026 games through week 8
+Michael Penix Jr.,QB,ATL,31.63,33.45,1.058,15.36,2025,16.8,6,board,
+Davante Adams,WR,LA,31.58,33.26,1.053,15.92,2025,17.0,6,board,
+Jacoby Brissett,QB,AZ,31.43,28.0,0.891,19.53,2025,16.39,8,board,
+Max Bredeson,TE,MIN,31.4,31.4,1.0,,,,0,unmatched,id unmatched
+Malik Benson,WR,LV,31.4,31.4,1.0,3.48,draft,0.34,7,board,
+TreVeyon Henderson,RB,NE,31.31,22.13,0.707,12.13,2025,5.63,6,board,
+Deion Burks,WR,IND,31.22,31.22,1.0,2.89,draft,2.18,6,board,
+Dontayvion Wicks,WR,PHI,31.16,37.31,1.197,5.83,2025,8.9,6,board,
+Tanner Koziol,TE,JAX,31.01,31.01,1.0,3.1,draft,1.8,1,board,
+Dalton Schultz,TE,HOU,30.88,28.33,0.917,10.45,2025,9.31,7,board,
+Riley Nowakowski,TE,PIT,30.76,30.76,1.0,,,,0,board,no 2026 games through week 8
+Devin Neal,RB,NO,30.72,30.72,1.0,,,,0,board,no 2026 games through week 8
+Joe Royer,TE,CLE,30.7,30.7,1.0,,,,0,board,no 2026 games through week 8
+Jaylen Warren,RB,PIT,30.61,35.69,1.166,13.57,2025,17.6,8,board,
+Chris Godwin Jr.,WR,TB,30.53,23.36,0.765,9.22,2025,6.64,8,board,
+Josh Cuevas,TE,BAL,30.4,30.4,1.0,2.99,draft,4.9,6,board,
+RJ Harvey,RB,DEN,29.93,28.74,0.96,12.15,2025,11.23,6,board,
+Seydou Traore,TE,MIA,29.88,29.88,1.0,,,,0,board,no 2026 games through week 8
+Woody Marks,RB,HOU,29.74,29.49,0.991,9.07,2025,8.93,7,board,
+Isaac TeSlaa,WR,DET,29.73,29.73,1.0,5.42,2025,4.95,6,board,
+Kayshon Boutte,WR,NE,29.73,21.62,0.727,8.86,2025,4.91,7,board,
+Dylan Sampson,RB,CLE,29.47,29.47,1.0,5.84,2025,7.87,3,board,
+Bauer Sharp,TE,TB,29.46,29.46,1.0,2.84,draft,0.52,6,name,
+Kimani Vidal,RB,LAC,29.36,25.6,0.872,9.07,2025,6.53,6,board,
+Tyrone Tracy Jr.,RB,NYG,29.05,22.21,0.765,10.72,2025,4.56,7,board,
+Trey Benson,RB,AZ,28.97,28.97,1.0,,,,0,board,no 2026 games through week 8
+Audric Estimé,RB,NO,28.96,27.94,0.965,9.62,2025,7.9,1,name,
+Terry McLaurin,WR,WAS,28.94,24.86,0.859,11.42,2025,9.2,5,board,
+Marvin Mims Jr.,WR,DEN,28.87,28.87,1.0,5.93,2025,3.45,6,board,
+Kenneth Walker III,RB,KC,28.6,43.75,1.53,11.29,2025,22.87,7,board,
+Mac Jones,QB,SF,28.47,28.47,1.0,14.19,2025,-0.2,1,board,
+Romeo Doubs,WR,NE,28.4,27.0,0.951,10.34,2025,9.68,6,board,
+Jauan Jennings,WR,MIN,28.17,15.01,0.533,11.55,2025,1.9,6,board,
+Gunnar Helm,TE,TEN,28.14,28.14,1.0,5.73,2025,5.29,7,board,
+Jaylen Waddle,WR,DEN,28.06,23.61,0.841,12.13,2025,9.85,8,board,
+Brashard Smith,RB,KC,27.92,27.92,1.0,3.72,2025,0.7,2,board,
+Courtland Sutton,WR,DEN,27.78,15.58,0.561,12.92,2025,6.01,8,board,
+Zach Charbonnet,RB,SEA,27.66,25.02,0.905,11.34,2025,5.9,1,board,
+Davis Mills,QB,HOU,27.59,27.59,1.0,,,,0,board,no 2026 games through week 8
+Quinshon Judkins,RB,CLE,27.38,27.68,1.011,12.13,2025,12.37,7,board,
+Jack Endries,TE,CIN,27.36,27.36,1.0,2.45,draft,7.1,1,board,
+Devontez Walker,WR,BAL,27.23,27.23,1.0,4.7,2025,3.5,5,board,
+Chimere Dike,WR,TEN,27.18,26.84,0.988,6.83,2025,3.68,8,board,
+Joe Flacco,QB,CIN,27.15,27.15,1.0,,,,0,board,no 2026 games through week 8
+Jaren Kanak,TE,TEN,27.12,27.12,1.0,,,,0,board,no 2026 games through week 8
+Tre Tucker,WR,LV,27.04,34.37,1.271,9.51,2025,12.47,8,board,
+J.K. Dobbins,RB,DEN,26.89,21.18,0.788,11.59,2025,7.41,8,board,
+Malik Willis,QB,MIA,26.72,28.92,1.082,14.29,2025,16.17,7,board,
+Jalen McMillan,WR,TB,26.56,23.59,0.888,7.47,2025,0.0,1,board,
+Khalil Shakir,WR,BUF,26.53,24.62,0.928,10.4,2025,9.49,7,board,
+Chig Okonkwo,TE,WAS,26.4,26.4,1.0,7.29,2025,6.64,5,name,
+Chuba Hubbard,RB,CAR,26.38,43.5,1.649,8.36,2025,19.0,7,board,
+Michael Mayer,TE,LV,26.07,26.19,1.005,5.68,2025,9.64,8,board,
+Carsen Ryan,TE,CLE,26.0,26.0,1.0,2.19,draft,0.0,2,board,
+Darren Waller,TE,MIA,25.92,22.12,0.853,9.86,2025,7.7,7,board,
+Tank Bigsby,RB,PHI,25.91,25.91,1.0,3.59,2025,4.28,4,board,
+Bam Knight,RB,AZ,25.78,25.45,0.987,7.74,2025,5.02,5,board,
+Xavier Legette,WR,CAR,25.72,25.72,1.0,5.95,2025,4.2,2,board,
+Josh Downs,WR,IND,25.71,25.87,1.006,8.65,2025,8.71,8,board,
+Dallen Bentley,TE,DEN,25.45,25.45,1.0,,,,0,board,no 2026 games through week 8
+Jalen Coker,WR,CAR,25.13,38.37,1.527,8.22,2025,13.57,6,board,
+Riley Leonard,QB,IND,24.92,24.92,1.0,,,,0,board,no 2026 games through week 8
+Kyle Monangai,RB,CHI,24.76,32.43,1.31,8.63,2025,14.82,4,board,
+Geno Smith,QB,NYJ,24.64,29.23,1.186,14.13,2025,18.39,8,board,
+Quinn Ewers,QB,MIA,24.64,24.64,1.0,9.79,2025,0.32,1,board,
+DJ Moore,WR,BUF,24.57,25.16,1.024,10.25,2025,10.58,5,board,
+Michael Pittman,WR,PIT,24.49,16.72,0.683,11.91,2025,5.3,3,board,
+Tyjae Spears,RB,TEN,24.32,22.12,0.91,8.59,2025,4.52,6,board,
+Hunter Henry,TE,NE,24.17,21.78,0.901,10.52,2025,9.2,8,board,
+Mitchell Evans,TE,CAR,23.95,23.95,1.0,3.44,2025,3.26,7,board,
+Bhayshul Tuten,RB,JAX,23.71,37.39,1.577,5.91,2025,16.9,7,board,
+Jaydon Blue,RB,DAL,23.19,23.19,1.0,4.08,2025,1.9,1,board,
+Derrick Henry,RB,BAL,23.17,23.69,1.022,16.44,2025,17.09,8,board,
+DeMario Douglas,WR,NE,22.99,32.25,1.403,5.99,2025,10.15,8,board,
+Stefon Diggs,WR,NE,22.94,24.88,1.085,12.37,2025,13.7,6,board,
+Jacory Croskey-Merritt,RB,WAS,22.91,23.89,1.043,8.25,2025,8.98,5,board,
+Ollie Gordon II,RB,MIA,22.61,25.97,1.148,3.18,2025,12.03,6,board,
+Juwan Johnson,TE,NO,22.4,20.89,0.933,10.58,2025,9.64,7,board,
+David Montgomery,RB,HOU,22.36,21.43,0.958,9.94,2025,9.1,5,board,
+Spencer Rattler,QB,NO,22.35,22.35,1.0,,,,0,board,no 2026 games through week 8
+Rico Dowdle,RB,PIT,22.33,18.98,0.85,12.72,2025,8.92,5,board,
+Matthew Golden,WR,GB,22.04,48.89,2.218,5.0,2025,16.44,8,board,
+Travis Kelce,TE,KC,21.92,22.43,1.023,11.36,2025,11.71,7,board,
+David Njoku,TE,LAC,21.89,21.89,1.0,7.85,2025,6.35,2,board,
+Colby Parkinson,TE,LA,21.85,19.93,0.912,9.27,2025,5.05,6,board,
+Jaylin Lane,WR,WAS,21.65,21.65,1.0,2.61,2025,1.12,4,board,
+Adonai Mitchell,WR,NYJ,21.57,31.32,1.452,5.49,2025,12.12,4,board,
+Jayden Reed,WR,GB,21.53,14.93,0.693,9.7,2025,3.2,2,board,
+Ja'Tavion Sanders,TE,CAR,21.43,21.43,1.0,,,,0,board,no 2026 games through week 8
+Terrance Ferguson,TE,LA,21.31,21.31,1.0,4.74,2025,6.43,3,board,
+Kenny Gainwell,RB,TB,21.02,14.86,0.707,13.02,2025,6.62,8,name,
+Braelon Allen,RB,NYJ,20.58,25.68,1.248,3.83,2025,12.45,8,board,
+Ricky Pearsall,WR,SF,20.51,20.51,1.0,,,,0,board,no 2026 games through week 8
+Isaiah Likely,TE,NYG,20.43,31.8,1.557,5.14,2025,16.07,7,board,
+Tre Harris,WR,LAC,20.37,20.37,1.0,4.34,2025,7.27,6,board,
+Rachaad White,RB,WAS,20.3,22.85,1.126,8.41,2025,10.47,6,board,
+Mike Evans,WR,SF,20.22,26.68,1.319,10.6,2025,14.83,6,board,
+Malik Washington,WR,MIA,20.21,28.75,1.423,6.51,2025,10.24,7,board,
+Tyreek Hill,WR,MIA,20.12,20.12,1.0,,,,0,board,no 2026 games through week 8
+Deebo Samuel Sr.,WR,WAS,20.08,20.48,1.02,11.76,2025,12.08,5,board,
+Rhamondre Stevenson,RB,NE,19.8,19.44,0.982,12.77,2025,12.36,8,board,
+Isaiah Williams,WR,NYJ,19.74,19.74,1.0,,,,0,ambiguous,id ambiguous
+Kendre Miller,RB,NO,19.56,19.56,1.0,4.76,2025,6.43,6,board,
+Tez Johnson,WR,TB,19.55,19.55,1.0,6.16,2025,4.35,8,board,
+Isaiah Bond,WR,CLE,19.33,19.33,1.0,3.65,2025,3.4,4,board,
+T.J. Hockenson,TE,MIN,18.91,22.77,1.204,7.52,2025,11.21,7,board,
+Darnell Washington,TE,PIT,18.8,18.8,1.0,5.65,2025,7.8,8,board,
+Jaylen Wright,RB,MIA,18.67,18.67,1.0,5.36,2025,0.68,6,board,
+Alvin Kamara,RB,NO,18.37,20.25,1.102,9.15,2025,10.97,6,board,
+Mark Andrews,TE,BAL,18.36,18.36,1.0,7.71,2025,6.85,8,board,
+Tanner McKee,QB,PHI,18.05,18.05,1.0,3.94,2025,11.37,3,board,
+Greg Dulcich,TE,MIA,18.0,18.0,1.0,6.98,2025,8.27,6,board,
+Kirk Cousins,QB,LV,17.72,25.65,1.448,12.35,2025,24.71,8,board,
+Jonnu Smith,TE,PIT,17.67,17.67,1.0,5.01,2025,3.85,4,board,
+Brady Cook,QB,NYJ,17.65,17.65,1.0,,,,0,name,no 2026 games through week 8
+Isaiah Davis,RB,NYJ,17.48,17.48,1.0,4.45,2025,2.31,7,board,
+Joe Milton III,QB,DAL,17.46,17.46,1.0,,,,0,board,no 2026 games through week 8
+Sean Tucker,RB,TB,17.45,17.45,1.0,5.38,2025,5.0,4,board,
+Tony Pollard,RB,TEN,17.31,20.52,1.185,10.93,2025,14.56,8,board,
+John Metchie III,WR,CAR,17.25,17.25,1.0,5.53,2025,4.9,6,board,
+Brock Wright,TE,DET,17.12,17.12,1.0,4.6,2025,1.62,5,name,
+Jaleel McLaughlin,RB,DEN,17.08,17.08,1.0,3.93,2025,3.72,5,board,
+Jordan Mason,RB,MIN,17.01,16.27,0.957,8.06,2025,6.9,3,board,
+Aaron Jones,RB,MIN,16.79,18.18,1.083,9.89,2025,11.4,7,board,
+Ryan Flournoy,WR,DAL,16.66,20.39,1.224,7.6,2025,9.56,8,board,
+Jawhar Jordan,RB,HOU,16.63,18.24,1.097,7.42,2025,12.0,1,board,
+Raheim Sanders,RB,CLE,16.58,16.58,1.0,5.08,2025,4.54,5,name,
+Ray Davis,RB,BUF,16.27,16.27,1.0,3.42,2025,1.87,6,board,
+Justice Hill,RB,BAL,16.0,16.0,1.0,6.52,2025,5.36,8,board,
+Tyrell Shavers,WR,BUF,15.98,15.98,1.0,,,,0,name,no 2026 games through week 8
+Marquise Brown,WR,PHI,15.95,12.01,0.753,8.61,2025,3.3,3,name,
+Michael Carter,RB,TEN,15.88,15.88,1.0,7.62,2025,2.4,1,name,
+Kyle Williams,WR,NE,15.88,15.88,1.0,3.51,2025,4.75,8,board,
+Cole Kmet,TE,CHI,15.57,15.57,1.0,4.92,2025,3.53,7,board,
+Dillon Gabriel,QB,CLE,15.57,15.57,1.0,,,,0,board,no 2026 games through week 8
+Max Brosmer,QB,MIN,15.52,15.52,1.0,,,,0,name,no 2026 games through week 8
+Luke McCaffrey,WR,WAS,15.46,15.46,1.0,5.7,2025,0.0,4,board,
+Jaylin Noel,WR,HOU,15.42,18.46,1.197,4.02,2025,9.53,7,board,
+Ben Sinnott,TE,WAS,15.4,15.4,1.0,3.16,2025,0.53,3,board,
+Tyler Allgeier,RB,AZ,15.28,18.36,1.201,7.24,2025,10.51,8,board,
+Carson Wentz,QB,MIN,15.24,15.0,0.984,16.47,2025,15.77,2,name,
+Zach Ertz,TE,WAS,15.17,13.14,0.866,9.72,2025,1.73,3,board,
+Jerry Jeudy,WR,CLE,15.06,14.21,0.944,7.1,2025,4.73,7,board,
+Blake Corum,RB,LA,14.95,17.77,1.188,7.19,2025,10.35,8,board,
+Elijah Arroyo,TE,SEA,14.76,14.76,1.0,2.84,2025,1.35,2,board,
+Jackson Hawes,TE,BUF,14.56,14.56,1.0,4.05,2025,0.43,4,name,
+Devaughn Vele,WR,NO,14.5,22.7,1.565,7.37,2025,12.26,7,board,
+Isiah Pacheco,RB,DET,14.5,14.5,1.0,,,,0,board,no 2026 games through week 8
+Jack Bech,WR,LV,14.43,14.43,1.0,3.03,2025,7.9,2,board,
+Rashid Shaheed,WR,SEA,14.42,11.77,0.816,8.03,2025,6.03,7,board,
+Tyler Huntley,QB,BAL,14.25,14.25,1.0,8.83,2025,12.54,5,board,
+Chris Rodriguez Jr.,RB,JAX,14.07,14.0,0.995,7.67,2025,6.17,7,board,
+Rashod Bateman,WR,BAL,14.06,14.06,1.0,4.26,2025,6.73,8,board,
+Keaton Mitchell,RB,LAC,13.97,13.97,1.0,4.26,2025,6.06,7,board,
+Cedric Tillman,WR,CLE,13.94,13.94,1.0,,,,0,board,no 2026 games through week 8
+Russell Wilson,QB,NYG,13.92,13.92,1.0,,,,0,name,no 2026 games through week 8
+Jordan Whittington,WR,LA,13.9,13.9,1.0,2.42,2025,0.64,5,board,
+Tyquan Thornton,WR,KC,13.54,19.7,1.455,6.73,2025,11.22,4,board,
+Daniel Bellinger,TE,TEN,13.51,13.51,1.0,4.58,2025,2.0,8,board,
+Noah Fant,TE,NO,13.45,13.45,1.0,5.75,2025,6.23,6,board,
+Roman Wilson,WR,PIT,13.38,14.43,1.079,4.29,2025,8.96,5,board,
+Kevin Austin Jr.,WR,NO,13.08,13.08,1.0,6.6,2025,1.7,1,name,
+Tyrod Taylor,QB,GB,12.9,12.9,1.0,11.58,2025,-0.2,1,board,
+Devin Singletary,RB,NYG,12.74,12.74,1.0,6.4,2025,8.38,4,board,
+Konata Mumpfield,WR,LA,12.13,12.13,1.0,2.52,2025,4.17,7,board,
+Jerome Ford,RB,WAS,11.91,11.91,1.0,,,,0,board,no 2026 games through week 8
+Tyler Higbee,TE,LA,11.91,11.91,1.0,7.11,2025,8.06,7,board,
+Dawson Knox,TE,BUF,11.88,11.88,1.0,6.48,2025,2.74,7,board,
+Emari Demercado,RB,KC,11.88,11.88,1.0,4.86,2025,0.75,2,board,
+Keenan Allen,WR,LAC,11.71,11.62,0.992,10.75,2025,10.64,7,board,
+Miles Sanders,RB,DAL,11.7,11.7,1.0,,,,0,name,no 2026 games through week 8
+Andrei Iosivas,WR,CIN,11.62,11.62,1.0,5.99,2025,2.45,2,board,
+Calvin Ridley,WR,TEN,11.56,11.56,1.0,6.76,2025,2.52,6,board,
+Emanuel Wilson,RB,SEA,11.51,13.29,1.155,5.56,2025,10.69,7,board,
+Trevor Etienne,RB,CAR,11.42,11.42,1.0,0.81,2025,1.5,3,board,
+Cooper Kupp,WR,SEA,11.05,10.14,0.918,7.27,2025,6.45,8,board,
+Davis Allen,TE,LA,11.05,11.05,1.0,4.19,2025,4.14,8,name,
+Taysom Hill,TE,NO,10.88,10.88,1.0,,,,0,name,no 2026 games through week 8
+LeQuint Allen Jr.,RB,JAX,10.85,10.85,1.0,1.55,2025,0.5,6,board,
+DJ Giddens,RB,IND,10.73,10.73,1.0,1.92,2025,4.3,1,board,
+Darius Cooper,WR,PHI,10.56,10.56,1.0,3.03,2025,6.56,8,name,
+Jaret Patterson,RB,LAC,10.51,10.51,1.0,,,,0,name,no 2026 games through week 8
+Josh Oliver,TE,MIN,10.47,10.47,1.0,4.58,2025,2.53,3,board,
+Gage Larvadain,WR,CLE,10.47,10.47,1.0,,,,0,name,no 2026 games through week 8
+Mike Gesicki,TE,CIN,10.46,13.17,1.259,5.89,2025,12.85,6,board,
+Dont'e Thornton Jr.,WR,LV,10.38,10.38,1.0,,,,0,board,no 2026 games through week 8
+Will Shipley,RB,PHI,10.28,10.28,1.0,1.39,2025,3.96,5,board,
+Xavier Hutchinson,WR,HOU,10.2,11.13,1.091,6.12,2025,7.77,7,board,
+Kenny Pickett,QB,CAR,10.2,10.2,1.0,1.62,2025,1.79,3,board,
+Elijah Higgins,TE,AZ,10.19,10.19,1.0,3.42,2025,5.3,7,board,
+Luke Musgrave,TE,GB,9.77,9.77,1.0,,,,0,board,no 2026 games through week 8
+Elijah Moore,WR,PHI,9.75,9.75,1.0,3.18,2025,2.5,2,name,
+Hunter Long,TE,JAX,9.72,9.72,1.0,4.64,2025,0.88,4,name,
+Evan Engram,TE,DEN,9.71,9.71,1.0,6.42,2025,4.08,8,board,
+Kaleb Johnson,RB,PIT,9.64,9.64,1.0,0.88,2025,1.73,6,board,
+George Holani,RB,SEA,9.62,9.62,1.0,1.48,2025,4.56,8,board,
+Charlie Kolar,TE,LAC,9.57,9.57,1.0,2.78,2025,3.56,5,board,
+Malachi Corley,WR,CLE,9.5,9.5,1.0,2.63,2025,0.0,8,name,
+Nate Adkins,TE,DEN,9.43,9.43,1.0,2.8,2025,5.8,5,name,
+Ty Johnson,RB,BUF,9.32,9.32,1.0,5.9,2025,6.68,5,board,
+Savion Williams,WR,GB,9.31,9.31,1.0,2.13,2025,6.5,3,board,
+Grant Calcaterra,TE,PHI,9.07,9.07,1.0,,,,0,board,no 2026 games through week 8
+Jake Browning,QB,TB,9.07,9.07,1.0,,,,0,board,no 2026 games through week 8
+Payne Durham,TE,TB,9.0,9.0,1.0,0.5,2025,0.75,2,name,
+Malik Davis,RB,DAL,9.0,9.0,1.0,,,,0,board,no 2026 games through week 8
+Kameron Johnson,WR,TB,8.98,8.98,1.0,1.04,2025,0.19,7,name,
+Trey Lance,QB,LAC,8.78,8.78,1.0,,,,0,board,no 2026 games through week 8
+Malik Heath,WR,ATL,8.71,8.71,1.0,,,,0,name,no 2026 games through week 8
+Tommy Tremble,TE,CAR,8.69,8.69,1.0,4.26,2025,6.36,7,board,
+Kareem Hunt,RB,KC,8.57,8.57,1.0,,,,0,board,no 2026 games through week 8
+Brian Robinson,RB,ATL,8.54,8.54,1.0,3.68,2025,8.85,6,board,
+Zach Wilson,QB,NO,8.53,8.53,1.0,,,,0,board,no 2026 games through week 8
+Tutu Atwell,WR,MIA,8.5,8.5,1.0,3.9,2025,3.33,4,board,
+Josh Palmer,WR,BUF,8.5,8.5,1.0,4.36,2025,5.54,5,name,
+Zavier Scott,RB,MIN,8.48,8.48,1.0,3.56,2025,0.0,4,name,
+Quintin Morris,TE,JAX,8.36,8.36,1.0,1.59,2025,0.34,5,name,
+KeAndre Lambert-Smith,WR,LAC,8.3,8.3,1.0,1.61,2025,3.1,2,board,
+Mitchell Tinsley,WR,CIN,8.21,8.21,1.0,3.95,2025,4.8,2,name,
+Josh Whyle,TE,GB,8.13,8.13,1.0,,,,0,name,no 2026 games through week 8
+Darnell Mooney,WR,NYG,8.04,8.04,1.0,5.49,2025,3.36,7,board,
+Samaje Perine,RB,CIN,7.99,7.99,1.0,5.19,2025,5.8,7,board,
+Adam Trautman,TE,DEN,7.95,7.95,1.0,3.5,2025,2.0,4,board,
+Gabe Davis,WR,BUF,7.89,7.89,1.0,,,,0,name,no 2026 games through week 8
+Gunner Olszewski,WR,NYG,7.85,7.85,1.0,,,,0,name,no 2026 games through week 8
+Olamide Zaccheaus,WR,ATL,7.74,7.74,1.0,6.06,2025,1.01,7,board,
+David Martin-Robinson,TE,TEN,7.71,7.71,1.0,1.18,2025,0.0,1,name,
+Jalen Tolbert,WR,MIA,7.66,7.66,1.0,3.86,2025,1.67,3,board,
+Dyami Brown,WR,WAS,7.58,7.58,1.0,4.52,2025,2.34,7,board,
+Terrell Jennings,RB,NE,7.57,7.57,1.0,,,,0,name,no 2026 games through week 8
+Luke Farrell,TE,SF,7.56,7.56,1.0,2.27,2025,0.9,7,name,
+Tyler Goodson,RB,ATL,7.47,7.47,1.0,0.52,2025,2.98,5,name,
+Jimmy Horn Jr.,WR,CAR,7.43,7.43,1.0,2.87,2025,0.0,1,board,
+Jalen Nailor,WR,LV,7.32,7.32,1.0,5.92,2025,4.88,6,board,
+Harrison Bryant,TE,SEA,7.16,7.16,1.0,,,,0,name,no 2026 games through week 8
+Rasheen Ali,RB,BAL,7.03,7.03,1.0,1.61,2025,0.34,7,board,
+Corey Kiner,RB,AZ,7.01,7.01,1.0,2.33,2025,2.56,8,name,
+Andrew Ogletree,TE,IND,7.0,7.0,1.0,1.15,2025,0.77,6,name,
+Cade Stover,TE,HOU,6.98,6.98,1.0,3.32,2025,1.44,5,board,
+Luke Schoonmaker,TE,DAL,6.92,6.92,1.0,1.94,2025,2.0,3,name,
+John Bates,TE,WAS,6.91,6.91,1.0,2.73,2025,1.54,5,name,
+Nick Chubb,RB,HOU,6.87,6.87,1.0,,,,0,name,no 2026 games through week 8
+Tyler Conklin,TE,DET,6.73,6.73,1.0,2.88,2025,1.55,2,board,
+Evan Hull,RB,HOU,6.64,6.64,1.0,,,,0,name,no 2026 games through week 8
+Ryan Miller,WR,NYG,6.56,6.56,1.0,1.27,2025,6.07,3,name,
+Calvin Austin III,WR,NYG,6.5,6.5,1.0,,,,0,board,no 2026 games through week 8
+Kylen Granson,TE,TEN,6.37,6.37,1.0,0.92,2025,0.0,1,name,
+Isaiah Hodgins,WR,NYG,6.31,6.31,1.0,,,,0,name,no 2026 games through week 8
+Jeremy Ruckert,TE,NYJ,6.26,6.26,1.0,3.35,2025,4.7,4,board,
+Derius Davis,WR,LAC,6.15,6.15,1.0,0.5,2025,0.29,7,name,
+Jahan Dotson,WR,ATL,6.1,6.1,1.0,3.35,2025,7.46,8,board,
+Jalin Hyatt,WR,NYG,6.04,6.04,1.0,,,,0,name,no 2026 games through week 8
+Tanner Conner,TE,NYG,5.91,5.91,1.0,,,,0,name,no 2026 games through week 8
+Julian Hill,TE,NE,5.87,5.87,1.0,,,,0,name,no 2026 games through week 8
+Noah Gray,TE,KC,5.77,5.77,1.0,2.77,2025,5.33,7,board,
+Will Dissly,TE,LAC,5.71,5.71,1.0,,,,0,name,no 2026 games through week 8
+Christian Kirk,WR,SF,5.66,5.66,1.0,,,,0,board,no 2026 games through week 8
+Allen Lazard,WR,NYJ,5.66,5.66,1.0,,,,0,name,no 2026 games through week 8
+Casey Washington,WR,ATL,5.58,5.58,1.0,,,,0,name,no 2026 games through week 8
+Greg Dortch,WR,DET,5.58,5.58,1.0,6.26,2025,0.0,7,name,
+Chris Brooks,RB,GB,5.53,5.53,1.0,1.92,2025,3.1,4,board,
+Brevyn Spann-Ford,TE,DAL,5.51,5.51,1.0,1.5,2025,3.0,8,name,
+Jeremy McNichols,RB,WAS,5.45,5.45,1.0,4.54,2025,2.55,2,board,
+Nick Westbrook-Ikhine,WR,IND,5.32,5.32,1.0,1.53,2025,0.0,2,board,
+Blake Whiteheart,TE,CLE,5.21,5.21,1.0,0.5,2025,2.96,5,name,
+Darius Slayton,WR,NYG,5.17,5.17,1.0,,,,0,board,no 2026 games through week 8
+Austin Hooper,TE,ATL,5.12,5.12,1.0,4.56,2025,3.77,6,board,
+Josiah Deguara,TE,ARI,5.12,5.12,1.0,,,,0,name,no 2026 games through week 8
+Drew Sample,TE,CIN,5.1,5.1,1.0,2.66,2025,4.45,4,name,
+Hassan Haskins,RB,LAC,5.1,5.1,1.0,,,,0,name,no 2026 games through week 8
+Zamir White,RB,LV,5.0,5.0,1.0,,,,0,name,no 2026 games through week 8
+Trayveon Williams,RB,CLE,4.94,4.94,1.0,,,,0,name,no 2026 games through week 8
+Mason Tipton,WR,NO,4.85,4.85,1.0,,,,0,name,no 2026 games through week 8
+Hunter Luepke,RB,DAL,4.82,4.82,1.0,2.64,2025,0.96,7,name,
+Julius Chestnut,RB,TEN,4.79,4.79,1.0,0.5,2025,0.0,6,name,
+Noah Brown,WR,WAS,4.79,4.79,1.0,,,,0,name,no 2026 games through week 8
+Mason Rudolph,QB,PIT,4.75,4.75,1.0,3.8,2025,0.05,2,board,
+Jonathan Mingo,WR,DAL,4.74,4.74,1.0,0.7,2025,1.0,6,name,
+Joshua Dobbs,QB,NE,4.7,4.7,1.0,,,,0,name,no 2026 games through week 8
+Nick Mullens,QB,JAX,4.69,4.69,1.0,0.5,2025,-0.3,1,name,
+Charlie Woerner,TE,ATL,4.65,4.65,1.0,1.83,2025,0.9,5,name,
+Gardner Minshew,QB,AZ,4.59,4.59,1.0,0.5,2025,25.52,1,board,
+KaVontae Turpin,WR,DAL,4.54,4.54,1.0,5.63,2025,2.48,6,board,
+Tyler Johnson,WR,DAL,4.54,4.54,1.0,,,,0,name,no 2026 games through week 8
+Treylon Burks,WR,WAS,4.27,4.27,1.0,3.62,2025,7.88,6,board,
+Ray-Ray McCloud,WR,NYG,4.14,4.14,1.0,,,,0,name,no 2026 games through week 8
+Tyler Badie,RB,DEN,4.11,4.11,1.0,2.21,2025,3.38,5,name,
+Connor Heyward,RB,LV,4.05,4.05,1.0,,,,0,unmatched,id unmatched
+Dylan Laube,RB,LV,4.05,4.05,1.0,0.5,2025,1.55,8,name,
+Ian Thomas,TE,LV,4.04,4.04,1.0,2.71,2025,4.25,4,name,
+John FitzPatrick,TE,GB,4.0,4.0,1.0,,,,0,name,no 2026 games through week 8
+Antonio Gibson,RB,NE,3.93,3.93,1.0,,,,0,name,no 2026 games through week 8
+Tylan Wallace,WR,CLE,3.75,3.75,1.0,1.32,2025,1.17,3,name,
+Mitchell Trubisky,QB,TEN,3.7,3.7,1.0,,,,0,board,no 2026 games through week 8
+Mack Hollins,WR,NE,3.68,3.95,1.073,8.1,2025,8.98,4,board,
+Scott Miller,WR,CHI,3.64,3.64,1.0,,,,0,ambiguous,id ambiguous
+Jack Stoll,TE,CLE,3.62,3.62,1.0,,,,0,name,no 2026 games through week 8
+Lil'Jordan Humphrey,WR,DEN,3.39,3.39,1.0,4.94,2025,1.32,4,name,
+Brenden Bates,TE,CLE,3.32,3.32,1.0,,,,0,name,no 2026 games through week 8
+Tanner Hudson,TE,CIN,3.17,3.17,1.0,4.78,2025,4.08,4,name,
+Foster Moreau,TE,HOU,3.09,3.09,1.0,1.84,2025,6.03,6,name,
+JuJu Smith-Schuster,WR,NYG,3.08,3.08,1.0,,,,0,name,no 2026 games through week 8
+Arian Smith,WR,NYJ,3.03,3.03,1.0,1.04,2025,0.0,2,name,
+Kyle Juszczyk,RB,SF,2.97,2.97,1.0,,,,0,unmatched,id unmatched
+Ameer Abdullah,RB,JAX,2.93,2.93,1.0,2.92,2025,1.14,7,name,
+Hunter Renfrow,WR,CAR,2.89,2.89,1.0,,,,0,name,no 2026 games through week 8
+Brycen Tremayne,WR,CAR,2.88,2.88,1.0,2.0,2025,2.8,7,name,
+Marquez Valdes-Scantling,WR,DAL,2.83,2.83,1.0,3.56,2025,1.4,3,name,
+Josh Reynolds,WR,NYJ,2.78,2.78,1.0,,,,0,name,no 2026 games through week 8
+Xavier Smith,WR,LA,2.78,2.78,1.0,3.02,2025,0.0,3,name,
+AJ Dillon,RB,CAR,2.7,2.7,1.0,1.52,2025,1.65,4,name,
+David Sills,WR,TB,2.58,2.58,1.0,4.09,2025,0.0,1,name,
+Tahj Brooks,RB,CIN,2.49,2.49,1.0,0.53,2025,0.12,5,board,
+Cedrick Wilson Jr.,WR,DET,2.37,2.37,1.0,,,,0,name,no 2026 games through week 8
+Xavier Weaver,WR,AZ,2.22,2.22,1.0,,,,0,name,no 2026 games through week 8
+Van Jefferson,WR,WAS,2.22,2.22,1.0,5.0,2025,0.0,1,name,
+Ben Skowronek,WR,PIT,2.21,2.21,1.0,1.06,2025,4.07,3,name,
+Cooper Rush,QB,BAL,2.15,2.15,1.0,0.5,2025,3.58,2,name,
+Austin Trammell,WR,JAX,2.03,2.03,1.0,,,,0,name,no 2026 games through week 8
+Jamari Thrash,WR,CLE,1.97,1.97,1.0,,,,0,name,no 2026 games through week 8
+Curtis Samuel,WR,BUF,1.85,1.85,1.0,,,,0,name,no 2026 games through week 8
+Andrew Beck,RB,NYJ,1.83,1.83,1.0,,,,0,unmatched,id unmatched
+Dante Pettis,WR,NO,1.75,1.75,1.0,,,,0,name,no 2026 games through week 8
+D'Ernest Johnson,RB,NE,1.67,1.67,1.0,,,,0,name,no 2026 games through week 8
+Tucker Fisk,TE,LAC,1.65,1.65,1.0,,,,0,name,no 2026 games through week 8
+Alec Ingold,RB,LAC,1.65,1.65,1.0,,,,0,unmatched,id unmatched
+Skyy Moore,WR,GB,1.61,1.61,1.0,0.87,2025,2.1,5,name,
+Kalif Raymond,WR,CHI,1.56,1.59,1.021,4.05,2025,7.94,8,name,
+Adam Prentice,RB,DEN,1.54,1.54,1.0,,,,0,unmatched,id unmatched
+Dare Ogunbowale,RB,HOU,1.52,1.52,1.0,1.72,2025,0.0,1,name,
+Ashton Dulin,WR,IND,1.51,1.51,1.0,1.67,2025,1.55,4,name,
+James Proche,WR,TEN,1.48,1.48,1.0,,,,0,name,no 2026 games through week 8
+Sterling Shepard,WR,TB,1.47,1.47,1.0,6.31,2025,1.65,2,name,
+Demarcus Robinson,WR,SF,1.45,1.45,1.0,4.16,2025,9.7,2,name,
+Johnny Mundt,TE,PHI,1.43,1.43,1.0,1.68,2025,1.12,5,name,
+Trent Sherfield,WR,BUF,1.42,1.42,1.0,1.27,2025,0.0,1,name,
+Durham Smythe,TE,BAL,1.41,1.41,1.0,0.93,2025,0.47,3,name,
+Andy Dalton,QB,PHI,1.38,1.38,1.0,2.88,2025,-2.0,1,board,
+Adam Thielen,WR,MIN,1.37,1.37,1.0,,,,0,name,no 2026 games through week 8
+Tim Patrick,WR,NYJ,1.26,1.26,1.0,3.98,2025,3.55,2,name,
+Zay Jones,WR,ARI,1.25,1.25,1.0,,,,0,name,no 2026 games through week 8
+Dee Eskridge,WR,MIA,1.24,1.24,1.0,,,,0,name,no 2026 games through week 8
+Mo Alie-Cox,TE,IND,1.23,1.23,1.0,2.79,2025,3.27,4,name,
+C.J. Ham,RB,MIN,1.19,1.19,1.0,,,,0,unmatched,id unmatched
+Kendrick Bourne,WR,AZ,1.09,1.18,1.078,6.58,2025,7.47,7,board,
+Eric Saubert,TE,SEA,1.07,1.07,1.0,1.01,2025,1.57,7,name,
+Chris Moore,WR,WAS,0.98,0.98,1.0,3.86,2025,5.1,3,name,
+Anthony Firkser,TE,WAS,0.93,0.93,1.0,,,,0,name,no 2026 games through week 8
+Brandin Cooks,WR,BUF,0.85,0.85,1.0,3.99,2025,3.08,4,name,
+Raheem Mostert,RB,LV,0.8,0.8,1.0,,,,0,name,no 2026 games through week 8
+DeAndre Hopkins,WR,BAL,0.67,0.67,1.0,,,,0,board,no 2026 games through week 8
+Tyler Lockett,WR,LV,0.67,0.67,1.0,,,,0,name,no 2026 games through week 8
