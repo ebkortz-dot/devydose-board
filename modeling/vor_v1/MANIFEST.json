@@ -4,12 +4,12 @@
   "sha256": "e6dab4892941a71984b418911249c61502a3b64c954ce795397685f0b3bc21a1"
  },
  "code/vor_live.py": {
-  "bytes": 3741,
-  "sha256": "bd6c3db349c65deac3eda3d720c1bc36ddffb04958cba6d72eaf0d47a6417a44"
+  "bytes": 6092,
+  "sha256": "9a0a5d1ff068d8198a728ec7f972de576dea67cec7559c9633a711ef187a2758"
  },
  "code/vor_nfl.py": {
-  "bytes": 11638,
-  "sha256": "917628fe4532061372cd1811d3a72771dc48e31f35346f5228fc71217899efde"
+  "bytes": 18418,
+  "sha256": "41bbcfc285f4f9babdd3a8aa8b885a1cab2a811f583b40aecef54cf455e42e70"
  },
  "results/waiver/au_vor_values_waiver.csv": {
   "bytes": 562375,
@@ -54,5 +54,58 @@
    "note": "live Trade Lab feed as fetched 2026-11-04 (6.2 MB, not committed)"
   },
   "nflverse": "stats_player_week_2012..2026.csv, players.csv, roster_weekly_2026.csv from github.com/nflverse/nflverse-data releases, fetched 2026-11-04"
- }
+ },
+ "v4_nfl/README.md": {
+  "bytes": 1553,
+  "sha256": "b5ed3e9e096e2e42b52c0876bdd98e1b7b6857f838752d0dbca800f6dd3fb153"
+ },
+ "v4_nfl/qb34/nfl_vor_2026_w08.csv": {
+  "bytes": 132678,
+  "sha256": "6d1954f6122f8a72bac5a00dc0b5e3df0703ae6c49caa4f49207e865740e85a3"
+ },
+ "v4_nfl/qb34/vor_gate_report.json": {
+  "bytes": 9162,
+  "sha256": "d2597decf06ecb5efe864bf51e6fd2b0604868577708e1caeded31e2d0e9325b"
+ },
+ "v4_nfl/qb34/calibration.json": {
+  "bytes": 336,
+  "sha256": "805cb2cedfbfcc9492e5dbba56827d7c305f51a883de1c5f7e5ea45f58e8e761"
+ },
+ "v4_nfl/qb32/nfl_vor_2026_w08.csv": {
+  "bytes": 132673,
+  "sha256": "dddecf1c413eabd249aba2b9188cfc3671f24223ff576f3b750152d88b37dddf"
+ },
+ "v4_nfl/qb32/vor_gate_report.json": {
+  "bytes": 9138,
+  "sha256": "4ffcad35ce9e2b953e473b6498711a7314c85bada449175e93eb7ae06c31c3e2"
+ },
+ "v4_nfl/qb32/calibration.json": {
+  "bytes": 334,
+  "sha256": "f12817edecb0f8be621033c0e7ab291fb4e574ee7aea614e998883baac4f9887"
+ },
+ "v4_nfl/qb30/nfl_vor_2026_w08.csv": {
+  "bytes": 132671,
+  "sha256": "77c717bb8bf68efdc6c63057e93fb3a15f3a4daa2b9364c857a3f3eada4ecc4e"
+ },
+ "v4_nfl/qb30/vor_gate_report.json": {
+  "bytes": 9204,
+  "sha256": "129bd7943a335a1334f3c6e4f47306bf03f7ac8158cd3945c8645d97911a2d7c"
+ },
+ "v4_nfl/qb30/calibration.json": {
+  "bytes": 334,
+  "sha256": "bd884281556ca34fabc5a0b121eec9a93ecfa95331826f2677f35de696f15734"
+ },
+ "v4_nfl/qb36/nfl_vor_2026_w08.csv": {
+  "bytes": 132675,
+  "sha256": "6716fefc126bf7d73e44a88a1a520745b314a1b1cb13ae172d4942e9745fe0a1"
+ },
+ "v4_nfl/qb36/vor_gate_report.json": {
+  "bytes": 9107,
+  "sha256": "78284c2f16018b7e042674d322455922124d8bb605b4b004a2553854a0b4a731"
+ },
+ "v4_nfl/qb36/calibration.json": {
+  "bytes": 334,
+  "sha256": "48923c9b387176d7c0945f490a1de3920721d5eff2aaa56de2397516eb109801"
+ },
+ "_current_nfl_values": "v4_nfl/qb36/nfl_vor_2026_w08.csv"
 }

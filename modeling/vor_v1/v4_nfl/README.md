@@ -20,3 +20,7 @@ The walk-forward gate passes every cell at all four ranks.
 | QB36 | 11.1 | 6 | 18 | #4 | 0.140 / 0.056 |
 
 For comparison, superflex markets typically carry about 8–10 QBs in the top 24.
+
+## Decision (Erik, 2026-11-05): QB36
+Canonical v4 NFL values: `v4_nfl/qb36/nfl_vor_2026_w08.csv`. The code default is now `VOR_QB_RANK=36`.
+The other folders (qb30, qb32, qb34) are kept as the sweep record.

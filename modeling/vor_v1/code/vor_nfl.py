@@ -38,7 +38,7 @@ import os
 # last starter); 'waiver' = replacement is the player at rank 1.5 x starters + 1,
 # i.e. roughly the best player still on waivers once benches are filled.
 REPL_MODE = os.environ.get('VOR_REPL', 'starter')
-QB_REPL_RANK = int(os.environ.get('VOR_QB_RANK', 30))   # Erik 2026-11-04: QB30
+QB_REPL_RANK = int(os.environ.get('VOR_QB_RANK', 36))   # Erik 2026-11-05: QB36 (QB30 tested, too deflated)
 
 def fpts(df):
     g = lambda c: pd.to_numeric(df[c], errors='coerce').fillna(0)
