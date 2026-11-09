@@ -1,4 +1,4 @@
-"""Claude VOR model, NFL side (v1).
+"""Claude VOR model, NFL side (v5).
 
 Currency: expected WEEKLY value over replacement, summed over a horizon.
   League (Erik, 2026-11-04): 12 teams, superflex, full PPR, 6-pt pass TD,
@@ -37,7 +37,7 @@ import os
 # POLICY (Erik's call): 'starter' = replacement is the best non-starter (value over
 # last starter); 'waiver' = replacement is the player at rank 1.5 x starters + 1,
 # i.e. roughly the best player still on waivers once benches are filled.
-REPL_MODE = os.environ.get('VOR_REPL', 'starter')
+REPL_MODE = os.environ.get('VOR_REPL', 'waiver')   # v5: waiver is the adopted policy and the default
 QB_REPL_RANK = int(os.environ.get('VOR_QB_RANK', 36))   # Erik 2026-11-05: QB36 (QB30 tested, too deflated)
 
 def fpts(df):
@@ -57,11 +57,29 @@ def resolve_pos(pid, pos):
     rp = _rp.get(pid)
     if rp in POS: return rp
     return 'RB' if pos == 'FB' else None
+# v5 (review finding 2): nflverse weekly stats label every past season with the
+# player's CURRENT position (Jordan Matthews = TE in 2015). Use each season's own
+# weekly-roster position (regular-season mode; FB counts as RB) when it is a skill
+# position, and fall back to resolve_pos() otherwise.
+# v5 (review finding 3): IR status. A player is 'on reserve' for season y if his
+# roster status at week N is RES, PUP or RSN (IR, PUP, non-football injury).
+IR_STATUS = {'RES', 'PUP', 'RSN'}
+POSY, RESY = {}, set()
+for _y in range(2012, 2027):
+    _r = pd.read_csv(f'{D}/roster_weekly_{_y}.csv', low_memory=False, usecols=['gsis_id', 'week', 'position', 'status', 'game_type'])
+    _r = _r[(_r.game_type == 'REG') & _r.gsis_id.notna()]
+    _r['position'] = _r.position.replace({'FB': 'RB'})
+    _k = _r[_r.position.isin(POS)].groupby('gsis_id').position.agg(lambda s_: s_.mode().iloc[0])
+    POSY.update({(g_, _y): v_ for g_, v_ in _k.items()})
+    _wk = _r[_r.week <= N].sort_values('week').groupby('gsis_id').tail(1)
+    RESY |= {(g_, _y) for g_ in _wk[_wk.status.isin(IR_STATUS)].gsis_id}
+def season_pos(pid, y, pos):
+    return POSY.get((pid, y)) or resolve_pos(pid, pos)
 frames = []
 for y in range(2012, 2027):
     df = pd.read_csv(f'{D}/stats_{y}.csv', low_memory=False)
     df = df[df.season_type == 'REG'].copy()
-    df['rpos'] = [resolve_pos(a, b) for a, b in zip(df.player_id, df.position)]
+    df['rpos'] = [season_pos(a, y, b) for a, b in zip(df.player_id, df.position)]
     df = df[df.rpos.notna()]
     frames.append(pd.DataFrame({'pid': df.player_id, 'y': y, 'w': df.week.astype(int), 'pos': df.rpos, 'pts': fpts(df)}))
 W = pd.concat(frames, ignore_index=True)
@@ -81,7 +99,7 @@ def repl_season(y):
     for p in POS:
         n_st = int(((s.pos == p) & s.pid.isin(starters)).sum())
         if REPL_MODE == 'waiver':
-            # Erik 2026-11-04: QB replacement = QB30; RB/WR/TE = rank 1.5 x starters + 1
+            # Erik: QB replacement = QB_REPL_RANK (QB36, 2026-11-05); RB/WR/TE = rank 1.5 x starters + 1
             k = QB_REPL_RANK if p == 'QB' else int(math.ceil(1.5*n_st)) + 1
             out[p] = float(s[s.pos == p]['mean'].iloc[k - 1])
         else:
@@ -160,7 +178,7 @@ for y in range(2013, 2027):
     drafted = set(_dy.index[(_dy.draft_year == y) & (_dy.position.isin(POS))])
     for p_ in (prev | drafted):
         if (p_, y) in _have: continue
-        pos_ = _lastpos.get(p_, _dy.position.get(p_))
+        pos_ = POSY.get((p_, y)) or _lastpos.get(p_, _dy.position.get(p_))
         if pos_ not in POS: continue
         _z.append({'pid': p_, 'y': y, 'ge': 0, 'early': 0.0, 'pos': pos_})
 _z = pd.DataFrame(_z).merge(ros, on=['pid', 'y'], how='left')
@@ -187,7 +205,11 @@ rows['H_complete'] = rows.y + 2 <= 2025
 rows['lpick'] = np.log(rows.pid.map(pick).fillna(260.0))
 rows['age'] = [(pd.Timestamp(f'{y}-09-01') - bd.get(p, pd.NaT)).days/365.25 if pd.notna(bd.get(p, pd.NaT)) else np.nan for p, y in zip(rows.pid, rows.y)]
 rows['age'] = rows.groupby('pos').age.transform(lambda s: s.fillna(s.median()))
-rows['naive'] = [2.5*SE.loc[(p, y-1)]['vor'] if (p, y-1) in SE.index else 0.0 for p, y in zip(rows.pid, rows.y)]
+rows['res'] = [1.0 if (p, y) in RESY else 0.0 for p, y in zip(rows.pid, rows.y)]
+# v5 (review finding 4): naive on the same scale as H -- previous-season VOR above
+# the baseline B (2.5 seasons' worth), not raw VOR.
+rows['naive'] = [2.5*(SE.loc[(p, y-1)]['vor'] - B[pos_]*SE.loc[(p, y-1)]['games']) if (p, y-1) in SE.index else 0.0
+                 for p, y, pos_ in zip(rows.pid, rows.y, rows.pos)]
 
 # ---- model ----
 def feats(df, dp, use_inseason=True):
@@ -196,7 +218,7 @@ def feats(df, dp, use_inseason=True):
     pr = pr.clip(lower=0.5)
     pr2 = df.prior2.fillna(pr)
     g = df['ge']
-    cols = [np.ones(len(df)), pr, pr2, df.age, df.age**2, nop.astype(float), df.prior_g]
+    cols = [np.ones(len(df)), pr, pr2, df.age, df.age**2, nop.astype(float), df.prior_g, df.res]
     if use_inseason: cols += [df.early*g/(g+3), g/(g+3)]
     return np.column_stack(cols)
 
@@ -204,6 +226,7 @@ def fit_lin(X, y, ridge=1e-3):
     A = X.T @ X + ridge*np.eye(X.shape[1]); A[0, 0] -= ridge
     return np.linalg.solve(A, X.T @ y)
 
+TOP_MIN = 25
 def pav_curve(x, y):
     o = np.argsort(x); x, y = np.asarray(x, float)[o], np.asarray(y, float)[o]
     vals, wts, idxs = [], [], []
@@ -212,6 +235,12 @@ def pav_curve(x, y):
         while len(vals) > 1 and vals[-2] > vals[-1]:
             v2, w2, i2 = vals.pop(), wts.pop(), idxs.pop(); v1, w1, i1 = vals.pop(), wts.pop(), idxs.pop()
             vals.append((v1*w1 + v2*w2)/(w1 + w2)); wts.append(w1 + w2); idxs.append(i1 + i2)
+    # v5 (review finding 1): the top block of a plain PAV fit can rest on a handful of
+    # players (a noisy, too-high top knot). Merge blocks from the top until the top
+    # one holds at least TOP_MIN rows. POLICY: TOP_MIN = 25.
+    while len(idxs) > 1 and len(idxs[-1]) < TOP_MIN:
+        v2, w2, i2 = vals.pop(), wts.pop(), idxs.pop(); v1, w1, i1 = vals.pop(), wts.pop(), idxs.pop()
+        vals.append((v1*w1 + v2*w2)/(w1 + w2)); wts.append(w1 + w2); idxs.append(i1 + i2)
     cx = np.array([x[ii].mean() for ii in idxs]); cy = np.array(vals)
     return cx, cy   # v4: block centres only; above the last centre predict() continues proportionally
 
@@ -227,7 +256,17 @@ def fit(train, use_inseason):
         oof[ix], _ = predict(tr[ix], Ms, use_inseason, scaled=False)
     for p in POS:
         ix = (tr.pos == p).values
-        M[p]['iso'] = pav_curve(oof[ix], tr.H.values[ix])
+        cx, cy = pav_curve(oof[ix], tr.H.values[ix])
+        # v5 (review finding 1): above the top knot, extend with a slope fitted on the
+        # top decile of out-of-fold predictions (a line through the top knot), bounded
+        # between flat (0) and the old proportional slope cy/cx. v4's proportional
+        # continuation over-predicted these players out of sample.
+        o, h = oof[ix], tr.H.values[ix]
+        t = o >= np.percentile(o, 90)
+        dx, dy = o[t] - cx[-1], h[t] - cy[-1]
+        s_hi = cy[-1]/cx[-1] if cx[-1] > 0 else 0.0
+        slope = float(np.clip((dx*dy).sum()/(dx*dx).sum(), 0.0, s_hi)) if (dx*dx).sum() > 0 else 0.0
+        M[p]['iso'] = (cx, cy, slope)
     return M
 
 def fit_core(train, use_inseason):
@@ -258,6 +297,8 @@ def predict(df, M, use_inseason, scaled=True):
         for w in ('ros', 'y1', 'y2'):
             mu = np.clip(X @ m[w + '_ppg'], 0, None)
             g = np.clip(X @ m[w + '_g'], 0, m[w + '_max'])
+            if w == 'ros':   # v5 POLICY (Erik 2026-11-09): a player on reserve at week N plays no more games this season
+                g = g * (1.0 - df[ix].res.values)
             # weekly noise plus uncertainty in the projection itself
             sig = np.sqrt((a + b*mu)**2 + m[w + '_s']**2)
             v = g * (ev_pos(mu, sig, R[p]) - B[p])
@@ -267,10 +308,10 @@ def predict(df, M, use_inseason, scaled=True):
             parts.setdefault(w + '_mu', np.zeros(len(df)))[ix] = mu
             parts.setdefault(w + '_g', np.zeros(len(df)))[ix] = g
         if scaled and 'iso' in m:
-            cx, cy = m['iso']
+            cx, cy, slope = m['iso']
             cal = np.interp(tot, cx, cy)
-            top = tot > cx[-1]   # v4: continue proportionally above the top knot (no flat cap)
-            if cx[-1] > 0: cal[top] = cy[-1] * tot[top] / cx[-1]
+            top = tot > cx[-1]   # v5: fitted tail slope above the top knot
+            cal[top] = cy[-1] + slope * (tot[top] - cx[-1])
             out[ix] = cal
         else:
             out[ix] = tot
@@ -300,12 +341,21 @@ if __name__ == '__main__':
     comp = rows[rows.H_complete]
     splits = {'A: train 2013-17 (purged) -> test 2018-23': (lambda d: d.y + 2 < 2018, range(2018, 2024)),
               'B: train 2018-23 -> test 2013-17': (lambda d: d.y >= 2018, range(2013, 2018))}
-    rep = {'R': R, 'R_by_season': RS, 'sigma': SIG, 'baseline_B': B, 'baseline_n': B_n, 'age_gate': AGE_GATE, 'splits': {}}
+    rep = {'repl_mode': REPL_MODE, 'qb_repl_rank': QB_REPL_RANK, 'tail_slope': {}, 'R': R, 'R_by_season': RS, 'sigma': SIG, 'baseline_B': B, 'baseline_n': B_n, 'age_gate': AGE_GATE, 'splits': {}}
     for nm, (trsel, te) in splits.items():
         tr = comp[trsel(comp)]; ts = comp[comp.y.isin(te)].copy()
         M1 = fit(tr, True); M0 = fit(tr, False)
         ts['pred'], _ = predict(ts, M1, True); ts['base0'], _ = predict(ts, M0, False)
         ts['pred_rc'] = recentre(ts, 'pred'); ts['base0_rc'] = recentre(ts, 'base0'); ts['H_rc'] = recentre(ts, 'H')
+        ts['naive_rc'] = recentre(ts, 'naive')   # v5: naive recentred too
+        # v5: out-of-sample check of the region above the top calibration knot
+        rep['tail_slope'][nm] = {p: round(M1[p]['iso'][2], 4) for p in POS}
+        rawp, _ = predict(ts, M1, True, scaled=False)
+        above = {}
+        for p in POS:
+            ix = (ts.pos == p).values & (rawp > M1[p]['iso'][0][-1])
+            if ix.any(): above[p] = {'n': int(ix.sum()), 'mean_pred': round(float(ts.pred.values[ix].mean()), 1), 'mean_H': round(float(ts.H.values[ix].mean()), 1)}
+        rep.setdefault('above_top_knot', {})[nm] = above
         res = {}
         for grp in ['all'] + POS + ['vets', 'no_prior', 'zero_games', 'top200', 'all_recentred']:
             if grp == 'all': q = ts
@@ -320,7 +370,7 @@ if __name__ == '__main__':
             if grp == 'all_recentred':
                 q = ts
                 for col, tgt in [('pred', 'H_rc'), ('base0', 'H_rc'), ('naive', 'H_rc')]:
-                    c = col + '_rc' if col != 'naive' else 'naive'
+                    c = col + '_rc'
                     r['mae_' + col] = round(float(np.mean(np.abs(q[c] - q[tgt]))), 2)
                     r['rho_' + col] = round(spearman(q[c], q[tgt]), 4)
                 res[grp] = r; continue

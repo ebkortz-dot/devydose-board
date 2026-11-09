@@ -1,4 +1,4 @@
-"""Claude VOR model, NFL side: calibration check + live 2026 values.
+"""Claude VOR model, NFL side (v5): calibration check + live 2026 values.
 
 Fits on every complete row (seasons 2013-2023), predicts each 2026 player at the
 end of Week 8: expected VOR over rest of 2026 + 2027 + 2028.
@@ -51,6 +51,8 @@ if len(add):
     extra['age'] = [(pd.Timestamp('2026-09-01') - V.bd.get(p, pd.NaT)).days/365.25 if pd.notna(V.bd.get(p, pd.NaT)) else np.nan for p in extra.pid]
     live = pd.concat([live, extra], ignore_index=True)
 live['age'] = live.groupby('pos').age.transform(lambda s: s.fillna(s.median()))
+# v5: IR flag from the player's LATEST 2026 roster status (RES = IR / PUP / NFI)
+live['res'] = live.pid.map(ros.set_index('gsis_id').status).isin(['RES', 'PUP', 'RSN']).astype(float)
 live['vor_value'], parts = V.predict(live, M, True)
 # v4: zero-game players are trained and gated in the main model (review finding 2)
 live['model'] = np.where(live['ge'] == 0, 'inseason(no 2026 games)', 'inseason')
@@ -69,7 +71,7 @@ live['name'] = live.pid.map(V.P.display_name)
 live['priced'] = live.status.isin(['ACT', 'INA', 'RES'])
 live['flag'] = np.where(live.status == 'RES', 'IR', np.where(live.status == 'INA', 'inactive', ''))
 # v4: re-centre so the player at each position's replacement rank is worth 0
-# (QB30, RB/WR/TE 1.5 x starters + 1), among priced players
+# (QB36, RB/WR/TE 1.5 x starters + 1), among priced players
 pr = live[live.priced]
 ref = {p_: (pr[pr.pos == p_].vor_value.sort_values(ascending=False).iloc[V.waiver_rank(p_) - 1]
             if (pr.pos == p_).sum() >= V.waiver_rank(p_) else 0.0) for p_ in V.POS}
