@@ -1,0 +1,16 @@
+{
+ "week": 10,
+ "gate_cells": 10,
+ "gate_fails": {
+  "zero_games": {
+   "n": [
+    1246,
+    1023
+   ],
+   "vs_base0_dMAE": -5.140000000000001,
+   "vs_base0_dRho": -0.007000000000000006,
+   "vs_naive_dMAE": -17.73,
+   "vs_naive_dRho": 0.057
+  }
+ }
+}

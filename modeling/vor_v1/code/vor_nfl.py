@@ -3,14 +3,14 @@
 Currency: expected WEEKLY value over replacement, summed over a horizon.
   League (Erik, 2026-11-04): 12 teams, superflex, full PPR, 6-pt pass TD,
   lineup QB / 2RB / 3WR / TE / 2 FLEX(RB/WR/TE) / SF(QB/RB/WR/TE).
-  Weekly VOR = max(0, points - R_pos). Horizon = rest of season y (weeks 9-18)
+  Weekly VOR = max(0, points - R_pos). Horizon = rest of season y (weeks N+1..18)
   + season y+1 + season y+2, undiscounted (POLICY).
 Replacement R_pos (derived, not fitted): each season, fill 12 lineups greedily by
 season PPG (min 6 games) -- QB12, RB24, WR36, TE12, then FLEX24 best remaining
 RB/WR/TE, then SF12 best remaining of all four; R_pos = PPG of the best
 non-starter at the position. Averaged over 2013-2025.
 
-Prediction at the end of Week 8 of season y, per position:
+Prediction at the end of Week N (VOR_WEEK, default 8) of season y, per position:
   PPG in each window t (ROS, Y1, Y2): linear model on
     prior_eff, prior2_eff, early*g/(g+3), g/(g+3), age, age^2, noprior
   games in each window: linear model on the same + prior-season games, clipped.
@@ -29,7 +29,8 @@ import sys, json, math, csv
 import numpy as np, pandas as pd
 
 D = sys.argv[1]; OUT = sys.argv[2]
-N = 8
+import os
+N = int(os.environ.get('VOR_WEEK', 8))   # in-season cut-off week: weeks 1..N are 'early', N+1..18 the rest of season
 POS = ['QB', 'RB', 'WR', 'TE']
 LINEUP = {'QB': 12, 'RB': 24, 'WR': 36, 'TE': 12}
 FLEX, SF = 24, 12
@@ -278,7 +279,7 @@ def fit_core(train, use_inseason):
         b, a = np.polyfit(npr.lpick, tgt, 1)
         dp = (a, b); m = {'dp': dp}
         X = feats(t, dp, use_inseason)
-        for w, pc, gc, mx in [('ros', 'ppg_ros', 'g_ros', 10), ('y1', 'ppg_y1', 'g_y1', 17), ('y2', 'ppg_y2', 'g_y2', 17)]:
+        for w, pc, gc, mx in [('ros', 'ppg_ros', 'g_ros', 18 - N), ('y1', 'ppg_y1', 'g_y1', 17), ('y2', 'ppg_y2', 'g_y2', 17)]:
             ok = (t[gc] >= 3).values
             m[w + '_ppg'] = fit_lin(X[ok], t[pc].values[ok])
             m[w + '_s'] = float(np.std(t[pc].values[ok] - X[ok] @ m[w + '_ppg']))

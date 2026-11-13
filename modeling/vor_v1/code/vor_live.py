@@ -1,7 +1,7 @@
 """Claude VOR model, NFL side (v5): calibration check + live 2026 values.
 
 Fits on every complete row (seasons 2013-2023), predicts each 2026 player at the
-end of Week 8: expected VOR over rest of 2026 + 2027 + 2028.
+end of Week N (VOR_WEEK): expected VOR over rest of 2026 + 2027 + 2028.
 Roster gate (Erik, 2026-10-30): price only players whose LATEST 2026 weekly
 roster status is ACT, or INA (game-day inactive but on the 53). RES (IR/PUP),
 DEV (practice squad), CUT, RET and anyone not on a 2026 roster stay UNPRICED
@@ -88,7 +88,7 @@ print('recentre reference values:', {k: round(v, 1) for k, v in ref.items()})
 live = live.sort_values('vor_value', ascending=False)
 cols = ['pid', 'sleeper_id', 'name', 'pos', 'team', 'status', 'flag', 'priced', 'rank', 'value', 'droppable', 'vor_value', 'model', 'vor_ros_exp', 'vor_y1_exp', 'vor_y2_exp',
         'mu_ros', 'mu_y1', 'mu_y2', 'g_ros_exp', 'g_y1_exp', 'g_y2_exp', 'ge', 'early', 'prior', 'prior2', 'age']
-live[cols].to_csv(f'{OUT}/nfl_vor_2026_w08.csv', index=False, float_format='%.3f')
+live[cols].to_csv(f'{OUT}/nfl_vor_2026_w{V.N:02d}.csv', index=False, float_format='%.3f')
 print('\nlive rows', len(live), 'priced', int(live.priced.sum()), live.status.value_counts().to_dict())
 show = live[live.priced].head(30)
 print(show[['name', 'pos', 'team', 'vor_value', 'vor_ros_exp', 'vor_y1_exp', 'vor_y2_exp', 'mu_y1', 'age']].round(1).to_string(index=False))

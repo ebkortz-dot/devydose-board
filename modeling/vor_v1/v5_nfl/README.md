@@ -45,3 +45,15 @@ v5 beats the in-season-free model (base0) and naive in every group. Against base
 ## Still open (disclosed, not fixed)
 - Replacement levels, baseline B and age-gate points use 2013–2025, including test seasons. This is a small leak.
 - Display: re-centring spreads one third of the reference value into each window, so the rest-of-season column for an IR player shows a small negative number. The total is correct.
+
+## Week 10 update (2026-11-13)
+**Current NFL values:** `v5_nfl/w10/nfl_vor_2026_w10.csv`. Same v5 model and policies; nflverse data through Week 10.
+
+- **Week setting:** the in-season week is now set with `VOR_WEEK`. Weeks 1..N are "early" and N+1..18 are the rest of the season. With `VOR_WEEK=8` the run reproduces the committed Week 8 values exactly.
+- **Weekly job:** `code/weekly_refresh.sh DATA OUT [WEEK]` pulls nflverse, picks the latest complete week, then runs the gate and the live values.
+- **Gate (worst of two splits):** all +0.142 dRho vs base0 (QB +0.057, RB +0.162, WR +0.165, TE +0.204).
+  - One cell fails: players with no 2026 games, where dRho is −0.007 (MAE still improves by 5.1).
+  - On the live board that group holds 3 points of 15,114 total value, so it is immaterial.
+- **Why values fall:** values drop week to week because the rest-of-season window shrinks (8 games left, not 10).
+  - Smith-Njigba is 400 (was 457), Gibbs 353, Nacua 311 (now on IR).
+  - 8 QBs are in the top 24; 179 players are above 0.

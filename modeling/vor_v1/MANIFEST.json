@@ -4,12 +4,12 @@
   "sha256": "e6dab4892941a71984b418911249c61502a3b64c954ce795397685f0b3bc21a1"
  },
  "code/vor_live.py": {
-  "bytes": 6280,
-  "sha256": "7bfd49e992e927886111807a4f068f242598da17fc211266212c37d64bbe82c6"
+  "bytes": 6298,
+  "sha256": "d0161cf77086591944a6805bd9f3df0933bdfc1b3959b80438751d5334afbdf4"
  },
  "code/vor_nfl.py": {
-  "bytes": 21915,
-  "sha256": "10ac81334401ea7ee98a92cb930c9c80cd6b5e20693e669fefef6e97df758c2d"
+  "bytes": 22066,
+  "sha256": "82f5792559247d3985764753fb7b2c5f0a6386c60ba14f6727f051610b218f96"
  },
  "results/waiver/au_vor_values_waiver.csv": {
   "bytes": 562375,
@@ -107,14 +107,14 @@
   "bytes": 334,
   "sha256": "48923c9b387176d7c0945f490a1de3920721d5eff2aaa56de2397516eb109801"
  },
- "_current_nfl_values": "v5_nfl/nfl_vor_2026_w08.csv",
+ "_current_nfl_values": "v5_nfl/w10/nfl_vor_2026_w10.csv",
  "v5_nfl/nfl_vor_2026_w08.csv": {
   "bytes": 132720,
   "sha256": "28d04a3d0bbd36b39b24a53b1c5d7c2aeeb0da96eac2cad870fbe9af899dab08"
  },
  "v5_nfl/README.md": {
-  "bytes": 2404,
-  "sha256": "2b72842c64f8e45c169838dae8e98944160fefbd8a390253d4d9b3cb3831b434"
+  "bytes": 3440,
+  "sha256": "d3bfc28fcd4081c096f414ab6b34043958f1ac7b2fda23c6847c23e969c2a4c6"
  },
  "v5_nfl/vor_gate_report.json": {
   "bytes": 10152,
@@ -123,5 +123,25 @@
  "v5_nfl/calibration.json": {
   "bytes": 335,
   "sha256": "7e7cb817666c50d035afd087e7691bcf8115fbc1831a34201e3f5e34b7192ccf"
+ },
+ "v5_nfl/w10/vor_gate_report.json": {
+  "bytes": 10148,
+  "sha256": "8529da6079e3a5ff8a51e42480c2efbffd385e897ca0c92991f5afc05041a9ba"
+ },
+ "v5_nfl/w10/nfl_vor_2026_w10.csv": {
+  "bytes": 132799,
+  "sha256": "2479492724af50f7d209a5091402e150773aaeda7ecb8b3e3b1964b374021490"
+ },
+ "v5_nfl/w10/calibration.json": {
+  "bytes": 335,
+  "sha256": "afe9f3a4b4e5a2f10ab283446fef6454771af818159b5b335d43673a78ccdbff"
+ },
+ "v5_nfl/w10/refresh_summary.json": {
+  "bytes": 249,
+  "sha256": "b0dbc8531ed2e1f9e35f6125e840bf7b3c48041ecbe4deafb01e168150b0eaeb"
+ },
+ "code/weekly_refresh.sh": {
+  "bytes": 2221,
+  "sha256": "c871dc57dedf84070aa449d98b84928ec2303cb7545e6caab492a93538f24703"
  }
 }
