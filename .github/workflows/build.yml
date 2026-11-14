@@ -1,0 +1,29 @@
+name: Build
+
+# Manual for now. Add "push:" here to build on every change.
+on:
+  workflow_dispatch:
+
+jobs:
+  apple:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build iOS app + GarageBand extension (unsigned compile check)
+        run: |
+          cmake -B build-ios -G Xcode -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_DEPLOYMENT_TARGET=15.0
+          cmake --build build-ios --config Release -- -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+
+      - name: Build Mac Audio Unit
+        run: |
+          cmake -B build-mac -G Xcode -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 "-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64"
+          cmake --build build-mac --config Release --target PadKeys_AU
+          cd build-mac/PadKeys_artefacts/Release/AU
+          codesign --force --deep -s - PadKeys.component
+          ditto -c -k --keepParent PadKeys.component "$GITHUB_WORKSPACE/PadKeys-mac-audio-unit.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PadKeys-mac-audio-unit
+          path: PadKeys-mac-audio-unit.zip
