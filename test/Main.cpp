@@ -128,6 +128,7 @@ int main (int argc, char** argv)
 
         // Save / restore.
         p.setStep (3, 5, true);
+        p.setAssignment (2, "tempo");
         setParam (p, "tune3", 7.0f);
         juce::MemoryBlock state;
         p.getStateInformation (state);
@@ -135,6 +136,8 @@ int main (int argc, char** argv)
         q.setStateInformation (state.getData(), (int) state.getSize());
         check (q.getStep (3, 5) && q.getStep (0, 0) && ! q.getStep (3, 6)
                && std::abs (q.apvts.getRawParameterValue ("tune3")->load() - 7.0f) < 0.01f, "settings and beat survive save / reload");
+        check (q.getAssignment (2) == "tempo" && q.getAssignment (0) == "cutoff", "assignable controls remember their targets");
+        p.setAssignment (2, "fxFilter");
 
         // Screenshots at an iPad-in-GarageBand size, a desktop size and a phone size.
         struct Size { int w, h; const char* name; };
@@ -143,7 +146,7 @@ int main (int argc, char** argv)
             std::unique_ptr<juce::AudioProcessorEditor> ed (p.createEditor());
             auto* editor = dynamic_cast<PadKeysEditor*> (ed.get());
             editor->setSize (size.w, size.h);
-            for (int tab = 0; tab < 4; ++tab)
+            for (int tab = 0; tab < 5; ++tab)
             {
                 editor->showTab (tab);
                 auto image = editor->createComponentSnapshot (editor->getLocalBounds(), true, 2.0f);

@@ -70,6 +70,27 @@ namespace pk
     };
 
     // ----------------------------------------------------------------------
+    // A dial or slider whose target can be changed: tap its name to pick what it controls.
+    class Assignable : public juce::Component
+    {
+    public:
+        Assignable (PadKeysProcessor&, int slot, juce::Slider::SliderStyle);
+        void resized() override;
+
+        juce::Slider slider;
+
+    private:
+        void setTarget (const juce::String& paramID, bool save);
+        void showMenu();
+
+        PadKeysProcessor& processor;
+        int slot;
+        juce::String target;
+        juce::TextButton caption;
+        std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment;
+    };
+
+    // ----------------------------------------------------------------------
     // Eight pads x sixteen steps. Tap squares to build a beat.
     class StepGrid : public juce::Component
     {
@@ -108,6 +129,8 @@ public:
 private:
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     void timerCallback() override;
+    void setPadBank (int bank);
+    std::vector<juce::Component*> tabComponents (int tab);
     void styleCaption (juce::Label&, const juce::String&, juce::Justification = juce::Justification::centred);
 
     PadKeysProcessor& processor;
@@ -117,10 +140,17 @@ private:
 
     // top bar
     juce::Label title, volumeCaption;
-    juce::TextButton tabButtons[4];
+    juce::TextButton tabButtons[5];
     pk::Segmented modeSwitch;
     juce::Slider masterSlider { juce::Slider::LinearHorizontal, juce::Slider::NoTextBox };
     SliderAttachment masterAttachment;
+
+    // play tab: pads over a keyboard, plus three assignable controls
+    pk::PadButton playPads[8];
+    juce::TextButton bankButton { "PADS 1-8" };
+    pk::Assignable assignDial1, assignDial2, assignSlider;
+    juce::MidiKeyboardComponent playKeyboard;
+    int padBank = 0;
 
     // pads tab
     pk::PadButton pads[PadKeysProcessor::numPads];

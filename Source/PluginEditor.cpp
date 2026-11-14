@@ -187,6 +187,73 @@ void PadButton::mouseDown (const juce::MouseEvent& e)
 }
 
 // --------------------------------------------------------------------------
+namespace
+{
+    struct Target { const char* id; const char* name; };
+    const Target targets[] = {
+        { "cutoff", "Tone" }, { "reso", "Edge" }, { "fat", "Fat" }, { "attack", "Attack" }, { "release", "Release" },
+        { "keysLevel", "Keys Level" }, { "fxFilter", "Sweep Filter" }, { "delayMix", "Echo" },
+        { "delayFb", "Echo Repeats" }, { "swing", "Swing" }, { "tempo", "Tempo" }, { "master", "Volume" } };
+}
+
+Assignable::Assignable (PadKeysProcessor& p, int slotIndex, juce::Slider::SliderStyle style)
+    : slider (style, juce::Slider::NoTextBox), processor (p), slot (slotIndex)
+{
+    caption.setColour (juce::TextButton::buttonColourId, panelLight);
+    caption.onClick = [this] { showMenu(); };
+    addAndMakeVisible (slider);
+    addAndMakeVisible (caption);
+    setTarget (processor.getAssignment (slot), false);
+}
+
+void Assignable::setTarget (const juce::String& paramID, bool save)
+{
+    target = paramID;
+    attachment.reset();
+    slider.getProperties().set ("fromCentre", paramID == "fxFilter");
+    attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (processor.apvts, paramID, slider);
+
+    if (auto* param = processor.apvts.getParameter (paramID))
+        slider.setDoubleClickReturnValue (true, param->convertFrom0to1 (param->getDefaultValue()));
+
+    for (auto& t : targets)
+        if (paramID == t.id)
+            caption.setButtonText (juce::String (t.name).toUpperCase());
+
+    if (save)
+        processor.setAssignment (slot, paramID);
+
+    slider.repaint();
+}
+
+void Assignable::showMenu()
+{
+    juce::PopupMenu menu;
+    menu.addSectionHeader ("This control changes...");
+    int id = 1;
+    for (auto& t : targets)
+        menu.addItem (id++, t.name, true, target == t.id);
+
+    juce::Component::SafePointer<Assignable> safe (this);
+    menu.showMenuAsync (juce::PopupMenu::Options().withTargetComponent (&caption)
+                                                  .withParentComponent (findParentComponentOfClass<juce::AudioProcessorEditor>())
+                                                  .withStandardItemHeight (34),
+                        [safe] (int result)
+                        {
+                            if (safe != nullptr && result > 0)
+                                safe->setTarget (targets[result - 1].id, true);
+                        });
+}
+
+void Assignable::resized()
+{
+    auto r = getLocalBounds();
+    caption.setBounds (r.removeFromBottom (juce::jlimit (20, 30, getHeight() / 4)).reduced (2, 0));
+    r.removeFromBottom (3);
+    slider.setBounds (r);
+}
+
+// --------------------------------------------------------------------------
 bool StepGrid::cellAt (juce::Point<int> p, int& pad, int& step) const
 {
     const int lw = labelWidth();
@@ -266,6 +333,10 @@ PadKeysEditor::PadKeysEditor (PadKeysProcessor& p)
     : AudioProcessorEditor (&p), processor (p),
       modeSwitch (*p.apvts.getParameter ("mode"), { "Split", "Drums", "Keys" }),
       masterAttachment (p.apvts, "master", masterSlider),
+      assignDial1 (p, 0, juce::Slider::RotaryHorizontalVerticalDrag),
+      assignDial2 (p, 1, juce::Slider::RotaryHorizontalVerticalDrag),
+      assignSlider (p, 2, juce::Slider::LinearVertical),
+      playKeyboard (p.keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard),
       grid (p),
       seqSwitch (*p.apvts.getParameter ("seqMode"), { "Off", "Song", "Free" }),
       waveSwitch (*p.apvts.getParameter ("wave"), { "Saw", "Square", "Tri", "Sine" }),
@@ -285,8 +356,8 @@ PadKeysEditor::PadKeysEditor (PadKeysProcessor& p)
     addAndMakeVisible (masterSlider);
     addAndMakeVisible (modeSwitch);
 
-    static const char* const tabNames[4] = { "PADS", "STEPS", "KEYS", "FX" };
-    for (int i = 0; i < 4; ++i)
+    static const char* const tabNames[5] = { "PLAY", "PADS", "STEPS", "KEYS", "FX" };
+    for (int i = 0; i < 5; ++i)
     {
         auto& b = tabButtons[i];
         b.setButtonText (tabNames[i]);
@@ -295,6 +366,22 @@ PadKeysEditor::PadKeysEditor (PadKeysProcessor& p)
         b.onClick = [this, i] { if (tabButtons[i].getToggleState()) showTab (i); };
         addAndMakeVisible (b);
     }
+
+    // play
+    for (int i = 0; i < 8; ++i)
+    {
+        playPads[i].onHit = [this, i] (float velocity) { processor.hitPad (playPads[i].pad, velocity); selectPad (playPads[i].pad); };
+        addChildComponent (playPads[i]);
+    }
+    bankButton.onClick = [this] { setPadBank (1 - padBank); };
+    playKeyboard.setAvailableRange (24, 108);
+    playKeyboard.setLowestVisibleKey (48);
+    playKeyboard.setOctaveForMiddleC (3);
+    for (auto* a : { &assignDial1, &assignDial2, &assignSlider })
+        a->slider.setPopupDisplayEnabled (true, false, this);
+    for (juce::Component* c : std::initializer_list<juce::Component*> { &bankButton, &assignDial1, &assignDial2, &assignSlider, &playKeyboard })
+        addChildComponent (c);
+    setPadBank (0);
 
     // pads
     for (int i = 0; i < PadKeysProcessor::numPads; ++i)
@@ -399,8 +486,43 @@ void PadKeysEditor::selectPad (int pad)
         pads[i].repaint();
     }
 
+    for (auto& pp : playPads)
+    {
+        pp.selected = pp.pad == pad;
+        pp.repaint();
+    }
+
     grid.selectedPad = pad;
     grid.repaint();
+}
+
+std::vector<juce::Component*> PadKeysEditor::tabComponents (int tab)
+{
+    std::vector<juce::Component*> c;
+
+    switch (tab)
+    {
+        case 0:
+            for (auto& pad : playPads) c.push_back (&pad);
+            c.insert (c.end(), { &bankButton, &assignDial1, &assignDial2, &assignSlider, &playKeyboard });
+            break;
+        case 1:
+            for (auto& pad : pads) c.push_back (&pad);
+            c.insert (c.end(), { &padTitle, &levelCaption, &tuneKnob, &lengthKnob, &levelSlider });
+            break;
+        case 2:
+            c = { &grid, &seqSwitch, &tempoKnob, &swingKnob, &pageButton, &clearButton };
+            break;
+        case 3:
+            c = { &waveSwitch, &cutoffKnob, &resoKnob, &attackKnob, &decayKnob, &sustainKnob,
+                  &releaseKnob, &fatKnob, &keysLevelKnob, &keyboard };
+            break;
+        default:
+            c = { &sweepCaption, &echoCaption, &sweepSlider, &echoTimeSwitch, &echoMixKnob, &echoRepeatKnob };
+            break;
+    }
+
+    return c;
 }
 
 void PadKeysEditor::showTab (int tab)
@@ -408,16 +530,22 @@ void PadKeysEditor::showTab (int tab)
     currentTab = tab;
     tabButtons[tab].setToggleState (true, juce::dontSendNotification);
 
-    for (auto& pad : pads) pad.setVisible (tab == 0);
-    for (juce::Component* c : std::initializer_list<juce::Component*> { &padTitle, &levelCaption, &tuneKnob, &lengthKnob, &levelSlider })
-        c->setVisible (tab == 0);
-    for (juce::Component* c : std::initializer_list<juce::Component*> { &grid, &seqSwitch, &tempoKnob, &swingKnob, &pageButton, &clearButton })
-        c->setVisible (tab == 1);
-    for (juce::Component* c : std::initializer_list<juce::Component*> { &waveSwitch, &cutoffKnob, &resoKnob, &attackKnob, &decayKnob, &sustainKnob,
-                     &releaseKnob, &fatKnob, &keysLevelKnob, &keyboard })
-        c->setVisible (tab == 2);
-    for (juce::Component* c : std::initializer_list<juce::Component*> { &sweepCaption, &echoCaption, &sweepSlider, &echoTimeSwitch, &echoMixKnob, &echoRepeatKnob })
-        c->setVisible (tab == 3);
+    for (int t = 0; t < 5; ++t)
+        for (auto* c : tabComponents (t))
+            c->setVisible (t == tab);
+}
+
+void PadKeysEditor::setPadBank (int bank)
+{
+    padBank = bank;
+    bankButton.setButtonText (bank == 0 ? "PADS 1-8" : "PADS 9-16");
+
+    for (int i = 0; i < 8; ++i)
+    {
+        playPads[i].pad = bank * 8 + i;
+        playPads[i].selected = playPads[i].pad == selectedPad;
+        playPads[i].repaint();
+    }
 }
 
 void PadKeysEditor::timerCallback()
@@ -440,11 +568,21 @@ void PadKeysEditor::timerCallback()
         }
     }
 
+    for (auto& pp : playPads)
+    {
+        const float f = pads[pp.pad].flash;
+        if (! juce::approximatelyEqual (f, pp.flash))
+        {
+            pp.flash = f;
+            pp.repaint();
+        }
+    }
+
     const int step = processor.currentStep.load();
     if (step != grid.currentStep)
     {
         grid.currentStep = step;
-        if (currentTab == 1)
+        if (currentTab == 2)
             grid.repaint();
     }
 }
@@ -468,7 +606,7 @@ void PadKeysEditor::resized()
     if (wide)
         title.setBounds (bar.removeFromLeft (104));
 
-    const int tabW = juce::jlimit (50, 80, getWidth() / 11);
+    const int tabW = juce::jlimit (46, 78, getWidth() / 13);
     for (auto& b : tabButtons)
         b.setBounds (bar.removeFromLeft (tabW).reduced (2, 1));
 
@@ -476,6 +614,29 @@ void PadKeysEditor::resized()
     volumeCaption.setBounds (bar.removeFromRight (34));
     bar.removeFromLeft (gap);
     modeSwitch.setBounds (bar.withSizeKeepingCentre (juce::jmin (bar.getWidth(), 220), barH - 4));
+
+    // ---- play: pads over keyboard, assignable controls on the right ----
+    {
+        auto b = area;
+        auto keys = b.removeFromBottom (juce::jlimit (56, 220, b.getHeight() * 44 / 100));
+        playKeyboard.setBounds (keys);
+        playKeyboard.setKeyWidth (juce::jlimit (26.0f, 64.0f, (float) keys.getWidth() / 15.0f));
+        b.removeFromBottom (gap);
+
+        auto side = b.removeFromRight (juce::jlimit (190, 360, b.getWidth() * 36 / 100));
+        b.removeFromRight (gap);
+        assignSlider.setBounds (side.removeFromRight (juce::jlimit (56, 90, side.getWidth() / 4)));
+        side.removeFromRight (gap);
+        assignDial1.setBounds (side.removeFromLeft (side.getWidth() / 2).reduced (2, 0));
+        assignDial2.setBounds (side.reduced (2, 0));
+
+        bankButton.setBounds (b.removeFromLeft (juce::jlimit (44, 64, b.getWidth() / 10)).reduced (0, 2));
+        b.removeFromLeft (2);
+        const float cw = (float) b.getWidth() / 4.0f, ch = (float) b.getHeight() / 2.0f;
+        for (int i = 0; i < 8; ++i)
+            playPads[i].setBounds (juce::Rectangle<float> ((float) b.getX() + cw * (float) (i % 4),
+                                                           (float) b.getY() + ch * (float) (1 - i / 4), cw, ch).toNearestInt().reduced (2));
+    }
 
     // ---- pads ----
     {

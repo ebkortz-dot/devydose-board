@@ -152,6 +152,18 @@ void PadKeysProcessor::setStep (int pad, int step, bool on)
     p.store (on ? (p.load() | bit) : (p.load() & ~bit));
 }
 
+juce::String PadKeysProcessor::getAssignment (int slot) const
+{
+    static const char* const defaults[3] = { "cutoff", "delayMix", "fxFilter" };
+    const auto saved = apvts.state.getProperty ("assign" + juce::String (slot)).toString();
+    return apvts.getParameter (saved) != nullptr ? saved : juce::String (defaults[juce::jlimit (0, 2, slot)]);
+}
+
+void PadKeysProcessor::setAssignment (int slot, const juce::String& paramID)
+{
+    apvts.state.setProperty ("assign" + juce::String (slot), paramID, nullptr);
+}
+
 void PadKeysProcessor::clearPattern()
 {
     for (auto& p : pattern)

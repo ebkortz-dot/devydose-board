@@ -40,6 +40,10 @@ public:
     void setStep (int pad, int step, bool on);
     void clearPattern();
 
+    // Which parameter each of the three "assignable" controls on the Play screen drives.
+    juce::String getAssignment (int slot) const;
+    void setAssignment (int slot, const juce::String& paramID);
+
     juce::AudioProcessorValueTreeState apvts;
     juce::MidiKeyboardState keyboardState;
     std::array<std::atomic<uint32_t>, numPads> hitCount;
