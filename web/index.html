@@ -7,7 +7,7 @@
   color-scheme:dark;
   --bg:#14161b; --panel:#20242c; --panel-hi:#2c313b; --line:#3a404c;
   --fg:#e9e9ec; --dim:#8b909b; --accent:#ffb020; --on-accent:#17130a;
-  --kick:#ff5a4d; --snare:#ffb020; --hat:#37c8d8; --tom:#9a7bff; --perc:#5fd068; --zap:#ff6fb5;
+  --kick:#ff5a4d; --snare:#ffb020; --hat:#37c8d8; --tom:#9a7bff; --perc:#5fd068; --zap:#ff6fb5; --note:#5b9dff;
   --white-key:#f2f0ea; --black-key:#17191e; --key-line:#50545c;
   --ui:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
@@ -37,6 +37,10 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
 .pad{position:relative;border-radius:10px;border:1px solid var(--c);background:linear-gradient(color-mix(in srgb,var(--c) 42%,#000),color-mix(in srgb,var(--c) 26%,#000));
   touch-action:none;cursor:pointer;display:flex;align-items:flex-end;padding:6px 8px;font-size:13px;letter-spacing:.03em;text-transform:uppercase;min-height:44px;overflow:hidden}
 .pad span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pad.sel{border-color:var(--fg);box-shadow:inset 0 0 0 1px var(--fg)}
+.filebtn{position:relative;overflow:hidden;cursor:pointer}
+.filebtn input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.filebtn:focus-within{outline:2px solid var(--fg);outline-offset:2px}
 .pad.hit{background:var(--c);color:var(--on-accent);transition:none}
 .pad{transition:background .25s,color .25s}
 
@@ -61,6 +65,10 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
 .key.blk{background:var(--black-key);bottom:40%;border:0;border-radius:0 0 4px 4px;z-index:2}
 .key.down{background:var(--accent)}
 
+.prog{flex:1;min-height:96px;background:var(--panel);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.prog .btn,.prog .seg{background:var(--panel-hi)}
+.prog strong{font-size:15px;color:var(--accent)}
+.pick{background:var(--panel-hi);border:0;border-radius:7px;padding:8px 10px;font-size:13px}
 .grid{flex:1;min-height:0;display:grid;grid-template-columns:minmax(52px,84px) repeat(16,1fr);grid-auto-rows:1fr;gap:3px;touch-action:none}
 .grid .name{background:var(--panel);border-radius:4px;display:flex;align-items:center;padding:0 6px;font-size:11px;text-transform:uppercase;overflow:hidden;white-space:nowrap;cursor:pointer}
 .cell{background:var(--panel);border-radius:3px;min-height:18px;cursor:pointer}
@@ -78,6 +86,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
   .pads{min-height:150px}
   .ctl{width:100%;height:150px}
   .keys{flex:none;height:150px}
+  .prog{flex:none}
   .grid{min-height:260px}
   .brand{display:none}
 }
@@ -92,6 +101,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
       <button id="tab-steps" data-tab="steps">Steps</button>
     </div>
     <button class="btn" id="run">&#9654; Beat</button>
+    <button class="btn" id="program">Program</button>
     <button class="status" id="status">Tap here to turn sound on</button>
     <label class="vol" for="vol">VOL <input type="range" id="vol" min="0" max="1" step="0.01" value="0.8"></label>
   </header>
@@ -113,6 +123,29 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
       <div class="seg"><button id="octDown" aria-label="Octave down">&minus;</button><button id="octUp" aria-label="Octave up">+</button></div>
     </div>
     <div class="keys" id="keys"></div>
+    <div class="prog" id="prog" hidden>
+      <div class="row">
+        <span class="lab">Pad</span><strong id="progName"></strong>
+        <span class="lab">plays</span>
+        <div class="seg" id="progMode"><button data-m="drum" id="modeDrum">Drum sound</button><button data-m="note" id="modeNote">Synth note</button></div>
+      </div>
+      <div class="row" id="progDrum">
+        <label class="lab" for="progSound">Sound</label><select class="pick" id="progSound"></select>
+        <label class="btn filebtn" for="file"><span id="loadText">Load a sound file</span><input type="file" id="file" accept="audio/*,.wav,.aif,.aiff,.caf,.mp3,.m4a"></label>
+        <button class="btn" id="unload" hidden>Use built-in sound</button>
+        <span class="hint" id="loadMsg" role="status"></span>
+      </div>
+      <div class="row" id="progNote" hidden>
+        <label class="lab" for="progNoteSel">Note</label><select class="pick" id="progNoteSel"></select>
+        <label class="lab" for="progChord">Plays as</label><select class="pick" id="progChord"></select>
+      </div>
+      <div class="row" id="progParams">
+        <label class="lab" for="pTune">Tune</label><input type="range" id="pTune" min="-12" max="12" step="0.5">
+        <label class="lab" for="pLevel">Level</label><input type="range" id="pLevel" min="0" max="1" step="0.01">
+        <label class="lab" for="pLength">Length</label><input type="range" id="pLength" min="0.25" max="3" step="0.05">
+      </div>
+      <p class="hint">Tap any pad to program it. Tap the name under a dial or the slider to choose what it controls. Your setup is remembered on this device; loaded sound files are not yet.</p>
+    </div>
   </section>
 
   <section class="view" id="view-steps" hidden>
@@ -148,7 +181,7 @@ function engineFactory(sr){
   const api={onStep:null};
 
   class Drum{
-    constructor(type){this.type=type;this.active=false;this.pending=-1;this.pv=0;this.ph=new Float32Array(6);this.f=new SVF();
+    constructor(type){this.type=type;this.idx=type;this.active=false;this.pending=-1;this.pv=0;this.ph=new Float32Array(6);this.f=new SVF();
       this.rng=0x12345678;this.amp=0;this.penv=0;this.nenv=0;this.ac=0;this.pc=0;this.nc=0;this.n=0;this.gain=0;this.tune=1;}
     coef(s){return Math.exp(-1/(Math.max(.0005,s)*sr));}
     noise(){let r=this.rng;r^=r<<13;r^=r>>>17;r^=r<<5;this.rng=r;return (r|0)/2147483648;}
@@ -158,8 +191,8 @@ function engineFactory(sr){
     trigger(v,delay){this.pv=v;this.pending=Math.max(0,delay|0);}
     choke(){if(this.active)this.ac=this.coef(.006);}
     start(v){
-      const t=this.type,d=padDecay[t];this.tune=Math.pow(2,padTune[t]/12);const tu=this.tune;
-      this.active=true;this.n=0;this.amp=this.penv=this.nenv=1;this.ph.fill(0);this.f.reset();this.gain=v*v*padLevel[t];
+      const t=this.type,ix=this.idx,d=padDecay[ix];this.tune=Math.pow(2,padTune[ix]/12);const tu=this.tune;
+      this.active=true;this.n=0;this.amp=this.penv=this.nenv=1;this.ph.fill(0);this.f.reset();this.gain=v*v*padLevel[ix];
       let a=.2,p=.03,nz=.01;
       switch(t){
         case 0:a=.26;p=.03;nz=.004;break;
@@ -246,22 +279,59 @@ function engineFactory(sr){
     }
   }
 
+  // A pad can play a loaded recording instead of its built-in sound.
+  const samples=new Array(16).fill(null);
+  class Player{
+    constructor(i){this.i=i;this.pos=-1;this.pending=-1;this.pv=0;this.gain=0;this.rate=1;this.fade=1;this.fc=1;}
+    trigger(v,d){this.pv=v;this.pending=Math.max(0,d|0);}
+    choke(){this.fc=.995;}
+    render(L,R,n){
+      const s=samples[this.i];if(!s){this.pos=-1;this.pending=-1;return;}
+      const l=s.l,r=s.r,len=l.length;
+      for(let i=0;i<n;i++){
+        if(this.pending>=0&&this.pending--===0){this.pos=0;this.fade=1;this.fc=1;this.gain=this.pv*this.pv*padLevel[this.i]*1.2;this.rate=Math.pow(2,padTune[this.i]/12);}
+        if(this.pos<0)continue;
+        const i0=this.pos|0;if(i0>=len-1){this.pos=-1;continue;}
+        const fr=this.pos-i0,g=this.gain*this.fade;
+        L[i]+=(l[i0]+fr*(l[i0+1]-l[i0]))*g;R[i]+=(r[i0]+fr*(r[i0+1]-r[i0]))*g;
+        this.pos+=this.rate;this.fade*=this.fc;if(this.fade<1e-3)this.pos=-1;
+      }
+    }
+  }
+  const players=[];for(let i=0;i<16;i++)players.push(new Player(i));
   const drums=[];for(let i=0;i<16;i++)drums.push(new Drum(i));
   const voices=[];for(let i=0;i<10;i++)voices.push(new Voice());
   const dlen=Math.floor(sr*2.5)+8,dl=[new Float32Array(dlen),new Float32Array(dlen)];
   let dw=0,dcur=sr*.3,fpos=0,mcur=.8;const fx=[new SVF(),new SVF()];
   const BEATS=[.25,.5,.75,1];
 
-  function hitPad(i,v,off){if(i===6)drums[10].choke();drums[i].trigger(v,off);}
+  // Each pad is programmable: a drum sound (any of the 16 recipes or a loaded file) or synth notes.
+  const padMode=new Uint8Array(16),padNotes=[],gate=new Float64Array(16);for(let i=0;i<16;i++)padNotes.push([]);
+  function padRelease(i){for(const n of padNotes[i])noteOff(n);gate[i]=0;}
+  function hitPad(i,v,off,fromSeq){
+    if(padMode[i]===1){
+      if(gate[i]>0)padRelease(i);
+      for(const n of padNotes[i])noteOn(n,v);
+      if(fromSeq)gate[i]=Math.floor(60/P.tempo/4*sr*.9);
+      return;
+    }
+    if(drums[i].type===6)for(let k=0;k<16;k++)if(k!==i&&drums[k].type===10){drums[k].choke();players[k].choke();}
+    if(samples[i])players[i].trigger(v,off);else drums[i].trigger(v,off);
+  }
   function noteOn(n,v){let best=null;for(const vc of voices){if(vc.state===0){best=vc;break;}if(!best||vc.age<best.age)best=vc;}best.on(n,v);}
   function noteOff(n){for(const vc of voices)if(vc.note===n&&vc.state!==4)vc.off();}
 
   api.handle=function(m){
     switch(m.t){
-      case 'pad':hitPad(m.i,m.v,0);break;
+      case 'pad':hitPad(m.i,m.v,0,false);break;
+      case 'padup':if(padMode[m.i]===1)padRelease(m.i);break;
+      case 'padtype':drums[m.i].type=m.type;break;
+      case 'padmode':if(padMode[m.i]===1)padRelease(m.i);padMode[m.i]=m.mode;padNotes[m.i]=m.notes;break;
       case 'on':noteOn(m.n,m.v);break;
       case 'off':noteOff(m.n);break;
       case 'param':P[m.k]=m.v;break;
+      case 'padparam':({tune:padTune,decay:padDecay,level:padLevel})[m.k][m.i]=m.v;break;
+      case 'sample':samples[m.i]=m.l?{l:m.l,r:m.r}:null;break;
       case 'pattern':for(let i=0;i<16;i++)pattern[i]=m.p[i];break;
       case 'seq':seqOn=m.on;if(!seqOn){ppq=0;if(api.onStep)api.onStep(-1);}break;
     }
@@ -269,13 +339,14 @@ function engineFactory(sr){
 
   api.process=function(L,R,n){
     for(let i=0;i<n;i++){L[i]=0;R[i]=0;}
+    for(let p=0;p<16;p++)if(gate[p]>0){gate[p]-=n;if(gate[p]<=0)padRelease(p);}
     if(seqOn){
       const pps=P.tempo/(60*sr),end=ppq+n*pps,sw=P.swing*.25/3;
       for(let k=Math.floor(ppq*4)-1;k<=Math.floor(end*4);k++){
         const sp=k*.25+((k&1)?sw:0);
         if(sp<ppq||sp>=end)continue;
         const step=((k%16)+16)%16,off=Math.min(n-1,Math.max(0,Math.floor((sp-ppq)/pps)));
-        for(let p=0;p<16;p++)if((pattern[p]>>step)&1)hitPad(p,.85,off);
+        for(let p=0;p<16;p++)if((pattern[p]>>step)&1)hitPad(p,.85,off,true);
         if(api.onStep)api.onStep(step);
       }
       ppq=end;
@@ -285,6 +356,7 @@ function engineFactory(sr){
       const gl=1-Math.max(0,PAN[p]),gr=1+Math.min(0,PAN[p]);
       for(let i=0;i<n;i++){const s=d.tick();L[i]+=s*gl;R[i]+=s*gr;}
     }
+    for(let p=0;p<16;p++)if(samples[p])players[p].render(L,R,n);
     for(const v of voices)v.render(L,R,n);
 
     const want=Math.min(dlen-8,Math.max(16,BEATS[P.delayTime|0]*60/Math.max(30,P.tempo)*sr));
@@ -311,13 +383,16 @@ function engineFactory(sr){
 }
 
 // ---------------------------------------------------------------- audio plumbing
-let ctx=null,post=null,starting=false;
+let ctx=null,post=null,ready=null;
 const queue=[];
 function send(m){if(post)post(m);else if(m.t!=='pad'&&m.t!=='on'&&m.t!=='off')queue.push(m);}
 function onStep(s){curStep=s;stepDirty=true;}
-async function startAudio(){
-  if(ctx){if(ctx.state!=='running')ctx.resume();return;}
-  if(starting)return;starting=true;
+function startAudio(){
+  if(!ready)ready=initAudio();
+  else if(ctx&&ctx.state!=='running')ctx.resume();
+  return ready;
+}
+async function initAudio(){
   const AC=window.AudioContext||window.webkitAudioContext;
   ctx=new AC({latencyHint:'interactive'});
   ctx.resume();
@@ -356,7 +431,45 @@ const TARGETS=[
   ['attack','Attack',.002,2,'log',sec],['release','Release',.01,4,'log',sec],['keysLevel','Keys Level',0,1,'lin',pct],
   ['fxFilter','Sweep Filter',-1,1,'lin',v=>Math.abs(v)<.02?'off':(v<0?'muffle ':'thin ')+Math.round(Math.abs(v)*100)],
   ['delayMix','Echo',0,1,'lin',pct],['delayFb','Echo Repeats',0,.85,'lin',pct],['swing','Swing',0,1,'lin',pct],
-  ['tempo','Tempo',60,200,'lin',v=>Math.round(v)+' bpm'],['master','Volume',0,1,'lin',pct]];
+  ['tempo','Tempo',60,200,'lin',v=>Math.round(v)+' bpm'],['master','Volume',0,1,'lin',pct],
+  ['padTune','Pad Tune',-12,12,'lin',v=>(v>0?'+':'')+v.toFixed(1)+' st'],['padLevel','Pad Level',0,1,'lin',pct],
+  ['padLength','Pad Length',.25,3,'log',v=>v.toFixed(2)+'x'],
+  ['decay','Decay',.01,3,'log',sec],['sustain','Sustain',0,1,'lin',pct]];
+// Pad Tune / Level / Length act on whichever pad was tapped last.
+const padVals={padTune:new Array(16).fill(0),padLevel:new Array(16).fill(.8),padLength:new Array(16).fill(1)};
+const customName=new Array(16).fill(null);
+let selectedPad=0;
+function getVal(k){return k in padVals?padVals[k][selectedPad]:values[k];}
+// What each pad is programmed to play.
+const prog=[];for(let i=0;i<16;i++)prog.push({mode:'drum',sound:i,note:48+i,chord:0});
+const CHORDS=[['Single note',[0],''],['Major chord',[0,4,7],' maj'],['Minor chord',[0,3,7],' min'],['Fifth',[0,7],' 5th'],['Octave',[0,12],' oct']];
+const NOTE_NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function noteName(n){return NOTE_NAMES[n%12]+(Math.floor(n/12)-2);}
+function padLabel(p){const g=prog[p];return g.mode==='note'?noteName(g.note)+CHORDS[g.chord][2]:(customName[p]||PADS[g.sound][0]);}
+function padColour(p){return prog[p].mode==='note'?'note':PADS[prog[p].sound][1];}
+function sendProg(p){const g=prog[p];
+  send({t:'padtype',i:p,type:g.sound});
+  send({t:'padmode',i:p,mode:g.mode==='note'?1:0,notes:CHORDS[g.chord][1].map(o=>g.note+o)});}
+let soundIdx=0,saveTimer=0,programming=false;
+function saveState(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem('padkeys1',JSON.stringify({prog,assign,padVals,pattern:Array.from(pattern),values,soundIdx}));}catch(e){}},400);}
+function loadState(){
+  try{
+    const d=JSON.parse(localStorage.getItem('padkeys1')||'null');if(!d)return;
+    if(Array.isArray(d.prog))d.prog.forEach((g,i)=>{if(i<16&&g&&PADS[g.sound]&&CHORDS[g.chord])Object.assign(prog[i],{mode:g.mode==='note'?'note':'drum',sound:g.sound,note:+g.note||60,chord:g.chord});});
+    if(Array.isArray(d.assign))d.assign.forEach((k,i)=>{if(i<3&&TARGETS.some(t=>t[0]===k))assign[i]=k;});
+    if(d.padVals)Object.keys(padVals).forEach(k=>{if(Array.isArray(d.padVals[k]))d.padVals[k].forEach((v,i)=>{if(i<16&&isFinite(v))padVals[k][i]=v;});});
+    if(Array.isArray(d.pattern))d.pattern.forEach((v,i)=>{if(i<16)pattern[i]=v&0xffff;});
+    if(d.values)Object.keys(values).forEach(k=>{if(isFinite(d.values[k]))values[k]=d.values[k];});
+    if(SOUNDS[d.soundIdx])soundIdx=d.soundIdx;
+  }catch(e){}
+}
+function pushAll(){
+  Object.keys(values).forEach(k=>send({t:'param',k,v:values[k]}));
+  const map={padTune:'tune',padLevel:'level',padLength:'decay'};
+  Object.keys(padVals).forEach(k=>padVals[k].forEach((v,i)=>send({t:'padparam',k:map[k],i,v})));
+  for(let i=0;i<16;i++)sendProg(i);
+  send({t:'pattern',p:pattern});
+}
 function pct(v){return Math.round(v*100)+'%';}
 function sec(v){return v<1?Math.round(v*1000)+' ms':v.toFixed(2)+' s';}
 const values={master:.8,wave:0,cutoff:3500,reso:.2,attack:.005,decay:.35,sustain:.6,release:.3,fat:.4,keysLevel:.7,fxFilter:0,delayMix:0,delayFb:.4,tempo:110,swing:0};
@@ -372,14 +485,16 @@ const $=id=>document.getElementById(id);
 function target(k){return TARGETS.find(t=>t[0]===k);}
 function toNorm(t,v){return t[4]==='log'?Math.log(v/t[2])/Math.log(t[3]/t[2]):(v-t[2])/(t[3]-t[2]);}
 function fromNorm(t,x){return t[4]==='log'?t[2]*Math.pow(t[3]/t[2],x):t[2]+x*(t[3]-t[2]);}
-function setParam(k,v){values[k]=v;send({t:'param',k,v});syncControls();
+function setParam(k,v){
+  if(k in padVals){padVals[k][selectedPad]=v;send({t:'padparam',k:{padTune:'tune',padLevel:'level',padLength:'decay'}[k],i:selectedPad,v});syncControls();saveState();return;}
+  values[k]=v;send({t:'param',k,v});syncControls();saveState();
   if(k==='master')$('vol').value=v;if(k==='tempo'){$('tempo').value=v;$('tempoNum').textContent=Math.round(v);}if(k==='swing')$('swing').value=v;}
 
 // ---------------------------------------------------------------- assignable controls
 const ARC='M 22.4 77.6 A 39 39 0 1 1 77.6 77.6';
 function drawControl(i){
-  const t=target(assign[i]),x=Math.min(1,Math.max(0,toNorm(t,values[t[0]]))),el=$('ctl'+i);
-  $('read'+i).textContent=t[5](values[t[0]]);
+  const t=target(assign[i]),x=Math.min(1,Math.max(0,toNorm(t,getVal(t[0])))),el=$('ctl'+i);
+  $('read'+i).textContent=t[5](getVal(t[0]));
   if(i<2){
     el.querySelector('.val').setAttribute('stroke-dasharray',(x*100)+' 100');el.querySelector('.val').style.visibility=x<.005?'hidden':'visible';
     el.querySelector('.ptr').setAttribute('transform','rotate('+(-135+270*x)+' 50 50)');
@@ -390,27 +505,28 @@ function drawControl(i){
     else{fill.style.top=y+'px';fill.style.height=(6+h-y)+'px';}
   }
 }
-function syncControls(){for(let i=0;i<3;i++)drawControl(i);}
+function syncControls(){for(let i=0;i<3;i++)drawControl(i);
+  $('pTune').value=padVals.padTune[selectedPad];$('pLevel').value=padVals.padLevel[selectedPad];$('pLength').value=padVals.padLength[selectedPad];}
 function setupControl(i){
   const el=$('ctl'+i),sel=$('assign'+i);
   if(i<2)el.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><path class="trk" d="'+ARC+'" fill="none" stroke-width="7" stroke-linecap="round"/><path class="val" d="'+ARC+'" fill="none" stroke-width="7" stroke-linecap="round" pathLength="100"/><circle class="cap" cx="50" cy="50" r="27"/><line class="ptr" x1="50" y1="26" x2="50" y2="38" stroke-width="5" stroke-linecap="round"/></svg>';
   TARGETS.forEach(t=>{const o=document.createElement('option');o.value=t[0];o.textContent=t[1];sel.appendChild(o);});
   sel.value=assign[i];
-  sel.addEventListener('change',()=>{assign[i]=sel.value;drawControl(i);});
+  sel.addEventListener('change',()=>{assign[i]=sel.value;drawControl(i);saveState();});
   let startY=0,startX=0,startV=0,active=false;
   const apply=x=>{const t=target(assign[i]);setParam(t[0],fromNorm(t,Math.min(1,Math.max(0,x))));};
   el.addEventListener('pointerdown',e=>{
     el.setPointerCapture(e.pointerId);active=true;startY=e.clientY;startX=e.clientX;
     const t=target(assign[i]);
     if(i===2){const r=el.getBoundingClientRect();apply(1-(e.clientY-r.top-6)/(r.height-12));}
-    startV=toNorm(t,values[t[0]]);startY=e.clientY;
+    startV=toNorm(t,getVal(t[0]));startY=e.clientY;
   });
   el.addEventListener('pointermove',e=>{if(!active)return;
     apply(i===2?startV+(startY-e.clientY)/(el.clientHeight-12):startV+((startY-e.clientY)+(e.clientX-startX))/220);});
   const end=()=>{active=false;};
   el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
-  el.addEventListener('dblclick',()=>{const t=target(assign[i]);const d={cutoff:3500,reso:.2,fat:.4,attack:.005,release:.3,keysLevel:.7,fxFilter:0,delayMix:0,delayFb:.4,swing:0,tempo:110,master:.8};setParam(t[0],d[t[0]]);});
-  el.addEventListener('keydown',e=>{const t=target(assign[i]);const x=toNorm(t,values[t[0]]);
+  el.addEventListener('dblclick',()=>{const t=target(assign[i]);const d={cutoff:3500,reso:.2,fat:.4,attack:.005,release:.3,keysLevel:.7,fxFilter:0,delayMix:0,delayFb:.4,swing:0,tempo:110,master:.8,padTune:0,padLevel:.8,padLength:1};setParam(t[0],d[t[0]]);});
+  el.addEventListener('keydown',e=>{const t=target(assign[i]);const x=toNorm(t,getVal(t[0]));
     if(e.key==='ArrowUp'||e.key==='ArrowRight'){apply(x+.03);e.preventDefault();}
     if(e.key==='ArrowDown'||e.key==='ArrowLeft'){apply(x-.03);e.preventDefault();}});
 }
@@ -422,17 +538,69 @@ function buildPads(){
   // bottom row first visually = pads 1-4, like a drum machine
   [4,5,6,7,0,1,2,3].forEach(j=>{
     const p=bank*8+j,el=document.createElement('button');
-    el.className='pad';el.id='pad'+j;el.style.setProperty('--c','var(--'+PADS[p][1]+')');
-    el.innerHTML='<span>'+PADS[p][0]+'</span>';
+    el.className='pad';el.id='pad'+j;el.style.setProperty('--c','var(--'+padColour(p)+')');
+    el.appendChild(document.createElement('span')).textContent=padLabel(p);
+    if(p===selectedPad)el.classList.add('sel');
     el.addEventListener('pointerdown',e=>{
       e.preventDefault();startAudio();
       const r=el.getBoundingClientRect();
       const v=Math.min(1,Math.max(.5,1.05-.55*(e.clientY-r.top)/r.height));
-      send({t:'pad',i:p,v});flash(el);
+      try{el.setPointerCapture(e.pointerId);}catch(_){ }
+      send({t:'pad',i:p,v});flash(el);selectPad(p);
     });
+    const up=()=>send({t:'padup',i:p});
+    el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
     box.appendChild(el);padEls[p]=el;
   });
   $('bank').textContent=$('bank2').textContent=bank?'Pads 9-16':'Pads 1-8';
+}
+function selectPad(p){
+  selectedPad=p;
+  padEls.forEach((el,i)=>{if(el)el.classList.toggle('sel',i===p);});
+  refreshProg();
+  syncControls();
+}
+async function loadFile(file){
+  const p=selectedPad,msg=$('loadMsg');
+  try{
+    await startAudio();
+    const data=await file.arrayBuffer();
+    const audio=await new Promise((ok,fail)=>ctx.decodeAudioData(data,ok,fail));
+    const max=Math.min(audio.length,Math.floor(audio.sampleRate*12));
+    const l=audio.getChannelData(0).slice(0,max),r=(audio.numberOfChannels>1?audio.getChannelData(1):audio.getChannelData(0)).slice(0,max);
+    send({t:'sample',i:p,l,r});
+    customName[p]=file.name.replace(/\.[^.]+$/,'').slice(0,18);
+    msg.textContent=audio.length>max?'Loaded the first 12 seconds.':'Loaded. Tap the pad to hear it.';
+    prog[p].mode='drum';sendProg(p);saveState();
+    buildPads();buildGrid();selectPad(p);
+  }catch(e){msg.textContent='Could not read that file. Try a WAV, AIFF, MP3 or M4A.';}
+}
+// Program panel: shows and edits what the selected pad plays.
+function refreshProg(){
+  const p=selectedPad,g=prog[p];
+  $('progName').textContent=(p+1)+' · '+padLabel(p);
+  document.querySelectorAll('#progMode button').forEach(b=>b.classList.toggle('on',b.dataset.m===g.mode));
+  $('progDrum').hidden=g.mode!=='drum';$('progParams').hidden=g.mode!=='drum';$('progNote').hidden=g.mode!=='note';
+  $('progSound').value=g.sound;$('progNoteSel').value=g.note;$('progChord').value=g.chord;
+  $('unload').hidden=!customName[p];
+}
+function changeProg(fn){const p=selectedPad;fn(prog[p]);sendProg(p);saveState();buildPads();buildGrid();refreshProg();}
+function setupProg(){
+  PADS.forEach((d,i)=>{const o=document.createElement('option');o.value=i;o.textContent=d[0];$('progSound').appendChild(o);});
+  for(let n=24;n<=96;n++){const o=document.createElement('option');o.value=n;o.textContent=noteName(n);$('progNoteSel').appendChild(o);}
+  CHORDS.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=c[0];$('progChord').appendChild(o);});
+  document.querySelectorAll('#progMode button').forEach(b=>b.addEventListener('click',()=>changeProg(g=>{g.mode=b.dataset.m;})));
+  $('progSound').addEventListener('change',e=>changeProg(g=>{g.sound=+e.target.value;}));
+  $('progNoteSel').addEventListener('change',e=>changeProg(g=>{g.note=+e.target.value;}));
+  $('progChord').addEventListener('change',e=>changeProg(g=>{g.chord=+e.target.value;}));
+  $('pTune').addEventListener('input',e=>setParam('padTune',+e.target.value));
+  $('pLevel').addEventListener('input',e=>setParam('padLevel',+e.target.value));
+  $('pLength').addEventListener('input',e=>setParam('padLength',+e.target.value));
+  $('program').addEventListener('click',()=>{
+    programming=!programming;$('program').classList.toggle('on',programming);
+    $('prog').hidden=!programming;$('keys').hidden=programming;
+    allOff();if(!programming)buildKeys();refreshProg();
+  });
 }
 function flash(el){el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),70);}
 
@@ -474,13 +642,13 @@ function buildGrid(){
   const g=$('grid');g.innerHTML='';
   for(let r=0;r<8;r++){
     const p=bank*8+r,name=document.createElement('div');
-    name.className='name';name.textContent=PADS[p][0];
-    name.addEventListener('pointerdown',()=>{startAudio();send({t:'pad',i:p,v:.85});});
+    name.className='name';name.textContent=padLabel(p);
+    name.addEventListener('pointerdown',()=>{startAudio();send({t:'pad',i:p,v:.85});setTimeout(()=>send({t:'padup',i:p}),250);});
     g.appendChild(name);
     for(let s=0;s<16;s++){
       const c=document.createElement('div');
       c.className='cell'+(Math.floor(s/4)%2===0?' beat':'')+((pattern[p]>>s)&1?' on':'');
-      c.dataset.p=p;c.dataset.s=s;c.style.setProperty('--c','var(--'+PADS[p][1]+')');
+      c.dataset.p=p;c.dataset.s=s;c.style.setProperty('--c','var(--'+padColour(p)+')');
       g.appendChild(c);
     }
   }
@@ -493,7 +661,7 @@ function setupGrid(){
     if(paint===null)paint=!on;
     if(!!on===paint)return;
     pattern[p]=paint?pattern[p]|(1<<s):pattern[p]&~(1<<s);
-    c.classList.toggle('on',paint);send({t:'pattern',p:pattern});
+    c.classList.toggle('on',paint);send({t:'pattern',p:pattern});saveState();
   };
   g.addEventListener('pointerdown',e=>{paint=null;toggle(e);});
   g.addEventListener('pointermove',e=>{if(paint!==null&&(e.buttons||e.pointerType==='touch'))toggle(e);});
@@ -514,11 +682,13 @@ function frame(){
 
 // ---------------------------------------------------------------- wiring
 function start(){
+  loadState();
   for(let i=0;i<3;i++)setupControl(i);
-  buildPads();buildGrid();setupGrid();setupKeys();buildKeys();syncControls();
-  send({t:'pattern',p:pattern});
-  SOUNDS.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s[0];b.id='sound'+i;if(i===0)b.className='on';
-    b.addEventListener('click',()=>{document.querySelectorAll('#sounds button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  setupProg();buildPads();buildGrid();setupGrid();setupKeys();buildKeys();
+  $('vol').value=values.master;$('tempo').value=values.tempo;$('tempoNum').textContent=Math.round(values.tempo);$('swing').value=values.swing;
+  pushAll();
+  SOUNDS.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s[0];b.id='sound'+i;if(i===soundIdx)b.className='on';
+    b.addEventListener('click',()=>{document.querySelectorAll('#sounds button').forEach(x=>x.classList.remove('on'));b.classList.add('on');soundIdx=i;
       Object.keys(s[1]).forEach(k=>setParam(k,s[1][k]));});
     $('sounds').appendChild(b);});
   document.querySelectorAll('#tabs button').forEach(b=>b.addEventListener('click',()=>{
@@ -530,10 +700,14 @@ function start(){
   $('run').addEventListener('click',()=>{running=!running;$('run').classList.toggle('on',running);
     $('run').innerHTML=running?'&#9632; Stop':'&#9654; Beat';send({t:'seq',on:running});});
   $('status').addEventListener('click',startAudio);
+  $('file').addEventListener('change',e=>{const f=e.target.files[0];if(f)loadFile(f);e.target.value='';});
+  $('unload').addEventListener('click',()=>{const p=selectedPad;customName[p]=null;send({t:'sample',i:p,l:null});
+    $('loadMsg').textContent='Back to the built-in sound.';buildPads();buildGrid();selectPad(p);});
+  selectPad(0);
   $('vol').addEventListener('input',e=>setParam('master',+e.target.value));
   $('tempo').addEventListener('input',e=>setParam('tempo',+e.target.value));
   $('swing').addEventListener('input',e=>setParam('swing',+e.target.value));
-  $('clear').addEventListener('click',()=>{pattern.fill(0);send({t:'pattern',p:pattern});buildGrid();});
+  $('clear').addEventListener('click',()=>{pattern.fill(0);send({t:'pattern',p:pattern});buildGrid();saveState();});
   $('octDown').addEventListener('click',()=>{if(octave>-2){octave--;allOff();buildKeys();}});
   $('octUp').addEventListener('click',()=>{if(octave<3){octave++;allOff();buildKeys();}});
   window.addEventListener('resize',()=>{allOff();buildKeys();syncControls();});
