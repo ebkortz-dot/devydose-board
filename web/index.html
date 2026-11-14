@@ -41,12 +41,14 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
 .filebtn{position:relative;overflow:hidden;cursor:pointer}
 .filebtn input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
 .filebtn:focus-within{outline:2px solid var(--fg);outline-offset:2px}
+.programming .pad.swept::after{content:"SWEEP";position:absolute;top:6px;right:8px;font-size:9px;letter-spacing:.08em;opacity:.75}
 .pad.hit{background:var(--c);color:var(--on-accent);transition:none}
 .pad{transition:background .25s,color .25s}
 
-.ctl{flex:none;width:min(38%,360px);display:flex;gap:8px}
-.unit{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;align-items:stretch}
-.unit.slim{flex:.8}
+.ctl{flex:none;width:min(42%,420px);display:grid;grid-template-columns:1fr 1fr .8fr;grid-template-rows:1fr 1fr;gap:6px 8px}
+.unit{min-width:0;display:flex;flex-direction:column;gap:3px;align-items:stretch}
+.unit{min-height:0}
+.unit.tall{grid-column:3;grid-row:1/3}
 .dial,.vslider{flex:1;min-height:0;touch-action:none;cursor:grab;position:relative}
 .dial svg{position:absolute;inset:0;width:100%;height:100%}
 .dial .trk{stroke:var(--panel-hi)} .dial .val{stroke:var(--accent)} .dial .cap{fill:#3a404b} .dial .ptr{stroke:var(--fg)}
@@ -54,7 +56,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
 .vslider .fill{position:absolute;left:50%;width:12px;margin-left:-6px;border-radius:6px;background:var(--accent)}
 .vslider .thumb{position:absolute;left:50%;width:44px;height:18px;margin:-9px 0 0 -22px;border-radius:5px;background:var(--fg)}
 .vslider .thumb::after{content:"";position:absolute;left:9px;right:9px;top:8px;height:2px;background:var(--bg)}
-.unit select{background:var(--panel-hi);border:0;border-radius:7px;padding:7px 4px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;text-align:center;text-align-last:center;width:100%;min-width:0}
+.unit select{background:var(--panel-hi);border:0;border-radius:7px;padding:5px 4px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;text-align:center;text-align-last:center;width:100%;min-width:0}
 .readout{font-size:11px;color:var(--dim);text-align:center;letter-spacing:.04em;font-variant-numeric:tabular-nums;height:13px}
 
 .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
@@ -67,6 +69,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
 
 .prog{flex:1;min-height:96px;background:var(--panel);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:12px;overflow:auto}
 .prog .btn,.prog .seg{background:var(--panel-hi)}
+.prog .btn.on{background:var(--accent)}
 .prog strong{font-size:15px;color:var(--accent)}
 .pick{background:var(--panel-hi);border:0;border-radius:7px;padding:8px 10px;font-size:13px}
 .grid{flex:1;min-height:0;display:grid;grid-template-columns:minmax(52px,84px) repeat(16,1fr);grid-auto-rows:1fr;gap:3px;touch-action:none}
@@ -84,7 +87,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
   .top{flex-direction:column;flex:none}
   .bank{writing-mode:horizontal-tb;transform:none;align-self:flex-start}
   .pads{min-height:150px}
-  .ctl{width:100%;height:150px}
+  .ctl{width:100%;height:250px}
   .keys{flex:none;height:150px}
   .prog{flex:none}
   .grid{min-height:260px}
@@ -113,7 +116,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
       <div class="ctl">
         <div class="unit"><div class="dial" id="ctl0" tabindex="0"></div><div class="readout" id="read0"></div><select id="assign0" aria-label="Dial 1 controls"></select></div>
         <div class="unit"><div class="dial" id="ctl1" tabindex="0"></div><div class="readout" id="read1"></div><select id="assign1" aria-label="Dial 2 controls"></select></div>
-        <div class="unit slim"><div class="vslider" id="ctl2" tabindex="0"><div class="trk"></div><div class="fill"></div><div class="thumb"></div></div><div class="readout" id="read2"></div><select id="assign2" aria-label="Slider controls"></select></div>
+        <div class="unit"><div class="dial" id="ctl2" tabindex="0"></div><div class="readout" id="read2"></div><select id="assign2" aria-label="Dial 3 controls"></select></div>
+        <div class="unit"><div class="dial" id="ctl3" tabindex="0"></div><div class="readout" id="read3"></div><select id="assign3" aria-label="Dial 4 controls"></select></div>
+        <div class="unit tall"><div class="vslider" id="ctl4" tabindex="0"><div class="trk"></div><div class="fill"></div><div class="thumb"></div></div><div class="readout" id="read4"></div><select id="assign4" aria-label="Slider controls"></select></div>
       </div>
     </div>
     <div class="row">
@@ -143,6 +148,13 @@ button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-v
         <label class="lab" for="pTune">Tune</label><input type="range" id="pTune" min="-12" max="12" step="0.5">
         <label class="lab" for="pLevel">Level</label><input type="range" id="pLevel" min="0" max="1" step="0.01">
         <label class="lab" for="pLength">Length</label><input type="range" id="pLength" min="0.25" max="3" step="0.05">
+      </div>
+      <div class="row">
+        <span class="lab">Sweep filter acts on</span>
+        <button class="btn" id="swPad">This pad</button>
+        <button class="btn" id="swKeys">Keyboard</button>
+        <button class="btn" id="swAll">Everything</button>
+        <button class="btn" id="swNone">Nothing</button>
       </div>
       <p class="hint">Tap any pad to program it. Tap the name under a dial or the slider to choose what it controls. Your setup is remembered on this device; loaded sound files are not yet.</p>
     </div>
@@ -303,6 +315,8 @@ function engineFactory(sr){
   const voices=[];for(let i=0;i<10;i++)voices.push(new Voice());
   const dlen=Math.floor(sr*2.5)+8,dl=[new Float32Array(dlen),new Float32Array(dlen)];
   let dw=0,dcur=sr*.3,fpos=0,mcur=.8;const fx=[new SVF(),new SVF()];
+  // Sounds are mixed into a swept bus or a clean bus. Index 16 is the keyboard synth.
+  const sweepMask=new Uint8Array(17).fill(1);let FL=new Float32Array(0),FR=FL,DL=FL,DR=FL;
   const BEATS=[.25,.5,.75,1];
 
   // Each pad is programmable: a drum sound (any of the 16 recipes or a loaded file) or synth notes.
@@ -330,6 +344,7 @@ function engineFactory(sr){
       case 'on':noteOn(m.n,m.v);break;
       case 'off':noteOff(m.n);break;
       case 'param':P[m.k]=m.v;break;
+      case 'sweep':sweepMask[m.i]=m.on?1:0;break;
       case 'padparam':({tune:padTune,decay:padDecay,level:padLevel})[m.k][m.i]=m.v;break;
       case 'sample':samples[m.i]=m.l?{l:m.l,r:m.r}:null;break;
       case 'pattern':for(let i=0;i<16;i++)pattern[i]=m.p[i];break;
@@ -338,7 +353,8 @@ function engineFactory(sr){
   };
 
   api.process=function(L,R,n){
-    for(let i=0;i<n;i++){L[i]=0;R[i]=0;}
+    if(FL.length<n){FL=new Float32Array(n);FR=new Float32Array(n);DL=new Float32Array(n);DR=new Float32Array(n);}
+    for(let i=0;i<n;i++){FL[i]=0;FR[i]=0;DL[i]=0;DR[i]=0;}
     for(let p=0;p<16;p++)if(gate[p]>0){gate[p]-=n;if(gate[p]<=0)padRelease(p);}
     if(seqOn){
       const pps=P.tempo/(60*sr),end=ppq+n*pps,sw=P.swing*.25/3;
@@ -354,10 +370,11 @@ function engineFactory(sr){
     for(let p=0;p<16;p++){
       const d=drums[p];if(!d.active&&d.pending<0)continue;
       const gl=1-Math.max(0,PAN[p]),gr=1+Math.min(0,PAN[p]);
-      for(let i=0;i<n;i++){const s=d.tick();L[i]+=s*gl;R[i]+=s*gr;}
+      const bl=sweepMask[p]?FL:DL,br=sweepMask[p]?FR:DR;
+      for(let i=0;i<n;i++){const s=d.tick();bl[i]+=s*gl;br[i]+=s*gr;}
     }
-    for(let p=0;p<16;p++)if(samples[p])players[p].render(L,R,n);
-    for(const v of voices)v.render(L,R,n);
+    for(let p=0;p<16;p++)if(samples[p])players[p].render(sweepMask[p]?FL:DL,sweepMask[p]?FR:DR,n);
+    for(const v of voices)v.render(sweepMask[16]?FL:DL,sweepMask[16]?FR:DR,n);
 
     const want=Math.min(dlen-8,Math.max(16,BEATS[P.delayTime|0]*60/Math.max(30,P.tempo)*sr));
     const mix=P.delayMix,fb=P.delayFb;
@@ -369,11 +386,12 @@ function engineFactory(sr){
       if(fon&&(i&15)===0){const fq=fpos<0?18000*Math.pow(.006,-fpos):30*Math.pow(200,fpos);fx[0].set(fq,1.1);fx[1].set(fq,1.1);}
       const g=mcur*mcur*1.4;
       for(let ch=0;ch<2;ch++){
-        const buf=ch?R:L,line=dl[ch],dry=buf[i],echo=line[i0]+fr*(line[i1]-line[i0]);
+        const buf=ch?R:L,line=dl[ch];
+        let wet=ch?FR[i]:FL[i];
+        if(fon){fx[ch].tick(wet);wet=fpos<0?fx[ch].lp:fx[ch].hp;}
+        const dry=wet+(ch?DR[i]:DL[i]),echo=line[i0]+fr*(line[i1]-line[i0]);
         line[dw]=dry+echo*fb;
-        let o=dry+echo*mix;
-        if(fon){fx[ch].tick(o);o=fpos<0?fx[ch].lp:fx[ch].hp;}
-        o*=g;const mag=Math.abs(o);
+        let o=(dry+echo*mix)*g;const mag=Math.abs(o);
         buf[i]=mag<=.7?o:Math.sign(o)*(.7+.3*Math.tanh((mag-.7)/.3));
       }
       if(++dw>=dlen)dw=0;
@@ -451,16 +469,17 @@ function sendProg(p){const g=prog[p];
   send({t:'padtype',i:p,type:g.sound});
   send({t:'padmode',i:p,mode:g.mode==='note'?1:0,notes:CHORDS[g.chord][1].map(o=>g.note+o)});}
 let soundIdx=0,saveTimer=0,programming=false;
-function saveState(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem('padkeys1',JSON.stringify({prog,assign,padVals,pattern:Array.from(pattern),values,soundIdx}));}catch(e){}},400);}
+function saveState(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{try{localStorage.setItem('padkeys2',JSON.stringify({prog,assign,padVals,pattern:Array.from(pattern),values,soundIdx,sweepOn}));}catch(e){}},400);}
 function loadState(){
   try{
-    const d=JSON.parse(localStorage.getItem('padkeys1')||'null');if(!d)return;
+    const d=JSON.parse(localStorage.getItem('padkeys2')||'null');if(!d)return;
     if(Array.isArray(d.prog))d.prog.forEach((g,i)=>{if(i<16&&g&&PADS[g.sound]&&CHORDS[g.chord])Object.assign(prog[i],{mode:g.mode==='note'?'note':'drum',sound:g.sound,note:+g.note||60,chord:g.chord});});
-    if(Array.isArray(d.assign))d.assign.forEach((k,i)=>{if(i<3&&TARGETS.some(t=>t[0]===k))assign[i]=k;});
+    if(Array.isArray(d.assign))d.assign.forEach((k,i)=>{if(i<5&&TARGETS.some(t=>t[0]===k))assign[i]=k;});
     if(d.padVals)Object.keys(padVals).forEach(k=>{if(Array.isArray(d.padVals[k]))d.padVals[k].forEach((v,i)=>{if(i<16&&isFinite(v))padVals[k][i]=v;});});
     if(Array.isArray(d.pattern))d.pattern.forEach((v,i)=>{if(i<16)pattern[i]=v&0xffff;});
     if(d.values)Object.keys(values).forEach(k=>{if(isFinite(d.values[k]))values[k]=d.values[k];});
     if(SOUNDS[d.soundIdx])soundIdx=d.soundIdx;
+    if(Array.isArray(d.sweepOn))d.sweepOn.forEach((v,i)=>{if(i<17)sweepOn[i]=!!v;});
   }catch(e){}
 }
 function pushAll(){
@@ -468,6 +487,7 @@ function pushAll(){
   const map={padTune:'tune',padLevel:'level',padLength:'decay'};
   Object.keys(padVals).forEach(k=>padVals[k].forEach((v,i)=>send({t:'padparam',k:map[k],i,v})));
   for(let i=0;i<16;i++)sendProg(i);
+  sweepOn.forEach((on,i)=>send({t:'sweep',i,on}));
   send({t:'pattern',p:pattern});
 }
 function pct(v){return Math.round(v*100)+'%';}
@@ -479,7 +499,9 @@ const SOUNDS=[
   ['Pluck',{wave:1,cutoff:2400,reso:.35,attack:.002,decay:.2,sustain:0,release:.22,fat:.2}],
   ['Bass',{wave:2,cutoff:900,reso:.3,attack:.003,decay:.25,sustain:.55,release:.12,fat:.15}],
   ['Organ',{wave:3,cutoff:9000,reso:0,attack:.005,decay:.1,sustain:1,release:.08,fat:.55}]];
-const assign=['cutoff','delayMix','fxFilter'];
+const assign=['cutoff','delayMix','reso','padTune','fxFilter'];
+const SLIDER=4;
+const sweepOn=new Array(17).fill(true);
 let bank=0,octave=0,curStep=-1,stepDirty=false,running=false;
 const $=id=>document.getElementById(id);
 function target(k){return TARGETS.find(t=>t[0]===k);}
@@ -495,7 +517,7 @@ const ARC='M 22.4 77.6 A 39 39 0 1 1 77.6 77.6';
 function drawControl(i){
   const t=target(assign[i]),x=Math.min(1,Math.max(0,toNorm(t,getVal(t[0])))),el=$('ctl'+i);
   $('read'+i).textContent=t[5](getVal(t[0]));
-  if(i<2){
+  if(i<SLIDER){
     el.querySelector('.val').setAttribute('stroke-dasharray',(x*100)+' 100');el.querySelector('.val').style.visibility=x<.005?'hidden':'visible';
     el.querySelector('.ptr').setAttribute('transform','rotate('+(-135+270*x)+' 50 50)');
   }else{
@@ -505,11 +527,11 @@ function drawControl(i){
     else{fill.style.top=y+'px';fill.style.height=(6+h-y)+'px';}
   }
 }
-function syncControls(){for(let i=0;i<3;i++)drawControl(i);
+function syncControls(){for(let i=0;i<5;i++)drawControl(i);
   $('pTune').value=padVals.padTune[selectedPad];$('pLevel').value=padVals.padLevel[selectedPad];$('pLength').value=padVals.padLength[selectedPad];}
 function setupControl(i){
   const el=$('ctl'+i),sel=$('assign'+i);
-  if(i<2)el.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><path class="trk" d="'+ARC+'" fill="none" stroke-width="7" stroke-linecap="round"/><path class="val" d="'+ARC+'" fill="none" stroke-width="7" stroke-linecap="round" pathLength="100"/><circle class="cap" cx="50" cy="50" r="27"/><line class="ptr" x1="50" y1="26" x2="50" y2="38" stroke-width="5" stroke-linecap="round"/></svg>';
+  if(i<SLIDER)el.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><path class="trk" d="'+ARC+'" fill="none" stroke-width="7" stroke-linecap="round"/><path class="val" d="'+ARC+'" fill="none" stroke-width="7" stroke-linecap="round" pathLength="100"/><circle class="cap" cx="50" cy="50" r="27"/><line class="ptr" x1="50" y1="26" x2="50" y2="38" stroke-width="5" stroke-linecap="round"/></svg>';
   TARGETS.forEach(t=>{const o=document.createElement('option');o.value=t[0];o.textContent=t[1];sel.appendChild(o);});
   sel.value=assign[i];
   sel.addEventListener('change',()=>{assign[i]=sel.value;drawControl(i);saveState();});
@@ -518,11 +540,11 @@ function setupControl(i){
   el.addEventListener('pointerdown',e=>{
     el.setPointerCapture(e.pointerId);active=true;startY=e.clientY;startX=e.clientX;
     const t=target(assign[i]);
-    if(i===2){const r=el.getBoundingClientRect();apply(1-(e.clientY-r.top-6)/(r.height-12));}
+    if(i===SLIDER){const r=el.getBoundingClientRect();apply(1-(e.clientY-r.top-6)/(r.height-12));}
     startV=toNorm(t,getVal(t[0]));startY=e.clientY;
   });
   el.addEventListener('pointermove',e=>{if(!active)return;
-    apply(i===2?startV+(startY-e.clientY)/(el.clientHeight-12):startV+((startY-e.clientY)+(e.clientX-startX))/220);});
+    apply(i===SLIDER?startV+(startY-e.clientY)/(el.clientHeight-12):startV+((startY-e.clientY)+(e.clientX-startX))/220);});
   const end=()=>{active=false;};
   el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
   el.addEventListener('dblclick',()=>{const t=target(assign[i]);const d={cutoff:3500,reso:.2,fat:.4,attack:.005,release:.3,keysLevel:.7,fxFilter:0,delayMix:0,delayFb:.4,swing:0,tempo:110,master:.8,padTune:0,padLevel:.8,padLength:1};setParam(t[0],d[t[0]]);});
@@ -541,6 +563,7 @@ function buildPads(){
     el.className='pad';el.id='pad'+j;el.style.setProperty('--c','var(--'+padColour(p)+')');
     el.appendChild(document.createElement('span')).textContent=padLabel(p);
     if(p===selectedPad)el.classList.add('sel');
+    if(prog[p].mode==='note'?sweepOn[16]:sweepOn[p])el.classList.add('swept');
     el.addEventListener('pointerdown',e=>{
       e.preventDefault();startAudio();
       const r=el.getBoundingClientRect();
@@ -583,6 +606,7 @@ function refreshProg(){
   $('progDrum').hidden=g.mode!=='drum';$('progParams').hidden=g.mode!=='drum';$('progNote').hidden=g.mode!=='note';
   $('progSound').value=g.sound;$('progNoteSel').value=g.note;$('progChord').value=g.chord;
   $('unload').hidden=!customName[p];
+  $('swPad').hidden=g.mode==='note';$('swPad').classList.toggle('on',sweepOn[p]);$('swKeys').classList.toggle('on',sweepOn[16]);
 }
 function changeProg(fn){const p=selectedPad;fn(prog[p]);sendProg(p);saveState();buildPads();buildGrid();refreshProg();}
 function setupProg(){
@@ -596,8 +620,14 @@ function setupProg(){
   $('pTune').addEventListener('input',e=>setParam('padTune',+e.target.value));
   $('pLevel').addEventListener('input',e=>setParam('padLevel',+e.target.value));
   $('pLength').addEventListener('input',e=>setParam('padLength',+e.target.value));
+  const setSweep=(i,on)=>{sweepOn[i]=on;send({t:'sweep',i,on});};
+  const sweepDone=()=>{saveState();buildPads();refreshProg();};
+  $('swPad').addEventListener('click',()=>{setSweep(selectedPad,!sweepOn[selectedPad]);sweepDone();});
+  $('swKeys').addEventListener('click',()=>{setSweep(16,!sweepOn[16]);sweepDone();});
+  $('swAll').addEventListener('click',()=>{for(let i=0;i<17;i++)setSweep(i,true);sweepDone();});
+  $('swNone').addEventListener('click',()=>{for(let i=0;i<17;i++)setSweep(i,false);sweepDone();});
   $('program').addEventListener('click',()=>{
-    programming=!programming;$('program').classList.toggle('on',programming);
+    programming=!programming;$('program').classList.toggle('on',programming);document.querySelector('.app').classList.toggle('programming',programming);
     $('prog').hidden=!programming;$('keys').hidden=programming;
     allOff();if(!programming)buildKeys();refreshProg();
   });
@@ -683,7 +713,7 @@ function frame(){
 // ---------------------------------------------------------------- wiring
 function start(){
   loadState();
-  for(let i=0;i<3;i++)setupControl(i);
+  for(let i=0;i<5;i++)setupControl(i);
   setupProg();buildPads();buildGrid();setupGrid();setupKeys();buildKeys();
   $('vol').value=values.master;$('tempo').value=values.tempo;$('tempoNum').textContent=Math.round(values.tempo);$('swing').value=values.swing;
   pushAll();
