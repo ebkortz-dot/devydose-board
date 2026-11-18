@@ -98,6 +98,8 @@ def drain(minutes):
     """Post each outbox item at its schedule_at, for up to `minutes`. Pulls the branch every loop so items
     staged after the run started are picked up; commits each result right away."""
     import time
+    git("config", "user.name", "devydose-poster")  # commits need an identity on the Actions runner
+    git("config", "user.email", "devydose-poster@users.noreply.github.com")
     end = time.time() + minutes * 60
     while time.time() < end:
         git("pull", "--rebase", "-q", "origin", "poster")

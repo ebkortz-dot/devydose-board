@@ -1,0 +1,57 @@
+# DevyDose cloud poster: posts the next due Post Desk item from the `poster` branch's outbox/ to X.
+# The Claude sync fills outbox/ with approved posts and copies results back to the Post Desk.
+# X keys are repository secrets; nothing secret lives in the repo.
+name: x-poster
+
+on:
+  push:
+    branches: [poster]
+    paths: ["outbox/**"]
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "check (verify keys) | dry (preview next due) | post"
+        default: post
+        type: choice
+        options: [post, dry, check]
+      count:
+        description: "How many due posts to send in this run"
+        default: "1"
+      drain:
+        description: "Minutes to keep running and post each item at its scheduled time (0 = one pass)"
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: x-poster
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: poster
+      - name: Post next due item
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+        run: python3 poster/run_due.py --mode "${{ inputs.mode || 'post' }}" --count "${{ inputs.count || '1' }}" --drain "${{ inputs.drain || (github.event_name == 'push' && '75') || '0' }}"
+      - name: Save results
+        if: always()
+        run: |
+          git config user.name "devydose-poster"
+          git config user.email "devydose-poster@users.noreply.github.com"
+          git add outbox
+          if ! git diff --cached --quiet; then
+            git commit -m "poster: results $(date -u +%FT%TZ)"
+            git push origin HEAD:poster
+          fi
