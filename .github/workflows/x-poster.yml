@@ -16,6 +16,9 @@ on:
       count:
         description: "How many due posts to send in this run"
         default: "1"
+      drain:
+        description: "Minutes to keep running and post each item at its scheduled time (0 = one pass)"
+        default: "0"
 
 permissions:
   contents: write
@@ -27,7 +30,7 @@ concurrency:
 jobs:
   post:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,7 +41,7 @@ jobs:
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
-        run: python3 poster/run_due.py --mode "${{ inputs.mode || 'post' }}" --count "${{ inputs.count || '1' }}"
+        run: python3 poster/run_due.py --mode "${{ inputs.mode || 'post' }}" --count "${{ inputs.count || '1' }}" --drain "${{ inputs.drain || '0' }}"
       - name: Save results
         if: always()
         run: |
