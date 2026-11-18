@@ -59,11 +59,71 @@ def run(args):
     return r.returncode, r.stdout, r.stderr
 
 
+def post_one(when, doc_id, path):
+    rc, so, se = run(["--file", path])
+    res = last_json(so) or {"ok": False, "detail": (se or so)[-600:]}
+    res.update(doc_id=doc_id, ran_at=now().strftime("%Y-%m-%dT%H:%M:%SZ"), returncode=rc)
+    with open(os.path.join(os.path.dirname(path), "result.json"), "w", encoding="utf-8") as f:
+        json.dump(res, f, indent=1)
+    print(json.dumps({k: res.get(k) for k in ("doc_id", "ok", "posted_url", "failed_at", "http")}), flush=True)
+    return rc
+
+
+def git(*args):
+    return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True)
+
+
+def save(msg):
+    git("add", "outbox")
+    if git("diff", "--cached", "--quiet").returncode:
+        git("commit", "-m", msg)
+        for _ in range(3):
+            if git("push", "origin", "HEAD:poster").returncode == 0:
+                return
+            git("pull", "--rebase", "origin", "poster")
+
+
+def pending():
+    out = []
+    for p in glob.glob(os.path.join(ROOT, "outbox", "*", "post.json")):
+        d = os.path.dirname(p)
+        if not os.path.exists(os.path.join(d, "result.json")):
+            doc = json.load(open(p, encoding="utf-8"))
+            if doc.get("schedule_at"):
+                out.append((datetime.fromisoformat(doc["schedule_at"].replace("Z", "+00:00")), os.path.basename(d), p))
+    return sorted(out)
+
+
+def drain(minutes):
+    """Post each outbox item at its schedule_at, for up to `minutes`. Pulls the branch every loop so items
+    staged after the run started are picked up; commits each result right away."""
+    import time
+    end = time.time() + minutes * 60
+    while time.time() < end:
+        git("pull", "--rebase", "-q", "origin", "poster")
+        items = pending()
+        due = [i for i in items if i[0] <= now()]
+        if due:
+            when, doc_id, path = due[0]
+            post_one(when, doc_id, path)
+            save(f"poster: {doc_id}")
+            continue
+        if not items:
+            print("outbox empty", flush=True)
+            time.sleep(60)
+            continue
+        time.sleep(max(5, min(60, (items[0][0] - now()).total_seconds())))
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", choices=["check", "dry", "post"], default="post")
     ap.add_argument("--count", type=int, default=1)
+    ap.add_argument("--drain", type=int, default=0, help="keep running up to N minutes, posting each item when due")
     a = ap.parse_args()
+    if a.mode == "post" and a.drain:
+        return drain(a.drain)
     if a.mode == "check":
         rc, so, se = run(["--check"])
         print(so.strip() or se.strip()[-400:])
