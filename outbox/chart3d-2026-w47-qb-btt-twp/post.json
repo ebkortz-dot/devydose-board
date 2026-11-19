@@ -1,0 +1,20 @@
+{
+ "title": "Top 50 QBs in 3-D: RISK vs REWARD",
+ "feature": "3-D Chart",
+ "kind": "thread",
+ "parts": [
+  "🎯 QBs in 3-D, round 2\n\nTop 50 QBs in the Alpha Draft Signal:\n→ Left to right: big-time throw rate\n↑ Bottom to top: fewer turnover-worthy plays\n🎨 Color: yards per attempt\n\nTop right = the surgeons: aggressive AND careful.",
+  "🩺 The surgeons:\n\nKalieb Osborne (UConn): 9.1% BTT, 2.1% TWP\nMichael Hawkins Jr. (WVU): 8.6% BTT, 2.1% TWP, 10.9 YPA\nDevon Dampier (Utah): 7.5% BTT, 1.9% TWP\nLincoln Kienholz (Louisville): 7.7% BTT, 2.1% TWP",
+  "Underclassmen:\nMason Heintschel (Pitt, SO): 7.0% BTT, 2.8% TWP\nKeelon Russell (Alabama, SO): 9.1 YPA, 2.8% TWP\n\nCareful outlier: Gio Lopez (Wake Forest), 1.4% TWP\nGunslinger: Drew Mestemaker (#4 QB), 6.3% BTT but a chart-high 4.7% TWP\n\nWho are you trusting? 👇"
+ ],
+ "reply": "Every QB in the Alpha Draft Signal: https://devyalphauniverse.netlify.app/draft-signal/",
+ "status": "approved",
+ "media": [
+  [
+   "outbox/chart3d-2026-w47-qb-btt-twp/m0_0.png"
+  ],
+  [],
+  []
+ ],
+ "schedule_at": "2026-11-19T20:00:00.000Z"
+}
