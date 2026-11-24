@@ -1,0 +1,20 @@
+{
+ "title": "Top 50 WRs in 3-D: MAN vs ZONE",
+ "feature": "3-D Chart",
+ "kind": "thread",
+ "parts": [
+  "🛡️ WRs in 3-D: man vs zone\n\nTop 50 WRs in the Alpha Draft Signal:\n→ Left to right: yards per route run vs man\n↑ Bottom to top: yards per route run vs zone\n🎨 Color: YAC per catch\n\nTop right beats both. Dotted line = equal vs both.",
+  "✅ Beats both:\n\nJeremiah Smith (Ohio State, #1 WR): 4.11 vs man, chart-best 4.87 vs zone\nMalachi Toney (Miami, SO): chart-best 6.22 vs man, 3.50 vs zone\nWyatt Young (Oklahoma State): 3.84 / 4.21\nCharlie Becker (Indiana): 4.60 / 3.60",
+  "Zone beaters: Trent Mosley (USC, FR), 3.93 vs zone, 1.83 vs man; Mike Matthews (Tennessee), 3.16 / 0.91\nMan beater: Kayden Dixon-Wyatt (USC, FR), 3.73 vs man, 1.46 vs zone\n\n6 of the top 50 have under 40 routes vs man or zone, left off.\n\nWho do you want vs man? 👇"
+ ],
+ "reply": "Every WR in the Alpha Draft Signal: https://devyalphauniverse.netlify.app/draft-signal/",
+ "status": "approved",
+ "media": [
+  [
+   "outbox/chart3d-2026-w48-wr-man-zone/m0_0.png"
+  ],
+  [],
+  []
+ ],
+ "schedule_at": "2026-11-25T20:00:00.000Z"
+}
