@@ -1,0 +1,41 @@
+{
+ "title": "Draft Prospects: top 10 WRs + RBs, who they play like / produce like",
+ "feature": "Draft Prospects Comps",
+ "kind": "thread",
+ "parts": [
+  "Our top 10 draft-eligible WRs and RBs on the Alpha Draft Signal (thru Week 11), with comps:\n\nPlays like = closest PFF career profile\nThrowback = closest pre-2014 box-score match\nProduces like = closest production, rating and age match\n\nThey don't always agree 👇",
+  "WRs\n\n#1 Jeremiah Smith (Ohio State) · plays like: Marvin Harrison Jr. · throwback: Dez Bryant · produces like: Elijah Moore\n\n#2 KJ Duff (Rutgers) · plays like: Marcell Ateman · throwback: Alshon Jeffery · produces like: DeAndre Hopkins",
+  "#3 Mike Matthews (Tennessee) · plays like: Jalen Virgil · throwback: Allen Hurns · produces like: Josh Malone\n\n#4 Wyatt Young (Oklahoma State) · plays like: Keke Coutee · throwback: Josh Huff · produces like: Allen Robinson",
+  "#5 Ryan Williams (Alabama) · plays like: Shae Wyatt · throwback: Cody Latimer · produces like: Deebo Samuel\n\n#6 T.J. Moore (Clemson) · plays like: Anthony Nash · throwback: Taylor Price · produces like: Brennan Eagles",
+  "#7 Duce Robinson (Florida State) · plays like: Michael Jefferson · throwback: Jonathan Baldwin · produces like: Tyron Johnson\n\n#8 Cam Coleman (Texas) · plays like: Adonai Mitchell · throwback: Brandon LaFell · produces like: Jerry Jeudy\n\nRobinson: out for season (ACL).",
+  "#9 Ryan Wingo (Texas) · plays like: Jalen Virgil · throwback: Taylor Price · produces like: Jarvis Landry\n\n#10 Nick Marsh (Indiana) · plays like: Tyrone Howell · throwback: Cody Latimer · produces like: Tyler Boyd",
+  "RBs\n\n#1 J'Koby Williams (Texas Tech) · plays like: Joe Mixon · throwback: C.J. Spiller · produces like: Javonte Williams\n\n#2 Jadan Baugh (Florida) · plays like: Tahj Brooks · throwback: Toby Gerhart · produces like: Trayveon Williams",
+  "#3 Wayshawn Parker (Utah) · plays like: Jarquez Hunter · throwback: C.J. Spiller · produces like: Tevin Coleman\n\n#4 Justice Haynes (Georgia Tech) · plays like: Robert Henry Jr. · throwback: Mikel Leshoure · produces like: Ja'Quinden Jackson",
+  "#5 Isaac Brown (Louisville) · plays like: Bryce Love · throwback: Dri Archer · produces like: AJ Dillon\n\n#6 CJ Baxter Jr. (Kentucky) · plays like: Brenden Brady · throwback: Matt Asiata · produces like: Sony Michel",
+  "#7 Kewan Lacy (Ole Miss) · plays like: Jalen White · throwback: Ryan Williams (Va. Tech) · produces like: Rex Burkhead\n\n#8 DeSean Bishop (Tennessee) · plays like: Ronald Jones II · throwback: Mark Ingram · produces like: Kenjon Barner\n\nLacy: out for season (shoulder).",
+  "#9 Mark Fletcher Jr. (Miami) · plays like: Ja'Quinden Jackson · throwback: Stevan Ridley · produces like: Justin Jackson\n\n#10 Antwan Raymond (Rutgers) · plays like: James Butler · throwback: Bishop Sankey · produces like: Clyde Edwards-Helaire",
+  "Production comps: matched on production, rating and age, not film.\nPlay-style comps: PFF career profiles (efficiency, depth, YAC, usage; WRs add drop rate, 1st downs/route, slot rate, size), not film.\nThrowback = closest pre-2014 player on a box-score profile.",
+  "Pick one guy and tell me which comp you believe: the one he plays like, or the one he produces like.\n\nWhen they disagree, I lean production. Tell me why I'm wrong."
+ ],
+ "reply": "Alpha Draft Signal boards:\nhttps://devyalphauniverse.netlify.app/draft-signal/\n\nHeads up: the prospect cards still show last week's comp build, so their comps won't match this thread until the next card refresh.",
+ "status": "approved",
+ "media": [
+  [
+   "outbox/draftcomps-2026w12-wr-rb/m0_0.png",
+   "outbox/draftcomps-2026w12-wr-rb/m0_1.png"
+  ],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  []
+ ],
+ "schedule_at": "2026-11-25T17:00:00.000Z"
+}
