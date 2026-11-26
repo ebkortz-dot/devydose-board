@@ -1,0 +1,20 @@
+{
+ "title": "Top 50 RBs in 3-D: HOME RUN HITTERS vs GRINDERS",
+ "feature": "3-D Chart",
+ "kind": "thread",
+ "parts": [
+  "💥 RBs in 3-D\n\nTop 50 RBs in the Alpha Draft Signal:\n→ Left to right: breakaway % (share of rush yds on 15+ yd runs)\n↑ Bottom to top: yards after contact per carry\n🎨 Color: missed tackles forced per touch\n\nTop right = the complete back.",
+  "Complete backs:\n\nJ'Koby Williams (Texas Tech, #2 RB): 59.6% breakaway, 4.40 yds after contact\nWayshawn Parker (Utah, #4): 49.7%, 4.38\nJamal Rule (Nebraska, FR): 4.23 after contact\nKeyjuan Brown (Louisville): chart-best 5.63, plus 0.39 missed tackles per touch",
+  "Pure home-run hitter: Isaac Brown (Louisville, #6 RB), chart-high 59.7% breakaway\n\nWho's the best pure runner here? 👇"
+ ],
+ "reply": "Every RB in the Alpha Draft Signal: https://devyalphauniverse.netlify.app/draft-signal/",
+ "status": "approved",
+ "media": [
+  [
+   "outbox/chart3d-2026-w51-rb-homerun/m0_0.png"
+  ],
+  [],
+  []
+ ],
+ "schedule_at": "2026-11-27T20:00:00.000Z"
+}
